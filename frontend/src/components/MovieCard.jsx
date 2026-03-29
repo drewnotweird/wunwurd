@@ -98,7 +98,8 @@ export default function MovieCard({ movie, simple = false }) {
 
         <Link
           to={`/movie/${tmdbId}`}
-          className="flex-1 flex items-center justify-center p-3 w-full cursor-pointer"
+          className="flex-1 flex items-center justify-center p-3 w-full cursor-pointer transition-opacity duration-300"
+          style={{ opacity: topHovered ? 0 : 1 }}
           onMouseEnter={() => setBottomHovered(true)}
           onMouseLeave={() => setBottomHovered(false)}
         >
