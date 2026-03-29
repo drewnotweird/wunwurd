@@ -1,0 +1,41 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  username     String    @unique
+  email        String    @unique
+  passwordHash String
+  createdAt    DateTime  @default(now())
+  wunwurds     Wunwurd[]
+}
+
+model Movie {
+  id           Int       @id @default(autoincrement())
+  tmdbId       Int       @unique
+  title        String
+  year         Int?
+  posterPath   String?
+  backdropPath String?
+  cachedAt     DateTime  @default(now())
+  wunwurds     Wunwurd[]
+}
+
+model Wunwurd {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  movieId     Int
+  word        String
+  submittedAt DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movie       Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, movieId])
+}

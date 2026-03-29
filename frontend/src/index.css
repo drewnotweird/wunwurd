@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: 'Barlow Condensed', sans-serif;
+}
+
+body {
+  background-color: #000000;
+  color: #ffffff;
+  margin: 0;
+}
+
+/* Hide scrollbar on mobile search */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #000;
+}
+::-webkit-scrollbar-thumb {
+  background: #FF1493;
+}
