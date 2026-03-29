@@ -20,8 +20,13 @@ try {
   console.error('prisma db push failed:', e.message);
 }
 
+const allowedOrigins = [
+  process.env.FRONTEND_URL || 'http://localhost:5173',
+  'https://www.drewnotweird.com',
+  'http://localhost:5173',
+];
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: (origin, cb) => cb(null, !origin || allowedOrigins.includes(origin)),
   credentials: true,
 }));
 app.use(express.json());
