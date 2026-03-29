@@ -95,8 +95,8 @@ export default function Navbar() {
   // Scroll progress: 0 = at top of home page, 1 = scrolled / not home page
   const progress = isHome ? Math.min(1, scrollY / SCROLL_THRESHOLD) : 1
 
-  // Icon size interpolates from 30px → 22px
-  const iconSize = Math.round(30 - progress * 8)
+  // Icon size interpolates from 36px → 22px
+  const iconSize = Math.round(36 - progress * 14)
 
   // Navbar height interpolates from 64px → 52px
   const navHeight = Math.round(64 - progress * 12)
@@ -109,7 +109,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="border-b-4 border-black sticky top-0 z-50 bg-[#FF1493]" style={{ height: `${navHeight}px`, transition: 'height 0.35s ease' }}>
+      <nav className="sticky top-0 z-50 bg-[#FF1493]" style={{ height: `${navHeight}px`, borderBottom: `${Math.round(progress * 4)}px solid black`, transition: 'height 0.35s ease, border-bottom-width 0.35s ease' }}>
         <div className="flex items-center h-full px-4 gap-3">
 
           {/* Left — search */}
