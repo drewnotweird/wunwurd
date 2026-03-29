@@ -27,6 +27,17 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
+const { PrismaClient } = require('@prisma/client');
+app.get('/health', async (req, res) => {
+  try {
+    const prisma = new PrismaClient();
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({ db: 'ok' });
+  } catch (e) {
+    res.json({ db: 'error', message: e.message });
+  }
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/movies', moviesRoutes);
 app.use('/api/profile', profileRoutes);
