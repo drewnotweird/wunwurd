@@ -47,7 +47,7 @@ jobs:
           print(f"Directory listing: {ftp.nlst()}")
 
           local_dir = 'frontend/dist'
-          remote_dir = 'wunwurd'
+          remote_dir = 'htdocs/wunwurd'
 
           def ensure_dir(path):
               try:
