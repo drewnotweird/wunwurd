@@ -165,13 +165,15 @@ export default function MovieDetail() {
 
       {/* Body */}
       <div className="px-4 pt-0 pb-6 max-w-2xl mx-auto">
-        {/* CTA button */}
-        <button
-          onClick={handleWunwurdClick}
-          className="w-full bg-[#FF1493] text-black font-bold text-2xl uppercase py-4 hover:bg-white transition-colors"
-        >
-          + WUNWURD!
-        </button>
+        {/* CTA button — hidden once user has submitted */}
+        {!(user && wunwurds.userWord) && (
+          <button
+            onClick={handleWunwurdClick}
+            className="w-full bg-[#FF1493] text-black font-bold text-2xl uppercase py-4 hover:bg-white transition-colors"
+          >
+            + WUNWURD!
+          </button>
+        )}
 
         {/* User's existing submission */}
         {user && wunwurds.userWord && (
