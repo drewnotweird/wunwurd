@@ -43,7 +43,7 @@ export default function MovieCard({ movie, simple = false }) {
         <div className="absolute bottom-0 left-0 right-0 p-3">
           <span
             className="font-bold uppercase leading-none break-words w-full block text-center text-white"
-            style={{ fontSize: 'clamp(1.25rem, 5vw, 2.75rem)', overflowWrap: 'break-word', wordBreak: 'break-word' }}
+            style={{ fontSize: 'clamp(1.25rem, 5vw, 2.75rem)', overflowWrap: 'break-word', wordBreak: 'break-word', lineHeight: 0.85 }}
           >
             {title}
           </span>
@@ -90,7 +90,7 @@ export default function MovieCard({ movie, simple = false }) {
         >
           <span
             className="font-bold uppercase leading-none break-words w-full text-center"
-            style={{ fontSize: 'clamp(1.25rem, 5vw, 2.75rem)', overflowWrap: 'break-word', wordBreak: 'break-word', opacity: topHovered ? 1 : 0, color: '#FF1493', transition: 'opacity 0.3s' }}
+            style={{ fontSize: 'clamp(1.25rem, 5vw, 2.75rem)', overflowWrap: 'break-word', wordBreak: 'break-word', lineHeight: 0.85, opacity: topHovered ? 1 : 0, color: '#FF1493', transition: 'opacity 0.3s' }}
           >
             {title}
           </span>
@@ -105,7 +105,7 @@ export default function MovieCard({ movie, simple = false }) {
           {topWord && (
             <span
               className="font-bold uppercase leading-none break-words w-full text-center"
-              style={{ fontSize: 'clamp(1.25rem, 5vw, 2.75rem)', overflowWrap: 'break-word', wordBreak: 'break-word', opacity: 1, color: bottomHovered ? '#FF1493' : '#ffffff', transition: 'color 0.4s' }}
+              style={{ fontSize: 'clamp(1.25rem, 5vw, 2.75rem)', overflowWrap: 'break-word', wordBreak: 'break-word', lineHeight: 0.85, opacity: 1, color: bottomHovered ? '#FF1493' : '#ffffff', transition: 'color 0.4s' }}
             >
               {topWord.toUpperCase()}
             </span>
