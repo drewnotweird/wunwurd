@@ -44,6 +44,7 @@ export default function WordPage() {
             className="w-full bg-transparent text-white font-bold leading-none uppercase outline-none border-none text-center"
             style={{ fontSize: 'clamp(2.5rem, 12vw, 6rem)' }}
             placeholder="SEARCH"
+            autoFocus
           />
         </div>
       </div>
@@ -60,7 +61,7 @@ export default function WordPage() {
             }`}
             style={{ fontSize: 'clamp(1.25rem, 4vw, 1.75rem)' }}
           >
-            Movies
+            By title
           </button>
           <button
             onClick={() => setSearchMode('wunwurds')}
@@ -71,7 +72,7 @@ export default function WordPage() {
             }`}
             style={{ fontSize: 'clamp(1.25rem, 4vw, 1.75rem)' }}
           >
-            Wurds
+            By Wurd
           </button>
         </div>
       </div>

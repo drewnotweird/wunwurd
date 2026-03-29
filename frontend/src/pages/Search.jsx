@@ -45,7 +45,7 @@ export default function Search() {
               : 'bg-gray-900 text-white border-2 border-[#FF1493]'
           }`}
         >
-          Movies
+          By title
         </button>
         <button
           onClick={() => setSearchType('wunwurds')}
@@ -55,7 +55,7 @@ export default function Search() {
               : 'bg-gray-900 text-white border-2 border-[#FF1493]'
           }`}
         >
-          Wunwurds
+          By Wurd
         </button>
       </div>
 

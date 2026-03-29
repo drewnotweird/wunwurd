@@ -75,14 +75,14 @@ export default function MovieCard({ movie }) {
         >
           <span
             className="font-bold uppercase leading-none break-words w-full text-center"
-            style={{ fontSize: 'clamp(1rem, 3.5vw, 2rem)', overflowWrap: 'break-word', wordBreak: 'break-word', opacity: topHovered ? 1 : 0, color: topHovered ? '#FF1493' : '#ffffff', transition: 'opacity 0.3s, color 0.4s' }}
+            style={{ fontSize: 'clamp(1.25rem, 5vw, 2.75rem)', overflowWrap: 'break-word', wordBreak: 'break-word', opacity: topHovered ? 1 : 0, color: topHovered ? '#FF1493' : '#ffffff', transition: 'opacity 0.3s, color 0.4s' }}
           >
             {title}
           </span>
         </Link>
 
         <Link
-          to={topWord ? `/word/${topWord}` : `/movie/${tmdbId}`}
+          to={`/movie/${tmdbId}`}
           className="flex-1 flex items-center justify-center p-3 w-full cursor-pointer"
           onMouseEnter={() => setBottomHovered(true)}
           onMouseLeave={() => setBottomHovered(false)}
@@ -90,7 +90,7 @@ export default function MovieCard({ movie }) {
           {topWord && (
             <span
               className="font-bold uppercase leading-none break-words w-full text-center"
-              style={{ fontSize: 'clamp(1rem, 3.5vw, 2rem)', overflowWrap: 'break-word', wordBreak: 'break-word', opacity: 1, color: bottomHovered ? '#FF1493' : '#ffffff', transition: 'color 0.4s' }}
+              style={{ fontSize: 'clamp(1.25rem, 5vw, 2.75rem)', overflowWrap: 'break-word', wordBreak: 'break-word', opacity: 1, color: bottomHovered ? '#FF1493' : '#ffffff', transition: 'color 0.4s' }}
             >
               {topWord.toUpperCase()}
             </span>

@@ -6,7 +6,6 @@ import Home from './pages/Home'
 import Search from './pages/Search'
 import MovieDetail from './pages/MovieDetail'
 import Login from './pages/Login'
-import Register from './pages/Register'
 import Profile from './pages/Profile'
 import WordPage from './pages/WordPage'
 
@@ -20,7 +19,7 @@ export default function App() {
           <Route path="/search" element={<Search />} />
           <Route path="/movie/:tmdbId" element={<MovieDetail />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/register" element={<Login />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/word/:word" element={<WordPage />} />
           <Route path="/search-words" element={<WordPage />} />
