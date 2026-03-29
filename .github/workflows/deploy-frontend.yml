@@ -43,6 +43,8 @@ jobs:
           ftp.login(user, password)
           ftp.set_pasv(True)
           print(f"Connected to {host}")
+          print(f"Current directory: {ftp.pwd()}")
+          print(f"Directory listing: {ftp.nlst()}")
 
           local_dir = 'frontend/dist'
           remote_dir = 'wunwurd'
