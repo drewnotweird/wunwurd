@@ -26,6 +26,46 @@ jobs:
         run: npm run build
 
       - name: Deploy to Fasthosts via FTP
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASS: ${{ secrets.FTP_PASS }}
         run: |
-          sudo apt-get install -y lftp
-          lftp -c "set ftp:passive-mode yes; set ssl:verify-certificate no; set ftp:use-size no; set ftp:use-mdtm no; set ftp:use-allo no; set ftp:use-feat no; open -u ${{ secrets.FTP_USER }},${{ secrets.FTP_PASS }} ${{ secrets.FTP_HOST }}; mirror -R frontend/dist/ wunwurd/ --delete --verbose"
+          python3 - <<'EOF'
+          import ftplib, os, sys
+
+          host = os.environ['FTP_HOST']
+          user = os.environ['FTP_USER']
+          password = os.environ['FTP_PASS']
+
+          ftp = ftplib.FTP()
+          ftp.connect(host, 21, timeout=30)
+          ftp.login(user, password)
+          ftp.set_pasv(True)
+          print(f"Connected to {host}")
+
+          local_dir = 'frontend/dist'
+          remote_dir = 'wunwurd'
+
+          def ensure_dir(path):
+              try:
+                  ftp.mkd(path)
+              except ftplib.error_perm:
+                  pass  # already exists
+
+          def upload_dir(local_path, remote_path):
+              ensure_dir(remote_path)
+              for item in sorted(os.listdir(local_path)):
+                  local_item = os.path.join(local_path, item)
+                  remote_item = f"{remote_path}/{item}"
+                  if os.path.isdir(local_item):
+                      upload_dir(local_item, remote_item)
+                  else:
+                      print(f"Uploading {remote_item}")
+                      with open(local_item, 'rb') as f:
+                          ftp.storbinary(f'STOR {remote_item}', f, blocksize=8192)
+
+          upload_dir(local_dir, remote_dir)
+          ftp.quit()
+          print("Done.")
+          EOF
