@@ -1,24 +1,26 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { images as imageData } from '../data/images.js'
 
-const MIN_DISTANCE = 130
+const MIN_DISTANCE = 150
 const BASE_SIZE = 400
 
 export default function Home() {
   const [ready, setReady] = useState(false)
   const [settled, setSettled] = useState([])
-  const [active, setActive] = useState(null)
+  const [cursor, setCursor] = useState(null)
 
   const loadedPhotos = useRef([])
-  const activeRef = useRef(null)
-  const activeImgRef = useRef(null)
-  const activeStart = useRef(null)
   const nextIdx = useRef(0)
+
+  // Active photo tracked purely by ref + direct DOM manipulation
+  const activeImgRef = useRef(null)
+  const activePhoto = useRef(null)   // { src, hotspot, w, h }
+  const activeStart = useRef(null)   // { x, y } where current photo first appeared
 
   const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)
   const BASE = import.meta.env.BASE_URL
 
-  // Preload images
+  // Preload all images
   useEffect(() => {
     if (!imageData.length) return
     let count = 0
@@ -49,20 +51,35 @@ export default function Home() {
     return photo
   }, [])
 
-  const placeNew = useCallback((x, y) => {
+  // Position the active img element directly (no React re-render)
+  const positionActive = useCallback((x, y) => {
+    const p = activePhoto.current
+    if (!p || !activeImgRef.current) return
+    activeImgRef.current.style.left = `${x - p.hotspot.x * p.w}px`
+    activeImgRef.current.style.top  = `${y - p.hotspot.y * p.h}px`
+  }, [])
+
+  const startNewPhoto = useCallback((x, y) => {
     const photo = getNextPhoto()
     if (!photo) return
-    const newActive = { ...photo, id: Date.now() + Math.random(), x, y }
-    activeRef.current = newActive
+    activePhoto.current = photo
     activeStart.current = { x, y }
-    setActive(newActive)
-  }, [getNextPhoto])
+    // Swap src on the shared img element — no new DOM node
+    if (activeImgRef.current) {
+      activeImgRef.current.src = photo.src
+      activeImgRef.current.style.width  = `${photo.w}px`
+      activeImgRef.current.style.height = `${photo.h}px`
+      activeImgRef.current.style.display = 'block'
+    }
+    positionActive(x, y)
+  }, [getNextPhoto, positionActive])
 
   const handleCursor = useCallback((x, y) => {
     if (!ready) return
+    setCursor({ x, y })
 
-    if (!activeRef.current) {
-      placeNew(x, y)
+    if (!activePhoto.current) {
+      startNewPhoto(x, y)
       return
     }
 
@@ -70,19 +87,22 @@ export default function Home() {
     const dy = y - activeStart.current.y
 
     if (Math.sqrt(dx * dx + dy * dy) >= MIN_DISTANCE) {
-      // Settle current photo, start new
-      setSettled(s => [...s, { ...activeRef.current }])
-      placeNew(x, y)
+      // Settle the current photo at its current position
+      const p = activePhoto.current
+      setSettled(s => [...s, {
+        id: Date.now() + Math.random(),
+        src: p.src,
+        w: p.w,
+        h: p.h,
+        hotspot: p.hotspot,
+        x,
+        y,
+      }])
+      startNewPhoto(x, y)
     } else {
-      // Drag active photo — update DOM directly for performance
-      if (activeImgRef.current) {
-        const p = activeRef.current
-        activeImgRef.current.style.left = `${x - p.hotspot.x * p.w}px`
-        activeImgRef.current.style.top = `${y - p.hotspot.y * p.h}px`
-      }
-      activeRef.current = { ...activeRef.current, x, y }
+      positionActive(x, y)
     }
-  }, [ready, placeNew])
+  }, [ready, startNewPhoto, positionActive])
 
   useEffect(() => {
     const onMouseMove = e => handleCursor(e.clientX, e.clientY)
@@ -100,17 +120,6 @@ export default function Home() {
     }
   }, [handleCursor])
 
-  const photoStyle = p => ({
-    position: 'fixed',
-    left: p.x - p.hotspot.x * p.w,
-    top: p.y - p.hotspot.y * p.h,
-    width: p.w,
-    height: p.h,
-    pointerEvents: 'none',
-    userSelect: 'none',
-    display: 'block',
-  })
-
   return (
     <div style={{
       width: '100vw',
@@ -119,10 +128,10 @@ export default function Home() {
       background: '#fafafa',
       position: 'fixed',
       inset: 0,
-      cursor: ready ? 'none' : 'default',
+      cursor: 'none',
     }}>
 
-      {/* Intro text — fades out when ready */}
+      {/* Intro text */}
       <div style={{
         position: 'fixed',
         inset: 0,
@@ -154,21 +163,55 @@ export default function Home() {
           src={p.src}
           alt=""
           draggable={false}
-          style={photoStyle(p)}
+          style={{
+            position: 'fixed',
+            left: p.x - p.hotspot.x * p.w,
+            top:  p.y - p.hotspot.y * p.h,
+            width: p.w,
+            height: p.h,
+            pointerEvents: 'none',
+            userSelect: 'none',
+            display: 'block',
+          }}
         />
       ))}
 
-      {/* Active (following) photo */}
-      {active && (
-        <img
-          key={active.id}
-          ref={activeImgRef}
-          src={active.src}
-          alt=""
-          draggable={false}
-          style={photoStyle(active)}
-        />
+      {/* Single active photo — mutated directly, never re-keyed */}
+      <img
+        ref={activeImgRef}
+        alt=""
+        draggable={false}
+        style={{
+          position: 'fixed',
+          display: 'none',
+          pointerEvents: 'none',
+          userSelect: 'none',
+        }}
+      />
+
+      {/* Pulsing cursor dot */}
+      {cursor && !isMobile && (
+        <div style={{
+          position: 'fixed',
+          left: cursor.x,
+          top: cursor.y,
+          width: 10,
+          height: 10,
+          borderRadius: '50%',
+          background: '#0a0a0a',
+          transform: 'translate(-50%, -50%)',
+          pointerEvents: 'none',
+          zIndex: 9999,
+          animation: 'pulse 1.5s ease-in-out infinite',
+        }} />
       )}
+
+      <style>{`
+        @keyframes pulse {
+          0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+          50% { transform: translate(-50%, -50%) scale(1.8); opacity: 0.4; }
+        }
+      `}</style>
     </div>
   )
 }
