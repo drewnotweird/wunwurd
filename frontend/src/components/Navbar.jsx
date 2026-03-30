@@ -6,7 +6,7 @@ import { apiFetch } from '../api'
 
 function SearchIcon({ size }) {
   return (
-    <svg width={size} height={size} fill="none" stroke="white" strokeWidth="2.5" viewBox="0 0 24 24"
+    <svg width={size} height={size} fill="none" stroke="black" strokeWidth="2.5" viewBox="0 0 24 24"
       style={{ transition: 'width 0.35s ease, height 0.35s ease' }}>
       <circle cx="11" cy="11" r="8" />
       <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -16,7 +16,7 @@ function SearchIcon({ size }) {
 
 function CloseIcon({ size }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2.5"
       style={{ transition: 'width 0.35s ease, height 0.35s ease' }}>
       <line x1="4" y1="4" x2="20" y2="20" />
       <line x1="20" y1="4" x2="4" y2="20" />
@@ -26,7 +26,7 @@ function CloseIcon({ size }) {
 
 function ProfileIcon({ filled, size }) {
   return (
-    <svg width={size} height={size} fill="none" stroke="white" strokeWidth="2.5" viewBox="0 0 24 24"
+    <svg width={size} height={size} fill="none" stroke="black" strokeWidth="2.5" viewBox="0 0 24 24"
       style={{ transition: 'width 0.35s ease, height 0.35s ease' }}>
       <circle cx="12" cy="8" r="4" fill="none" />
       <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" strokeLinecap="square" />
@@ -134,7 +134,7 @@ export default function Navbar() {
                   autoComplete="off"
                   autoCorrect="off"
                   spellCheck={false}
-                  className="w-full bg-transparent border-b-2 border-white text-white font-bold uppercase text-xl px-1 py-1 outline-none placeholder-white/40"
+                  className="w-full bg-transparent border-b-2 border-black text-black font-bold uppercase text-xl px-1 py-1 outline-none placeholder-black/40"
                 />
                 {showDropdown && (
                   <div className="absolute top-full left-0 right-0 bg-black border-2 border-t-0 border-[#FF1493] z-50 max-h-[75vh] overflow-y-auto">
@@ -188,7 +188,7 @@ export default function Navbar() {
                   transition: 'opacity 0.35s ease, transform 0.35s ease',
                   pointerEvents: logoOpacity < 0.2 ? 'none' : 'auto',
                 }}
-                className="text-white font-bold text-2xl uppercase leading-none"
+                className="text-black font-bold text-2xl uppercase leading-none"
               >
                 WUNWURD
               </Link>
