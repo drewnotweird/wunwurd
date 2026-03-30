@@ -22,7 +22,10 @@ try {
 
 const allowedOrigins = [
   process.env.FRONTEND_URL || 'http://localhost:5173',
+  'https://drewnotweird.com',
   'https://www.drewnotweird.com',
+  'https://drewnotweird.co.uk',
+  'https://www.drewnotweird.co.uk',
   'http://localhost:5173',
 ];
 app.use(cors({
