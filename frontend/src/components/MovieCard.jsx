@@ -30,7 +30,7 @@ export default function MovieCard({ movie, simple = false }) {
 
   if (simple) {
     return (
-      <Link to={`/movie/${tmdbId}`} className="relative overflow-hidden bg-gray-900 aspect-[2/3] block">
+      <Link to={`/movie/${tmdbId}`} className="relative overflow-hidden bg-gray-900 aspect-square block">
         {imageUrl ? (
           <img src={imageUrl} alt={title} className="w-full h-full object-cover" loading="lazy" />
         ) : (
@@ -53,7 +53,7 @@ export default function MovieCard({ movie, simple = false }) {
   }
 
   return (
-    <div className="relative overflow-hidden bg-gray-900 aspect-[2/3]">
+    <div className="relative overflow-hidden bg-gray-900 aspect-square">
       {imageUrl ? (
         <img src={imageUrl} alt={title} className="w-full h-full object-cover" loading="lazy" />
       ) : (
