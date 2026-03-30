@@ -48,7 +48,7 @@ export default function Profile() {
         <div className="h-4 bg-gray-900 animate-pulse w-32 mb-8" />
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="aspect-[2/3] bg-gray-900 animate-pulse" />
+            <div key={i} className="aspect-square bg-gray-900 animate-pulse" />
           ))}
         </div>
       </div>
@@ -68,7 +68,7 @@ export default function Profile() {
       {/* Header */}
       <div className="mb-8 border-b-2 border-gray-900 pb-6 flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-[#FF1493] font-bold text-5xl uppercase leading-none">
+          <h1 className="text-white font-bold text-4xl uppercase leading-none">
             {profile?.username?.toUpperCase()}
           </h1>
           <p className="text-gray-600 text-sm uppercase mt-2">
@@ -109,7 +109,7 @@ export default function Profile() {
             <div key={w.id} className="relative group">
               <Link
                 to={`/movie/${w.movie.tmdbId}`}
-                className="block relative aspect-[2/3] bg-gray-900 overflow-hidden"
+                className="block relative aspect-square bg-gray-900 overflow-hidden"
               >
                 {posterUrl ? (
                   <img
@@ -124,14 +124,14 @@ export default function Profile() {
                 <div className="absolute inset-0 flex items-center justify-center">
                   <span
                     className="text-[#FF1493] font-bold uppercase text-center px-2 drop-shadow-lg leading-none"
-                    style={{ fontSize: 'clamp(1.75rem, 6vw, 3rem)' }}
+                    style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)' }}
                   >
                     {w.word.toUpperCase()}
                   </span>
                 </div>
                 {/* Movie title at bottom */}
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2 pt-6">
-                  <p className="text-white text-sm uppercase leading-none font-bold line-clamp-2">
+                  <p className="text-[#FF1493] text-base uppercase leading-tight font-bold text-center line-clamp-2">
                     {w.movie.title}
                   </p>
                 </div>
