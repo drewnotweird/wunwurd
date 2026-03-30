@@ -104,7 +104,7 @@ export default function MovieDetail() {
 
   if (!movie || movie.error) {
     return (
-      <p className="text-center py-16 text-gray-700 uppercase">
+      <p className="text-center py-16 text-gray-400 uppercase">
         Movie not found.
       </p>
     )
@@ -155,7 +155,7 @@ export default function MovieDetail() {
             )}
 
             {!wunwurds.topWord && (
-              <p className="text-gray-600 uppercase text-sm">
+              <p className="text-gray-400 uppercase text-base">
                 NO WUNWURDS YET
               </p>
             )}
@@ -195,7 +195,7 @@ export default function MovieDetail() {
               </button>
               <button
                 onClick={handleDelete}
-                className="text-gray-600 text-xs uppercase border border-gray-700 px-3 py-2 hover:border-red-500 hover:text-red-500 transition-colors"
+                className="text-gray-400 text-xs uppercase border border-gray-500 px-3 py-2 hover:border-red-500 hover:text-red-500 transition-colors"
               >
                 REMOVE
               </button>

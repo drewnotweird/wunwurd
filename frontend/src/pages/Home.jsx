@@ -86,12 +86,12 @@ export default function Home() {
           }}
         >
           <h1
-            className="text-black font-bold leading-none uppercase"
+            className="text-white font-bold leading-none uppercase"
             style={{ fontSize: 'clamp(4rem, 18vw, 10rem)' }}
           >
             WUNWURD
           </h1>
-          <p className="text-black font-bold uppercase mt-2 text-base sm:text-xl">
+          <p className="text-white font-bold uppercase mt-2 text-base sm:text-xl">
             SINGLE-WORD REVIEWS
           </p>
         </div>

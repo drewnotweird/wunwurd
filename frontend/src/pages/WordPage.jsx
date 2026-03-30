@@ -51,13 +51,13 @@ export default function WordPage() {
 
       {/* Tabs */}
       <div className="flex justify-center border-b-2 border-gray-900">
-        <div className="flex gap-3 pt-4 pb-2">
+        <div className="flex gap-3 pt-4">
           <button
             onClick={() => setSearchMode('movies')}
             className={`px-4 py-2 font-bold uppercase transition-colors ${
               searchMode === 'movies'
                 ? 'text-[#FF1493] border-b-2 border-[#FF1493]'
-                : 'text-gray-600 border-b-2 border-transparent'
+                : 'text-gray-400 border-b-2 border-transparent'
             }`}
             style={{ fontSize: 'clamp(1.25rem, 4vw, 1.75rem)' }}
           >
@@ -68,7 +68,7 @@ export default function WordPage() {
             className={`px-4 py-2 font-bold uppercase transition-colors ${
               searchMode === 'wunwurds'
                 ? 'text-[#FF1493] border-b-2 border-[#FF1493]'
-                : 'text-gray-600 border-b-2 border-transparent'
+                : 'text-gray-400 border-b-2 border-transparent'
             }`}
             style={{ fontSize: 'clamp(1.25rem, 4vw, 1.75rem)' }}
           >
@@ -81,12 +81,12 @@ export default function WordPage() {
       <div className="flex justify-center py-4">
         <div className="px-2 w-full">
           {!loading && searchTerm.trim() && movies.length === 0 && (
-            <p className="text-center text-gray-700 uppercase py-16">
+            <p className="text-center text-gray-400 uppercase py-16">
               No {searchMode === 'movies' ? 'movies' : 'wunwurds'} found.
             </p>
           )}
           {!loading && !searchTerm.trim() && (
-            <p className="text-center text-gray-700 uppercase py-16">
+            <p className="text-center text-gray-400 uppercase py-16">
               Start typing to search for {searchMode === 'movies' ? 'movies' : 'wunwurds'}.
             </p>
           )}

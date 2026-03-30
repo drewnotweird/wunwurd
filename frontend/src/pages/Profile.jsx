@@ -66,21 +66,21 @@ export default function Profile() {
   return (
     <div className="px-4 py-6 max-w-4xl mx-auto">
       {/* Header */}
-      <div className="mb-8 border-b-2 border-gray-900 pb-6 flex items-start justify-between gap-4">
+      <div className="mb-8 border-b-2 border-gray-900 pb-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
-          <h1 className="text-white font-bold text-4xl uppercase leading-none">
+          <h1 className="text-[#FF1493] font-bold text-4xl uppercase leading-none">
             {profile?.username?.toUpperCase()}
           </h1>
-          <p className="text-gray-600 text-sm uppercase mt-2">
+          <p className="text-gray-400 text-base uppercase mt-2">
             MEMBER SINCE {joinDate.toUpperCase()}
           </p>
-          <p className="text-gray-600 text-sm uppercase mt-1">
+          <p className="text-gray-400 text-base uppercase mt-1">
             {count} WUNWURD{count !== 1 ? 'S' : ''} SUBMITTED
           </p>
         </div>
         <button
           onClick={handleLogout}
-          className="flex-shrink-0 border-2 border-gray-800 text-gray-600 text-xs uppercase px-4 py-2 hover:border-[#FF1493] hover:text-[#FF1493] transition-colors mt-1"
+          className="self-start flex-shrink-0 border-2 border-gray-600 text-gray-400 text-sm uppercase px-4 py-2 hover:border-[#FF1493] hover:text-[#FF1493] transition-colors"
         >
           LOG OUT
         </button>
@@ -88,7 +88,7 @@ export default function Profile() {
 
       {count === 0 && (
         <div className="text-center py-16">
-          <p className="text-gray-700 uppercase text-lg mb-4">
+          <p className="text-gray-400 uppercase text-lg mb-4">
             NO WUNWURDS YET
           </p>
           <Link
@@ -123,7 +123,7 @@ export default function Profile() {
                 {/* Their word overlaid */}
                 <div className="absolute inset-0 flex items-center justify-center">
                   <span
-                    className="text-[#FF1493] font-bold uppercase text-center px-2 drop-shadow-lg leading-none"
+                    className="text-white font-bold uppercase text-center px-2 drop-shadow-lg leading-none"
                     style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)' }}
                   >
                     {w.word.toUpperCase()}
@@ -131,7 +131,7 @@ export default function Profile() {
                 </div>
                 {/* Movie title at bottom */}
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2 pt-6">
-                  <p className="text-[#FF1493] text-base uppercase leading-tight font-bold text-center line-clamp-2">
+                  <p className="text-[#FF1493] text-lg uppercase leading-tight font-bold text-center line-clamp-2">
                     {w.movie.title}
                   </p>
                 </div>

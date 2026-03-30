@@ -91,7 +91,7 @@ export default function Search() {
 
       {/* Prompt before typing */}
       {!loading && !debouncedQuery.trim() && (
-        <p className="text-gray-800 uppercase text-center py-12 text-sm">
+        <p className="text-gray-400 uppercase text-center py-12 text-base">
           START TYPING TO SEARCH {searchType === 'movies' ? 'MOVIES' : 'WUNWURDS'}
         </p>
       )}

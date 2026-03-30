@@ -97,7 +97,7 @@ export default function WunwurdModal({ tmdbId, existingWord, onClose, onSuccess 
         <button
           type="button"
           onClick={onClose}
-          className="w-full text-gray-600 uppercase text-sm py-4 hover:text-white transition-colors"
+          className="w-full text-gray-400 uppercase text-sm py-4 hover:text-white transition-colors"
         >
           CANCEL
         </button>

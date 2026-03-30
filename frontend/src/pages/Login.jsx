@@ -49,7 +49,7 @@ export default function Auth() {
             className={`flex-1 py-3 font-bold text-xl uppercase transition-colors ${
               tab === 'login'
                 ? 'text-[#FF1493] border-b-2 border-[#FF1493] -mb-[2px]'
-                : 'text-gray-600'
+                : 'text-gray-400'
             }`}
           >
             Login
@@ -59,7 +59,7 @@ export default function Auth() {
             className={`flex-1 py-3 font-bold text-xl uppercase transition-colors ${
               tab === 'register'
                 ? 'text-[#FF1493] border-b-2 border-[#FF1493] -mb-[2px]'
-                : 'text-gray-600'
+                : 'text-gray-400'
             }`}
           >
             Register
