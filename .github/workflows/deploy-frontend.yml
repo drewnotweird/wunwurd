@@ -76,9 +76,9 @@ jobs:
 
       - name: Deploy to drewnotweird.co.uk via FTP
         env:
-          FTP_HOST: ${{ secrets.FTP_HOST_COUK }}
-          FTP_USER: ${{ secrets.FTP_USER_COUK }}
-          FTP_PASS: ${{ secrets.FTP_PASS_COUK }}
+          FTP_HOST_COUK: ${{ secrets.FTP_HOST_COUK }}
+          FTP_USER_COUK: ${{ secrets.FTP_USER_COUK }}
+          FTP_PASS_COUK: ${{ secrets.FTP_PASS_COUK }}
         run: |
           python3 - <<'EOF'
           import ftplib, os
@@ -113,9 +113,9 @@ jobs:
               print("Done.")
 
           ftp_upload(
-              os.environ['FTP_HOST'],
-              os.environ['FTP_USER'],
-              os.environ['FTP_PASS'],
+              os.environ['FTP_HOST_COUK'],
+              os.environ['FTP_USER_COUK'],
+              os.environ['FTP_PASS_COUK'],
               'frontend/dist',
               'htdocs/wunwurd',
           )
