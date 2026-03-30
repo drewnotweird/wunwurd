@@ -1,10 +1,10 @@
-name: Deploy Frontend to Fasthosts
+name: Deploy Wunwurd to Fasthosts
 
 on:
   push:
     branches: [main]
     paths:
-      - 'frontend/**'
+      - 'apps/wunwurd/frontend/**'
   workflow_dispatch:
 
 jobs:
@@ -18,11 +18,11 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        working-directory: frontend
+        working-directory: apps/wunwurd/frontend
         run: npm install
 
       - name: Build for /wunwurd/ path (drewnotweird.com and drewnotweird.co.uk)
-        working-directory: frontend
+        working-directory: apps/wunwurd/frontend
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
           VITE_BASE_PATH: /wunwurd/
@@ -70,7 +70,7 @@ jobs:
               os.environ['FTP_HOST'],
               os.environ['FTP_USER'],
               os.environ['FTP_PASS'],
-              'frontend/dist',
+              'apps/wunwurd/frontend/dist',
               'htdocs/wunwurd',
           )
           EOF
@@ -117,13 +117,13 @@ jobs:
               os.environ['FTP_HOST_COUK'],
               os.environ['FTP_USER_COUK'],
               os.environ['FTP_PASS_COUK'],
-              'frontend/dist',
+              'apps/wunwurd/frontend/dist',
               'htdocs/wunwurd',
           )
           EOF
 
       - name: Build for / path (wunwurd.drewnotweird.co.uk subdomain)
-        working-directory: frontend
+        working-directory: apps/wunwurd/frontend
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
           VITE_BASE_PATH: /
@@ -171,7 +171,7 @@ jobs:
               os.environ['FTP_HOST_COUK'],
               os.environ['FTP_USER_COUK'],
               os.environ['FTP_PASS_COUK'],
-              'frontend/dist',
+              'apps/wunwurd/frontend/dist',
               'htdocs/wunwurd',
           )
           EOF
