@@ -35,7 +35,16 @@ jobs:
           python3 - <<'EOF'
           import ftplib, os, time
 
-          RECONNECT_EVERY = 25
+          # Only upload these file types — images are already on the server
+          UPLOAD_EXTENSIONS = {'.html', '.js', '.css', '.json', '.txt', '.ico', '.png', '.svg', '.htaccess', ''}
+          SKIP_EXTENSIONS = {'.jpg', '.jpeg', '.gif', '.webp', '.psd'}
+
+          # Old files from the previous static site to delete
+          OLD_FILES = [
+              'htdocs/css/styles.css',
+          ]
+
+          RECONNECT_EVERY = 20
 
           def make_ftp(host, user, password):
               ftp = ftplib.FTP()
@@ -47,6 +56,15 @@ jobs:
           def ftp_upload(host, user, password, local_dir, remote_dir):
               ftp = make_ftp(host, user, password)
               print(f"Connected to {host}")
+
+              # Delete old conflicting files
+              for old_file in OLD_FILES:
+                  try:
+                      ftp.delete(old_file)
+                      print(f"Deleted old file: {old_file}")
+                  except Exception:
+                      pass
+
               count = [0]
 
               def ensure_dir(path):
@@ -81,6 +99,9 @@ jobs:
                       if os.path.isdir(local_item):
                           upload_dir(local_item, remote_item)
                       else:
+                          ext = os.path.splitext(item)[1].lower()
+                          if ext in SKIP_EXTENSIONS:
+                              continue
                           print(f"Uploading {remote_item}")
                           upload_file(local_item, remote_item)
 
@@ -106,7 +127,13 @@ jobs:
           python3 - <<'EOF'
           import ftplib, os, time
 
-          RECONNECT_EVERY = 25
+          SKIP_EXTENSIONS = {'.jpg', '.jpeg', '.gif', '.webp', '.psd'}
+
+          OLD_FILES = [
+              'htdocs/css/styles.css',
+          ]
+
+          RECONNECT_EVERY = 20
 
           def make_ftp(host, user, password):
               ftp = ftplib.FTP()
@@ -118,6 +145,14 @@ jobs:
           def ftp_upload(host, user, password, local_dir, remote_dir):
               ftp = make_ftp(host, user, password)
               print(f"Connected to {host}")
+
+              for old_file in OLD_FILES:
+                  try:
+                      ftp.delete(old_file)
+                      print(f"Deleted old file: {old_file}")
+                  except Exception:
+                      pass
+
               count = [0]
 
               def ensure_dir(path):
@@ -152,6 +187,9 @@ jobs:
                       if os.path.isdir(local_item):
                           upload_dir(local_item, remote_item)
                       else:
+                          ext = os.path.splitext(item)[1].lower()
+                          if ext in SKIP_EXTENSIONS:
+                              continue
                           print(f"Uploading {remote_item}")
                           upload_file(local_item, remote_item)
 
