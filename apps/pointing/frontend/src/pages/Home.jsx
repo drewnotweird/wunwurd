@@ -15,6 +15,7 @@ export default function Home() {
   const activePhoto = useRef(null)
   const activeStart = useRef(null)
   const cursorDotRef = useRef(null)
+  const usedSrcs = useRef(new Set())
 
   const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)
   const BASE = import.meta.env.BASE_URL
@@ -51,8 +52,17 @@ export default function Home() {
   const startNewPhoto = useCallback((x, y) => {
     const pool = loadedPhotos.current
     if (!pool.length) return
-    const photo = pool[nextIdx.current % pool.length]
-    nextIdx.current++
+    // Find next unused photo
+    let photo = null
+    for (let i = 0; i < pool.length; i++) {
+      const candidate = pool[(nextIdx.current + i) % pool.length]
+      if (!usedSrcs.current.has(candidate.src)) {
+        photo = candidate
+        nextIdx.current = (nextIdx.current + i + 1) % pool.length
+        break
+      }
+    }
+    if (!photo) return // all photos used
     activePhoto.current = photo
     activeStart.current = { x, y }
     if (activeImgRef.current) {
@@ -85,6 +95,7 @@ export default function Home() {
     if (Math.sqrt(dx * dx + dy * dy) >= MIN_DISTANCE) {
       const p = activePhoto.current
       // Settle at the point where the change happens
+      usedSrcs.current.add(p.src)
       setSettled(s => [...s, {
         id: Date.now() + Math.random(),
         src: p.src, w: p.w, h: p.h, hotspot: p.hotspot, x, y,
@@ -121,8 +132,8 @@ export default function Home() {
       <div style={{
         position: 'fixed', inset: 0,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        opacity: ready ? 0 : 1, transition: 'opacity 1.2s ease',
-        pointerEvents: 'none', zIndex: 1000,
+        opacity: 1,
+        pointerEvents: 'none', zIndex: 0,
       }}>
         <p style={{
           fontFamily: '"Inter", sans-serif', fontWeight: 300,
