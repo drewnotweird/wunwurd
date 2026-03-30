@@ -26,6 +26,9 @@ jobs:
         working-directory: apps/portfolio/frontend
         run: npm run build
 
+      - name: Install lftp
+        run: sudo apt-get install -y lftp
+
       - name: Deploy to drewnotweird.com via FTP
         env:
           FTP_HOST: ${{ secrets.FTP_HOST }}
