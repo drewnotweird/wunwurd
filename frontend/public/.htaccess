@@ -1,6 +1,3 @@
-Options +FollowSymLinks
 RewriteEngine On
-RewriteCond %{HTTP_HOST} ^www\. [NC]
-RewriteRule ^ https://%{HTTP_HOST:4}%{REQUEST_URI} [R=301,L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule . /wunwurd/index.html [L]
