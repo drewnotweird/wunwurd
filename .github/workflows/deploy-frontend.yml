@@ -21,10 +21,11 @@ jobs:
         working-directory: frontend
         run: npm install
 
-      - name: Build
+      - name: Build for /wunwurd/ path (drewnotweird.com and drewnotweird.co.uk)
         working-directory: frontend
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_BASE_PATH: /wunwurd/
         run: npm run build
 
       - name: Deploy to drewnotweird.com via FTP
@@ -74,7 +75,61 @@ jobs:
           )
           EOF
 
-      - name: Deploy to drewnotweird.co.uk via FTP
+      - name: Deploy to drewnotweird.co.uk/wunwurd via FTP
+        env:
+          FTP_HOST_COUK: ${{ secrets.FTP_HOST_COUK }}
+          FTP_USER_COUK: ${{ secrets.FTP_USER_COUK }}
+          FTP_PASS_COUK: ${{ secrets.FTP_PASS_COUK }}
+        run: |
+          python3 - <<'EOF'
+          import ftplib, os
+
+          def ftp_upload(host, user, password, local_dir, remote_dir):
+              ftp = ftplib.FTP()
+              ftp.connect(host, 21, timeout=30)
+              ftp.login(user, password)
+              ftp.set_pasv(True)
+              print(f"Connected to {host}")
+
+              def ensure_dir(path):
+                  try:
+                      ftp.mkd(path)
+                  except ftplib.error_perm:
+                      pass
+
+              def upload_dir(local_path, remote_path):
+                  ensure_dir(remote_path)
+                  for item in sorted(os.listdir(local_path)):
+                      local_item = os.path.join(local_path, item)
+                      remote_item = f"{remote_path}/{item}"
+                      if os.path.isdir(local_item):
+                          upload_dir(local_item, remote_item)
+                      else:
+                          print(f"Uploading {remote_item}")
+                          with open(local_item, 'rb') as f:
+                              ftp.storbinary(f'STOR {remote_item}', f, blocksize=8192)
+
+              upload_dir(local_dir, remote_dir)
+              ftp.quit()
+              print("Done.")
+
+          ftp_upload(
+              os.environ['FTP_HOST_COUK'],
+              os.environ['FTP_USER_COUK'],
+              os.environ['FTP_PASS_COUK'],
+              'frontend/dist',
+              'htdocs/wunwurd',
+          )
+          EOF
+
+      - name: Build for / path (wunwurd.drewnotweird.co.uk subdomain)
+        working-directory: frontend
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_BASE_PATH: /
+        run: npm run build
+
+      - name: Deploy to wunwurd.drewnotweird.co.uk via FTP
         env:
           FTP_HOST_COUK: ${{ secrets.FTP_HOST_COUK }}
           FTP_USER_COUK: ${{ secrets.FTP_USER_COUK }}

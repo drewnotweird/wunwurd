@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/wunwurd/',
+  base: process.env.VITE_BASE_PATH || '/wunwurd/',
   server: {
     proxy: {
       '/api': {

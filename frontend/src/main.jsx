@@ -5,7 +5,7 @@ import App from './App'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <BrowserRouter basename="/wunwurd">
+  <BrowserRouter basename={import.meta.env.VITE_BASE_PATH || '/wunwurd'}>
     <App />
   </BrowserRouter>
 )
