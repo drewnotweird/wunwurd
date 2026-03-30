@@ -1,7 +1,13 @@
 const jwt = require('jsonwebtoken');
 
+function getToken(req) {
+  const auth = req.headers['authorization'];
+  if (auth && auth.startsWith('Bearer ')) return auth.slice(7);
+  return req.cookies?.token; // fallback for any old cookie sessions
+}
+
 function authRequired(req, res, next) {
-  const token = req.cookies.token;
+  const token = getToken(req);
   if (!token) return res.status(401).json({ error: 'Unauthorized' });
   try {
     req.user = jwt.verify(token, process.env.JWT_SECRET);
@@ -12,7 +18,7 @@ function authRequired(req, res, next) {
 }
 
 function authOptional(req, res, next) {
-  const token = req.cookies.token;
+  const token = getToken(req);
   if (token) {
     try {
       req.user = jwt.verify(token, process.env.JWT_SECRET);

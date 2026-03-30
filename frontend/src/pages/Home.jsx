@@ -27,7 +27,7 @@ export default function Home() {
     fetchingRef.current = true
     setLoadingMore(true)
     try {
-      const r = await apiFetch(`/api/movies/trending?page=${pageRef.current}`, { credentials: 'include' })
+      const r = await apiFetch(`/api/movies/trending?page=${pageRef.current}`, {})
       if (!r.ok) throw new Error()
       const data = await r.json()
       const results = Array.isArray(data) ? data : []
@@ -48,7 +48,7 @@ export default function Home() {
   // Initial load
   useEffect(() => {
     setLoading(true)
-    apiFetch('/api/movies/trending?page=1', { credentials: 'include' })
+    apiFetch('/api/movies/trending?page=1', {})
       .then(r => r.json())
       .then(data => {
         setMovies(Array.isArray(data) ? data : [])

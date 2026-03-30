@@ -26,7 +26,7 @@ export default function WordPage() {
       ? `/api/words/${encodeURIComponent(debouncedTerm)}`
       : `/api/movies/search?q=${encodeURIComponent(debouncedTerm)}`
     
-    apiFetch(endpoint, { credentials: 'include' })
+    apiFetch(endpoint, {})
       .then((r) => r.json())
       .then((data) => { setMovies(Array.isArray(data) ? data : []); setLoading(false) })
       .catch(() => setLoading(false))

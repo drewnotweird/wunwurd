@@ -63,7 +63,7 @@ export default function Navbar() {
   useEffect(() => {
     if (!debouncedQuery.trim()) { setResults([]); setLoading(false); return }
     setLoading(true)
-    apiFetch(`/api/movies/search?q=${encodeURIComponent(debouncedQuery)}`, { credentials: 'include' })
+    apiFetch(`/api/movies/search?q=${encodeURIComponent(debouncedQuery)}`, {})
       .then(r => r.json())
       .then(data => { setResults(Array.isArray(data) ? data.slice(0, 8) : []); setLoading(false) })
       .catch(() => setLoading(false))

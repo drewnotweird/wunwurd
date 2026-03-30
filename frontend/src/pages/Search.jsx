@@ -24,7 +24,7 @@ export default function Search() {
       : `/api/movies/search?q=${encodeURIComponent(debouncedQuery)}`
     
     apiFetch(endpoint, {
-      credentials: 'include',
+      
     })
       .then((r) => r.json())
       .then((data) => {

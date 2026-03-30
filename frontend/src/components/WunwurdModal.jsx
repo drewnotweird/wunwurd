@@ -42,7 +42,7 @@ export default function WunwurdModal({ tmdbId, existingWord, onClose, onSuccess 
       const r = await apiFetch(`/api/movies/${tmdbId}/wunwurds`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
+        
         body: JSON.stringify({ word: trimmed.toLowerCase() }),
       })
       const data = await r.json()

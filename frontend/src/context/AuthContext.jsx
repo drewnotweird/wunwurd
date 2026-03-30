@@ -8,9 +8,14 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    apiFetch('/api/auth/me', { credentials: 'include' })
+    if (!localStorage.getItem('token')) {
+      setLoading(false)
+      return
+    }
+    apiFetch('/api/auth/me')
       .then((r) => (r.ok ? r.json() : null))
       .then((u) => {
+        if (!u) localStorage.removeItem('token')
         setUser(u)
         setLoading(false)
       })
@@ -21,11 +26,11 @@ export function AuthProvider({ children }) {
     const r = await apiFetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
       body: JSON.stringify({ email, password }),
     })
     const data = await r.json()
     if (!r.ok) throw new Error(data.error)
+    localStorage.setItem('token', data.token)
     setUser(data)
     return data
   }
@@ -34,17 +39,17 @@ export function AuthProvider({ children }) {
     const r = await apiFetch('/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
       body: JSON.stringify({ username, email, password }),
     })
     const data = await r.json()
     if (!r.ok) throw new Error(data.error)
+    localStorage.setItem('token', data.token)
     setUser(data)
     return data
   }
 
   async function logout() {
-    await apiFetch('/api/auth/logout', { method: 'POST', credentials: 'include' })
+    localStorage.removeItem('token')
     setUser(null)
   }
 

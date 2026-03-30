@@ -33,7 +33,7 @@ router.post('/register', async (req, res) => {
       { expiresIn: '7d' }
     );
     res.cookie('token', token, COOKIE_OPTS);
-    res.json({ id: user.id, username: user.username, email: user.email });
+    res.json({ id: user.id, username: user.username, email: user.email, token });
     notify('New Wunwurd registration', `${username} (${email}) just registered.`);
   } catch (e) {
     if (e.code === 'P2002')
@@ -61,7 +61,7 @@ router.post('/login', async (req, res) => {
     { expiresIn: '7d' }
   );
   res.cookie('token', token, COOKIE_OPTS);
-  res.json({ id: user.id, username: user.username, email: user.email });
+  res.json({ id: user.id, username: user.username, email: user.email, token });
 });
 
 router.post('/logout', (req, res) => {

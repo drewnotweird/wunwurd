@@ -17,8 +17,8 @@ export default function MovieDetail() {
   useEffect(() => {
     setLoading(true)
     Promise.all([
-      apiFetch(`/api/movies/${tmdbId}`, { credentials: 'include' }).then((r) => r.json()),
-      apiFetch(`/api/movies/${tmdbId}/wunwurds`, { credentials: 'include' }).then((r) => r.json()),
+      apiFetch(`/api/movies/${tmdbId}`, {}).then((r) => r.json()),
+      apiFetch(`/api/movies/${tmdbId}/wunwurds`, {}).then((r) => r.json()),
     ])
       .then(([movieData, wData]) => {
         setMovie(movieData)
@@ -73,7 +73,7 @@ export default function MovieDetail() {
   async function handleDelete() {
     await apiFetch(`/api/movies/${tmdbId}/wunwurds`, {
       method: 'DELETE',
-      credentials: 'include',
+      
     })
     setWunwurds((prev) => {
       const updated = prev.words

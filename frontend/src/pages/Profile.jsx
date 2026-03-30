@@ -20,7 +20,7 @@ export default function Profile() {
       return
     }
     if (user) {
-      apiFetch('/api/profile', { credentials: 'include' })
+      apiFetch('/api/profile', {})
         .then((r) => r.json())
         .then((data) => {
           setProfile(data)
@@ -33,7 +33,7 @@ export default function Profile() {
   async function handleRemove(tmdbId) {
     await apiFetch(`/api/movies/${tmdbId}/wunwurds`, {
       method: 'DELETE',
-      credentials: 'include',
+      
     })
     setProfile((prev) => ({
       ...prev,

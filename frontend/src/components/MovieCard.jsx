@@ -19,7 +19,7 @@ export default function MovieCard({ movie, simple = false }) {
       if (!wordFetched) {
         setWordFetched(true)
         try {
-          const r = await apiFetch(`/api/movies/${tmdbId}/wunwurds`, { credentials: 'include' })
+          const r = await apiFetch(`/api/movies/${tmdbId}/wunwurds`, {})
           const data = await r.json()
           setTopWord(data.topWord || null)
         } catch {}
