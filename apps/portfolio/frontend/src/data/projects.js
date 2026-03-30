@@ -1,5 +1,5 @@
 export const projects = [
-  { slug: 'whiskyblender',  title: 'Whisky Blender',   cover: '/work/whiskyblender/whiskyblender-05.jpg',        ogImage: 'https://www.drewnotweird.co.uk/work/whiskyblender/whiskyblender-05.jpg' },
+  { slug: 'whiskyblender',  title: 'Whisky Blender',   cover: '/work/whiskyblender/whiskyblender-13.jpg',        ogImage: 'https://www.drewnotweird.co.uk/work/whiskyblender/whiskyblender-13.jpg' },
   { slug: 'royalcaribbean', title: 'Royal Caribbean',   cover: '/work/royalcaribbean/royalcaribbean04.jpg',        ogImage: 'https://www.drewnotweird.co.uk/work/royalcaribbean/royalcaribbean04.jpg' },
   { slug: 'airnewzealand',  title: 'Air New Zealand',   cover: '/work/airnewzealand/anzcabinviewer07.jpg',         ogImage: 'https://www.drewnotweird.co.uk/work/airnewzealand/anzcabinviewer07.jpg' },
   { slug: 'rumblender',     title: 'Rum Blender',       cover: '/work/rumblender/rumblenderjourney02.jpg',         ogImage: 'https://www.drewnotweird.co.uk/work/rumblender/rumblenderjourney02.jpg' },
