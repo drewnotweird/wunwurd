@@ -5,7 +5,7 @@ async function notify(subject, text) {
   const resend = new Resend(process.env.RESEND_API_KEY);
   try {
     await resend.emails.send({
-      from: 'Wunwurd <notifications@wunwurd.com>',
+      from: 'Wunwurd <onboarding@resend.dev>',
       to: process.env.NOTIFY_EMAIL,
       subject,
       text,
