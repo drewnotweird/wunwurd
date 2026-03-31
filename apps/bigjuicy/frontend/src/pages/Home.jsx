@@ -111,8 +111,12 @@ export default function Home() {
     const shuffled = [...images].sort(() => Math.random() - 0.5)
     let idx = 0
 
+    const ENTRY_POINTS = [0.2, 0.4, 0.6, 0.8]
+    let entryIdx = 0
+
     const autoTimer = setInterval(() => {
-      const x = BODY_W / 2 + Math.random() * (W - BODY_W)
+      const x = ENTRY_POINTS[entryIdx % ENTRY_POINTS.length] * window.innerWidth
+      entryIdx++
       spawnPhoto(shuffled[idx % shuffled.length].src, x)
       idx++
     }, 350)
@@ -120,7 +124,7 @@ export default function Home() {
     // Click / tap to drop a random one
     const onPointer = (e) => {
       const clientX = e.touches ? e.touches[0].clientX : e.clientX
-      const x = Math.max(BODY_W / 2, Math.min(W - BODY_W / 2, clientX))
+      const x = Math.max(BODY_W / 2, Math.min(window.innerWidth - BODY_W / 2, clientX))
       const src = shuffled[Math.floor(Math.random() * shuffled.length)].src
       spawnPhoto(src, x)
     }
