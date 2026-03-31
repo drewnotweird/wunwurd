@@ -7,6 +7,11 @@ on:
       - 'apps/portfolio/frontend/**'
       - '.github/workflows/deploy-portfolio.yml'
   workflow_dispatch:
+    inputs:
+      upload_images:
+        description: 'Upload images (slow, only needed when adding new image folders)'
+        required: false
+        default: 'false'
 
 jobs:
   deploy:
@@ -31,13 +36,15 @@ jobs:
           FTP_HOST: ${{ secrets.FTP_HOST }}
           FTP_USER: ${{ secrets.FTP_USER }}
           FTP_PASS: ${{ secrets.FTP_PASS }}
+          UPLOAD_IMAGES: ${{ github.event.inputs.upload_images || 'false' }}
         run: |
           python3 - <<'EOF'
           import ftplib, os, time
 
-          # Only upload these file types — images are already on the server
-          UPLOAD_EXTENSIONS = {'.html', '.js', '.css', '.json', '.txt', '.ico', '.png', '.svg', '.htaccess', ''}
-          SKIP_EXTENSIONS = {'.jpg', '.jpeg', '.gif', '.webp', '.psd'}
+          UPLOAD_IMAGES = os.environ.get('UPLOAD_IMAGES') == 'true'
+          SKIP_EXTENSIONS = set() if UPLOAD_IMAGES else {'.jpg', '.jpeg', '.gif', '.webp', '.psd'}
+          # Always upload images in these folders (new folders never on server yet)
+          ALWAYS_UPLOAD_DIRS = {'wunwurd'}
 
           # Old files from the previous static site to delete
           OLD_FILES = [
@@ -91,16 +98,18 @@ jobs:
                           ftp = make_ftp(host, user, password)
                   print(f"  GAVE UP on {remote_item}")
 
-              def upload_dir(local_path, remote_path):
+              def upload_dir(local_path, remote_path, force=False):
                   ensure_dir(remote_path)
+                  folder_name = os.path.basename(local_path)
+                  force_this = force or folder_name in ALWAYS_UPLOAD_DIRS
                   for item in sorted(os.listdir(local_path)):
                       local_item = os.path.join(local_path, item)
                       remote_item = f"{remote_path}/{item}"
                       if os.path.isdir(local_item):
-                          upload_dir(local_item, remote_item)
+                          upload_dir(local_item, remote_item, force=force_this)
                       else:
                           ext = os.path.splitext(item)[1].lower()
-                          if ext in SKIP_EXTENSIONS:
+                          if ext in SKIP_EXTENSIONS and not force_this:
                               continue
                           print(f"Uploading {remote_item}")
                           upload_file(local_item, remote_item)
@@ -123,11 +132,14 @@ jobs:
           FTP_HOST_COUK: ${{ secrets.FTP_HOST_COUK }}
           FTP_USER_COUK: ${{ secrets.FTP_USER_COUK }}
           FTP_PASS_COUK: ${{ secrets.FTP_PASS_COUK }}
+          UPLOAD_IMAGES: ${{ github.event.inputs.upload_images || 'false' }}
         run: |
           python3 - <<'EOF'
           import ftplib, os, time
 
-          SKIP_EXTENSIONS = {'.jpg', '.jpeg', '.gif', '.webp', '.psd'}
+          UPLOAD_IMAGES = os.environ.get('UPLOAD_IMAGES') == 'true'
+          SKIP_EXTENSIONS = set() if UPLOAD_IMAGES else {'.jpg', '.jpeg', '.gif', '.webp', '.psd'}
+          ALWAYS_UPLOAD_DIRS = {'wunwurd'}
 
           OLD_FILES = [
               'htdocs/css/styles.css',
@@ -179,16 +191,18 @@ jobs:
                           ftp = make_ftp(host, user, password)
                   print(f"  GAVE UP on {remote_item}")
 
-              def upload_dir(local_path, remote_path):
+              def upload_dir(local_path, remote_path, force=False):
                   ensure_dir(remote_path)
+                  folder_name = os.path.basename(local_path)
+                  force_this = force or folder_name in ALWAYS_UPLOAD_DIRS
                   for item in sorted(os.listdir(local_path)):
                       local_item = os.path.join(local_path, item)
                       remote_item = f"{remote_path}/{item}"
                       if os.path.isdir(local_item):
-                          upload_dir(local_item, remote_item)
+                          upload_dir(local_item, remote_item, force=force_this)
                       else:
                           ext = os.path.splitext(item)[1].lower()
-                          if ext in SKIP_EXTENSIONS:
+                          if ext in SKIP_EXTENSIONS and not force_this:
                               continue
                           print(f"Uploading {remote_item}")
                           upload_file(local_item, remote_item)
