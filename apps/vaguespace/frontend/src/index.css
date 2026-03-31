@@ -32,7 +32,7 @@ html, body, #root {
 .track-section {
   position: relative;
   background: var(--base);
-  cursor: pointer;
+  cursor: inherit;
   overflow: hidden;
   filter: brightness(0.45) saturate(0.5);
   transition: filter 0.5s ease;
