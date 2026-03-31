@@ -25,12 +25,18 @@ export default function Home() {
     const engine = Engine.create({ gravity: { y: 2 } })
     const runner = Runner.create()
 
-    // Static walls + floor
-    World.add(engine.world, [
-      Bodies.rectangle(W / 2, H + 25, W * 2, 50, { isStatic: true }),
-      Bodies.rectangle(-25,   H / 2, 50, H * 3,  { isStatic: true }),
-      Bodies.rectangle(W + 25, H / 2, 50, H * 3, { isStatic: true }),
-    ])
+    // Collision categories per layer. Walls collide with all.
+    const CAT_WALL = 0x0001
+    const CAT_LAYER = [0x0002, 0x0004, 0x0008]
+
+    // Static walls + floor (3 copies, one per layer)
+    CAT_LAYER.forEach(cat => {
+      World.add(engine.world, [
+        Bodies.rectangle(W / 2, H + 25, W * 2, 50, { isStatic: true, collisionFilter: { category: CAT_WALL, mask: cat } }),
+        Bodies.rectangle(-25,   H / 2, 50, H * 3,  { isStatic: true, collisionFilter: { category: CAT_WALL, mask: cat } }),
+        Bodies.rectangle(W + 25, H / 2, 50, H * 3, { isStatic: true, collisionFilter: { category: CAT_WALL, mask: cat } }),
+      ])
+    })
 
     Runner.run(runner, engine)
 
@@ -47,10 +53,13 @@ export default function Home() {
         frictionStatic: 0.9,
         frictionAir: 0.015,
         angle: (Math.random() - 0.5) * 0.5,
+        collisionFilter: { category: cat, mask: CAT_WALL | cat },
       })
       Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.08)
 
-      const zIndex = LAYERS[spawnCount % LAYERS.length]
+      const layerIdx = spawnCount % LAYERS.length
+      const zIndex = LAYERS[layerIdx]
+      const cat = CAT_LAYER[layerIdx]
       spawnCount++
 
       // Polaroid wrapper
