@@ -198,7 +198,7 @@ export default function Home() {
       ref={containerRef}
       style={{
         width: '100vw', height: '100vh',
-        overflow: 'hidden', background: '#f0ece4',
+        overflow: 'hidden', background: '#ffc72c',
         position: 'fixed', inset: 0,
       }}
     >
