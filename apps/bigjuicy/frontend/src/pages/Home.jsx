@@ -35,6 +35,9 @@ export default function Home() {
 
     const pairs = []
     const BASE = import.meta.env.BASE_URL
+    // 3 layers: back=10, mid=20, front=30
+    const LAYERS = [10, 20, 30]
+    let spawnCount = 0
 
     const spawnPhoto = (src, x) => {
       const body = Bodies.rectangle(x, -BODY_H, BODY_W, BODY_H, {
@@ -45,6 +48,9 @@ export default function Home() {
         angle: (Math.random() - 0.5) * 0.5,
       })
       Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.08)
+
+      const zIndex = LAYERS[spawnCount % LAYERS.length]
+      spawnCount++
 
       // Polaroid wrapper
       const wrapper = document.createElement('div')
@@ -60,7 +66,7 @@ export default function Home() {
         pointer-events: none;
         user-select: none;
         will-change: transform;
-        z-index: ${(pairs.length % 16) + 1};
+        z-index: ${zIndex};
         transition: opacity 1s ease;
       `
 
@@ -91,14 +97,14 @@ export default function Home() {
       pairs.push(pair)
     }
 
-    // Shuffle once and auto-drop them all
+    // Shuffle once, loop infinitely through the list
     const shuffled = [...images].sort(() => Math.random() - 0.5)
     let idx = 0
 
     const autoTimer = setInterval(() => {
-      if (idx >= shuffled.length) { clearInterval(autoTimer); return }
       const x = BODY_W / 2 + Math.random() * (W - BODY_W)
-      spawnPhoto(shuffled[idx++].src, x)
+      spawnPhoto(shuffled[idx % shuffled.length].src, x)
+      idx++
     }, 350)
 
     // Click / tap to drop a random one
