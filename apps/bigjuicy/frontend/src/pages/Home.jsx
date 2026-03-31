@@ -3,10 +3,11 @@ import Matter from 'matter-js'
 import { images } from '../data/images.js'
 
 // Polaroid dimensions
-const PHOTO_W = 160
-const PHOTO_H = 160
-const BORDER = 10
-const BOTTOM_LABEL = 36
+const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)
+const PHOTO_W = isMobile ? 110 : 160
+const PHOTO_H = isMobile ? 110 : 160
+const BORDER = isMobile ? 7 : 10
+const BOTTOM_LABEL = isMobile ? 26 : 36
 const BODY_W = PHOTO_W + BORDER * 2
 const BODY_H = PHOTO_H + BORDER + BOTTOM_LABEL
 
