@@ -121,6 +121,11 @@ section.image {
   display: block;
   padding: 0;
   font-size: 0;
+  margin-top: -14px;
+}
+
+section.image img {
+  margin-top: 14px;
 }
 
 img.half-width:nth-child(odd) {
@@ -138,12 +143,7 @@ img.half-width:nth-child(even) {
 img.full-width {
   width: 100%;
   display: block;
-  margin-top: 14px;
   vertical-align: top;
-}
-
-img.full-width:first-child {
-  margin-top: 0;
 }
 
 img.third-width {
