@@ -39,7 +39,7 @@ export default function ProjectLayout({ slug, title, subtitle, tags, credit, chi
 
   return (
     <>
-      <a className="back" onClick={() => navigate(-1)} href="#back" aria-label="Back">Back</a>
+      <a className="back" onClick={e => { e.preventDefault(); if (window.history.length > 1) navigate(-1); else navigate('/') }} href="/" aria-label="Back">Back</a>
       <main>
         <header>
           <h1>{title}</h1>
