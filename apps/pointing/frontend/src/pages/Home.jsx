@@ -62,7 +62,13 @@ export default function Home() {
         break
       }
     }
-    if (!photo) return // all photos used
+    if (!photo) {
+      // All photos used — reset and start the loop again
+      usedSrcs.current.clear()
+      nextIdx.current = 0
+      photo = pool[0]
+      nextIdx.current = 1
+    }
     activePhoto.current = photo
     activeStart.current = { x, y }
     if (activeImgRef.current) {
