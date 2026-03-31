@@ -15,7 +15,28 @@ model User {
   createdAt    DateTime  @default(now())
   boards       Board[]
   routines     Routine[]
+  symbols      UserSymbol[]
 }
+
+// A symbol in the user's personal library.
+// Can be a Mulberry symbol with a custom label, an uploaded image, or a fully custom symbol.
+model UserSymbol {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  label       String                        // what's shown under the image
+  mulberryId  String?                       // e.g. "eat" — references a Mulberry SVG filename
+  imageUrl    String?                       // for uploaded photos or custom images
+  bgColor     String?                       // for text-only / emoji custom symbols
+  emoji       String?                       // optional emoji used instead of image
+  useCount    Int      @default(0)          // for "most used" sorting
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// A slot in a board or routine — references either a UserSymbol or a raw Mulberry symbol
+// Stored as JSON within boards/routines for simplicity, but typed here for reference:
+// { symbolId?: number, mulberryId?: string, label: string, imageUrl?: string }
 
 // A saved Now & Next or First & Then board
 model Board {
@@ -23,7 +44,7 @@ model Board {
   userId    Int
   name      String
   mode      String   @default("now-and-next") // "now-and-next" | "first-and-then"
-  items     Json     // array of { symbolId, label }
+  items     Json     // array of slot objects (see above)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -34,7 +55,7 @@ model Routine {
   id        Int      @id @default(autoincrement())
   userId    Int
   name      String
-  steps     Json     // array of { symbolId, label }
+  steps     Json     // array of slot objects (see above)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)

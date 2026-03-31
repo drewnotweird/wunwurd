@@ -6,6 +6,7 @@ const { execSync } = require('child_process');
 const authRoutes = require('./routes/auth');
 const boardsRoutes = require('./routes/boards');
 const routinesRoutes = require('./routes/routines');
+const symbolsRoutes = require('./routes/symbols');
 
 const app = express();
 const PORT = process.env.PORT || 3002;
@@ -48,6 +49,7 @@ app.get('/health', async (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/boards', boardsRoutes);
 app.use('/api/routines', routinesRoutes);
+app.use('/api/symbols', symbolsRoutes);
 
 app.listen(PORT, () => {
   console.log(`Now & Next backend running on http://localhost:${PORT}`);

@@ -40,6 +40,38 @@ A vertical sequence of steps for the day (e.g. wake up → breakfast → get dre
 
 ---
 
+## Symbol picker — the most important UI
+
+The speed and ease of building a board depends almost entirely on how good the symbol picker is. This needs to feel effortless. A parent shouldn't have to scroll through 3,000 symbols to find "brush teeth".
+
+### Discovery layers (in order of likely use)
+
+1. **Suggestions** — context-aware. When a slot is empty, show the most commonly used symbols globally (and eventually, by this user). "Eat", "sleep", "school", "play" etc. should be one tap away with zero searching.
+
+2. **Most used** — the user's own history. Surfaces their personal vocabulary first. Becomes more useful over time.
+
+3. **Categories** — browse by group. Not too many top-level categories (6–8 max). e.g. Activities · Places · People · Food & Drink · Feelings · Time · Self-care · School
+   - Each category shows a grid, not a list
+   - Sub-categories only if needed (keep it flat where possible)
+
+4. **Search** — fast, forgiving. Should match on label, synonyms, and common misspellings. e.g. "teeth" finds "brush teeth". "wee" finds "toilet". Returns results as you type (no submit button).
+
+### Symbol customisation
+
+A huge part of the value is being able to make it personal:
+
+- **Relabel any symbol** — use the Mulberry pictogram for "school" but call it "St. Joseph's". The image stays, the text changes.
+- **Upload your own image** — use a photo of their actual classroom, their actual plate of food. Real photos can be more effective for some children than pictograms.
+- **Custom symbols** — type a label, pick a background colour, choose an emoji or icon. For things the symbol library doesn't have.
+- **Symbol variants** — some concepts have multiple pictograms. Let the user pick which one resonates.
+
+Custom and uploaded symbols should be saved to the user's personal library and show up in their "most used" / suggestions.
+
+### Symbol card anatomy
+Each symbol card = image/pictogram + label underneath. The label is always editable. The image can be replaced. Both are independently swappable.
+
+---
+
 ## Pictograms
 
 ### Source: Mulberry Symbols
@@ -103,10 +135,17 @@ Recommendation: start with CSS-styled Mulberry SVGs for Phase 1. Define the visu
 - Labels on pictograms: bold, short, sentence case
 
 ### Components needed
-- PictogramCard — image + label, tappable, "done" state
-- Board — 2-slot (Now/Next) or linear sequence (Today's Plan)
-- SymbolPicker — searchable grid of pictograms
-- Slot — placeholder when empty, drag-and-drop target
+- **SymbolCard** — image/pictogram + editable label, tappable, "done" state
+- **Slot** — empty state with "+" tap to open picker; filled state shows SymbolCard
+- **Board** — 2-slot (Now/Next) or linear sequence (Today's Plan)
+- **SymbolPicker** (the key component) — bottom sheet / modal with:
+  - Suggestion strip at the top (most common / recently used)
+  - Category tabs (icons, not just text)
+  - Search bar (always visible, results update as you type)
+  - Grid of results (large touch targets, label underneath)
+  - "Make your own" option at the bottom
+- **SymbolEditor** — label input + image replace/upload + colour picker (for custom symbols)
+- **UserLibrary** — saved custom and favourite symbols, shown first in picker
 
 ---
 
