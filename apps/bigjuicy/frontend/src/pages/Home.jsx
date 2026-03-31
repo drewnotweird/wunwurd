@@ -1,35 +1,55 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Matter from 'matter-js'
 import { images } from '../data/images.js'
 
-// Polaroid dimensions based on current viewport width
+const BATCH = 30
+
 function getSizes() {
   const vw = window.innerWidth
   const photoW = Math.round(Math.max(80, Math.min(160, vw * 0.14)))
   const photoH = photoW
   const border = Math.round(photoW * 0.06)
   const bottomLabel = Math.round(photoW * 0.22)
-  return {
-    photoW, photoH, border, bottomLabel,
-    bodyW: photoW + border * 2,
-    bodyH: photoH + border + bottomLabel,
-  }
+  return { photoW, photoH, border, bottomLabel, bodyW: photoW + border * 2, bodyH: photoH + border + bottomLabel }
 }
 
-// Drop interval: 200ms at 1400px+, 600ms at 400px, linear in between
 function getInterval() {
   const vw = window.innerWidth
   return Math.round(600 - (vw - 400) / 1000 * 400)
 }
 
+// Preload a list of image srcs, returns a promise that resolves when all are done
+function preloadBatch(srcs, base) {
+  return Promise.all(srcs.map(src => new Promise(resolve => {
+    const img = new Image()
+    img.onload = resolve
+    img.onerror = resolve
+    img.src = `${base}photos/${src}`
+  })))
+}
+
 export default function Home() {
   const containerRef = useRef(null)
+  const [ready, setReady] = useState(false)
+
+  // Preload first batch, then signal ready
+  const BASE = import.meta.env.BASE_URL
+  const shuffledRef = useRef([...images].sort(() => Math.random() - 0.5))
 
   useEffect(() => {
+    const firstBatch = shuffledRef.current.slice(0, BATCH).map(i => i.src)
+    preloadBatch(firstBatch, BASE).then(() => setReady(true))
+    // Preload the rest in the background
+    const restBatch = shuffledRef.current.slice(BATCH).map(i => i.src)
+    preloadBatch(restBatch, BASE)
+  }, [])
+
+  useEffect(() => {
+    if (!ready) return
     const container = containerRef.current
     if (!container) return
 
-    const { Engine, Runner, Bodies, Body, World, Composite, Mouse, MouseConstraint } = Matter
+    const { Engine, Runner, Bodies, Body, World, Mouse, MouseConstraint } = Matter
 
     const engine = Engine.create({ gravity: { y: 0.7 } })
     const runner = Runner.create()
@@ -37,41 +57,25 @@ export default function Home() {
     const CAT_WALL = 0x0001
     const CAT_LAYER = [0x0002, 0x0004, 0x0008]
 
-    // Keep refs to floor/wall bodies so we can reposition on resize
-    const floors = []
-    const leftWalls = []
-    const rightWalls = []
-
+    const floors = [], leftWalls = [], rightWalls = []
     CAT_LAYER.forEach(cat => {
-      const floor = Bodies.rectangle(
-        window.innerWidth / 2, window.innerHeight + 25, window.innerWidth * 4, 50,
-        { isStatic: true, collisionFilter: { category: CAT_WALL, mask: cat } }
-      )
-      const leftWall = Bodies.rectangle(
-        -25, window.innerHeight / 2, 50, window.innerHeight * 3,
-        { isStatic: true, collisionFilter: { category: CAT_WALL, mask: cat } }
-      )
-      const rightWall = Bodies.rectangle(
-        window.innerWidth + 25, window.innerHeight / 2, 50, window.innerHeight * 3,
-        { isStatic: true, collisionFilter: { category: CAT_WALL, mask: cat } }
-      )
-      floors.push(floor)
-      leftWalls.push(leftWall)
-      rightWalls.push(rightWall)
+      const floor = Bodies.rectangle(window.innerWidth / 2, window.innerHeight + 25, window.innerWidth * 4, 50, { isStatic: true, collisionFilter: { category: CAT_WALL, mask: cat } })
+      const leftWall = Bodies.rectangle(-25, window.innerHeight / 2, 50, window.innerHeight * 3, { isStatic: true, collisionFilter: { category: CAT_WALL, mask: cat } })
+      const rightWall = Bodies.rectangle(window.innerWidth + 25, window.innerHeight / 2, 50, window.innerHeight * 3, { isStatic: true, collisionFilter: { category: CAT_WALL, mask: cat } })
+      floors.push(floor); leftWalls.push(leftWall); rightWalls.push(rightWall)
       World.add(engine.world, [floor, leftWall, rightWall])
     })
 
     Runner.run(runner, engine)
 
-    // Mouse / touch drag
     const mouse = Mouse.create(container)
-    const mouseConstraint = MouseConstraint.create(engine, {
-      mouse,
-      constraint: { stiffness: 0.2, render: { visible: false } },
-    })
+    const mouseConstraint = MouseConstraint.create(engine, { mouse, constraint: { stiffness: 0.2, render: { visible: false } } })
     World.add(engine.world, mouseConstraint)
 
-    // Override body selection: prefer the visually topmost (highest z-index) body at the click point
+    const pairs = []
+    const LAYERS = [10, 20, 30]
+    let spawnCount = 0
+
     Matter.Events.on(mouseConstraint, 'mousedown', () => {
       const pos = mouse.position
       const hits = Matter.Query.point(pairs.map(p => p.body), pos)
@@ -84,30 +88,19 @@ export default function Home() {
       if (top !== mouseConstraint.body) {
         mouseConstraint.body = top
         mouseConstraint.constraint.bodyB = top
-        mouseConstraint.constraint.pointB = {
-          x: pos.x - top.position.x,
-          y: pos.y - top.position.y,
-        }
+        mouseConstraint.constraint.pointB = { x: pos.x - top.position.x, y: pos.y - top.position.y }
       }
     })
 
-    const pairs = []
-    const BASE = import.meta.env.BASE_URL
-    const LAYERS = [10, 20, 30]
-    let spawnCount = 0
-
     const spawnPhoto = (src, x) => {
-      const { photoW, photoH, border, bottomLabel, bodyW, bodyH } = getSizes()
+      const { border, bottomLabel, bodyW, bodyH } = getSizes()
       const layerIdx = spawnCount % LAYERS.length
       const zIndex = LAYERS[layerIdx]
       const cat = CAT_LAYER[layerIdx]
       spawnCount++
 
       const body = Bodies.rectangle(x, -bodyH, bodyW, bodyH, {
-        restitution: 0.05,
-        friction: 0.8,
-        frictionStatic: 0.9,
-        frictionAir: 0.015,
+        restitution: 0.05, friction: 0.8, frictionStatic: 0.9, frictionAir: 0.015,
         angle: (Math.random() - 0.5) * 0.5,
         collisionFilter: { category: cat, mask: CAT_WALL | cat },
       })
@@ -115,21 +108,23 @@ export default function Home() {
 
       const wrapper = document.createElement('div')
       wrapper.style.cssText = `
-        position: fixed;
-        top: 0; left: 0;
-        width: ${bodyW}px;
-        height: ${bodyH}px;
+        position: fixed; top: 0; left: 0;
+        width: ${bodyW}px; height: ${bodyH}px;
         background: #fff;
         padding: ${border}px ${border}px ${bottomLabel}px ${border}px;
         box-sizing: border-box;
         box-shadow: 2px 4px 18px rgba(0,0,0,0.28);
-        user-select: none;
-        will-change: transform;
-        z-index: ${zIndex};
-        transition: opacity 1s ease;
+        user-select: none; will-change: transform;
+        z-index: ${zIndex}; transition: opacity 1s ease;
       `
-      const pair = { body, el: wrapper, bodyW, bodyH, zIndex }
+      const img = document.createElement('img')
+      img.src = `${BASE}photos/${src}`
+      img.draggable = false
+      img.style.cssText = `width: 100%; height: 100%; object-fit: cover; display: block;`
+      wrapper.appendChild(img)
+      container.appendChild(wrapper)
 
+      const pair = { body, el: wrapper, bodyW, bodyH, zIndex }
       setTimeout(() => {
         wrapper.style.opacity = '0'
         setTimeout(() => {
@@ -140,34 +135,19 @@ export default function Home() {
         }, 1000)
       }, 10000)
 
-      const img = document.createElement('img')
-      img.draggable = false
-      img.style.cssText = `width: 100%; height: 100%; object-fit: cover; display: block;`
-      wrapper.appendChild(img)
-      container.appendChild(wrapper)
-
-      // Hold the body static until the image is loaded, then release
-      Body.setStatic(body, true)
       World.add(engine.world, body)
       pairs.push(pair)
-
-      img.onload = () => Body.setStatic(body, false)
-      img.onerror = () => Body.setStatic(body, false)
-      img.src = `${BASE}photos/${src}`
     }
 
-    // Update floor/wall positions on resize
     const onResize = () => {
-      const W = window.innerWidth
-      const H = window.innerHeight
+      const W = window.innerWidth, H = window.innerHeight
       floors.forEach(f => Body.setPosition(f, { x: W / 2, y: H + 25 }))
       leftWalls.forEach(w => Body.setPosition(w, { x: -25, y: H / 2 }))
       rightWalls.forEach(w => Body.setPosition(w, { x: W + 25, y: H / 2 }))
     }
     window.addEventListener('resize', onResize)
 
-    // Shuffle once, loop infinitely
-    const shuffled = [...images].sort(() => Math.random() - 0.5)
+    const shuffled = shuffledRef.current
     let idx = 0
     const ENTRY_POINTS = [0.2, 0.4, 0.6, 0.8]
     let entryIdx = 0
@@ -184,19 +164,16 @@ export default function Home() {
     }
     scheduleNext()
 
-    // Click / tap to drop (but not when dragging a card)
     const onPointer = (e) => {
       if (mouseConstraint.body) return
       const clientX = e.touches ? e.touches[0].clientX : e.clientX
       const { bodyW } = getSizes()
       const x = Math.max(bodyW / 2, Math.min(window.innerWidth - bodyW / 2, clientX))
-      const src = shuffled[Math.floor(Math.random() * shuffled.length)].src
-      spawnPhoto(src, x)
+      spawnPhoto(shuffled[Math.floor(Math.random() * shuffled.length)].src, x)
     }
     window.addEventListener('click', onPointer)
     window.addEventListener('touchstart', onPointer, { passive: true })
 
-    // Animation loop
     let rafId
     const loop = () => {
       pairs.forEach(({ body, el, bodyW, bodyH }) => {
@@ -216,16 +193,12 @@ export default function Home() {
       Runner.stop(runner)
       pairs.forEach(({ el }) => el.remove())
     }
-  }, [])
+  }, [ready])
 
   return (
     <div
       ref={containerRef}
-      style={{
-        width: '100vw', height: '100vh',
-        overflow: 'hidden', background: '#ffc72c',
-        position: 'fixed', inset: 0,
-      }}
+      style={{ width: '100vw', height: '100vh', overflow: 'hidden', background: '#ffc72c', position: 'fixed', inset: 0 }}
     >
       <div style={{
         position: 'fixed', inset: 0,
@@ -243,21 +216,18 @@ export default function Home() {
           lineHeight: 1,
           WebkitTextStroke: '6px white',
           paintOrder: 'stroke fill',
+          animation: ready ? 'none' : 'throb 1.8s ease-in-out infinite',
         }}>
           BIG JUICY
         </h1>
       </div>
 
-      {!images.length && (
-        <div style={{
-          position: 'fixed', inset: 0,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontFamily: 'sans-serif', color: '#999', fontSize: '1rem',
-          pointerEvents: 'none',
-        }}>
-          Add photos to public/photos/ and list them in src/data/images.js
-        </div>
-      )}
+      <style>{`
+        @keyframes throb {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.35; }
+        }
+      `}</style>
     </div>
   )
 }
