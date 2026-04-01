@@ -1,0 +1,38 @@
+/* Full-screen layout */
+.home {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  background: var(--base-color, #0d0d1a);
+}
+
+/* Track info overlay */
+.track-info {
+  position: fixed;
+  top: 2rem;
+  left: 2rem;
+  color: white;
+  z-index: 50;
+  max-width: 40%;
+}
+
+.track-info h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 300;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+  .track-info {
+    top: 1rem;
+    left: 1rem;
+    max-width: 70%;
+  }
+
+  .track-info h2 {
+    font-size: 1.1rem;
+  }
+}
