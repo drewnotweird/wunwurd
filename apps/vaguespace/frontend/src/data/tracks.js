@@ -1,3 +1,7 @@
+// sparkColors palettes — named after the solarstorm originals
+const malevolentIllusion = ['#c06995','#de77c7','#df86df','#d998ee','#ceadf4','#c6bff9']
+const sunnyRainbow       = ['#fbe555','#fb9224','#f45905','#be8abf','#ffeed0','#feff89']
+
 export const TRACKS = [
   {
     id: 0,
@@ -5,13 +9,9 @@ export const TRACKS = [
     previewUrl: 'https://p.scdn.co/mp3-preview/c46e9a392cac1af90464dfcfd58a13879888ca88',
     accentColor: '#4a6fa5',
     scene: {
-      bg: '#02030f',
-      planet: '#1a2d50',
-      glow: '#6a9fd8',
-      sparks: ['#4a6fa5', '#6a9fd8', '#9cc5f0', '#2a4f85'],
-      distortBase: 0.2,
-      distortAmp: 1.8,
-      distortSpeed: 1.5,
+      planetBg: '#0d1533',
+      planetFg: '#4a6fa5',
+      sparkColors: ['#4a6fa5','#6a9fd8','#9cc5f0','#2a4f85','#c6bff9'],
     },
   },
   {
@@ -20,13 +20,9 @@ export const TRACKS = [
     previewUrl: 'https://p.scdn.co/mp3-preview/af5ad413ff35444643027c0de62618c75f5ab6bf',
     accentColor: '#8b3a3a',
     scene: {
-      bg: '#0f0202',
-      planet: '#3d1010',
-      glow: '#cc5050',
-      sparks: ['#8b3a3a', '#cc5050', '#e87070', '#5a1a1a'],
-      distortBase: 0.55,
-      distortAmp: 2.2,
-      distortSpeed: 4.5,
+      planetBg: '#3d1010',
+      planetFg: '#cc5050',
+      sparkColors: ['#8b3a3a','#cc5050','#e87070','#f45905','#fbe555'],
     },
   },
   {
@@ -35,13 +31,9 @@ export const TRACKS = [
     previewUrl: 'https://p.scdn.co/mp3-preview/a0dffb87bcd6872e74d3e4cf44abf62423a64c3f',
     accentColor: '#4a8b5a',
     scene: {
-      bg: '#020f04',
-      planet: '#1a3d22',
-      glow: '#6abf7a',
-      sparks: ['#4a8b5a', '#6abf7a', '#aaee88', '#2a5a38'],
-      distortBase: 0.1,
-      distortAmp: 3.0,
-      distortSpeed: 3.0,
+      planetBg: '#0d2e15',
+      planetFg: '#6abf7a',
+      sparkColors: ['#4a8b5a','#6abf7a','#aaee88','#feff89','#ffeed0'],
     },
   },
   {
@@ -50,13 +42,9 @@ export const TRACKS = [
     previewUrl: 'https://p.scdn.co/mp3-preview/d7388e424828a0482b0fa4e88e02bf21aa5006f3',
     accentColor: '#aaaaaa',
     scene: {
-      bg: '#080808',
-      planet: '#303030',
-      glow: '#d0d0d0',
-      sparks: ['#aaaaaa', '#d0d0d0', '#ffffff', '#707070'],
-      distortBase: 0.05,
-      distortAmp: 1.0,
-      distortSpeed: 0.8,
+      planetBg: '#1a1a1a',
+      planetFg: '#d0d0d0',
+      sparkColors: malevolentIllusion,
     },
   },
   {
@@ -65,13 +53,9 @@ export const TRACKS = [
     previewUrl: 'https://p.scdn.co/mp3-preview/110c31e8eedddcdd0fd64c52a8872977f7b021a3',
     accentColor: '#c07a2a',
     scene: {
-      bg: '#0e0800',
-      planet: '#3d2208',
-      glow: '#e09040',
-      sparks: ['#c07a2a', '#e09040', '#f5b860', '#805010'],
-      distortBase: 0.3,
-      distortAmp: 1.8,
-      distortSpeed: 2.5,
+      planetBg: '#3d1f08',
+      planetFg: '#e09040',
+      sparkColors: sunnyRainbow,
     },
   },
   {
@@ -80,13 +64,9 @@ export const TRACKS = [
     previewUrl: 'https://p.scdn.co/mp3-preview/04f6e8750a0dfa4d43e7e7070e1225933cb9299b',
     accentColor: '#7a6abf',
     scene: {
-      bg: '#04020f',
-      planet: '#1e1050',
-      glow: '#a090f0',
-      sparks: ['#7a6abf', '#a090f0', '#cc88ff', '#4a3a9f', '#ff80cc'],
-      distortBase: 0.5,
-      distortAmp: 2.0,
-      distortSpeed: 2.0,
+      planetBg: '#600935',
+      planetFg: '#de77c7',
+      sparkColors: malevolentIllusion,
     },
   },
 ]

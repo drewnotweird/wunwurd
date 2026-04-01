@@ -4,12 +4,12 @@ import { useAudioPlayer } from '../hooks/useAudioPlayer.js'
 
 export default function Home() {
   const { activeIndex, toggle, getAudioData } = useAudioPlayer()
-  const config = TRACKS[activeIndex ?? 0].scene
+  const activeTrack = TRACKS[activeIndex ?? 0]
 
   return (
-    <div style={{ position: 'relative', width: '100vw', height: '100dvh', background: '#000', overflow: 'hidden' }}>
+    <div style={{ position: 'relative', width: '100vw', height: '100dvh', background: '#020207', overflow: 'hidden' }}>
       <SolarScene
-        config={config}
+        config={activeTrack.scene}
         getAudioData={activeIndex !== null ? getAudioData : null}
       />
 
