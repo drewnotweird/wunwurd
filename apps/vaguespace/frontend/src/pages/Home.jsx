@@ -1,13 +1,16 @@
 import { TRACKS } from '../data/tracks.js'
-import SolarScene from '../components/SolarScene.jsx'
+import Visualizer from '../components/Visualizer.jsx'
 import { useAudioPlayer } from '../hooks/useAudioPlayer.js'
 
 export default function Home() {
-  const { activeIndex, toggle, getAudioData } = useAudioPlayer()
+  const { activeIndex, toggle, getTimeDomainData } = useAudioPlayer()
+  const activeTrack = activeIndex !== null ? TRACKS[activeIndex] : TRACKS[0]
+
   return (
-    <div style={{ position: 'relative', width: '100vw', height: '100dvh', background: '#020207', overflow: 'hidden' }}>
-      <SolarScene
-        getAudioData={activeIndex !== null ? getAudioData : null}
+    <div style={{ position: 'relative', width: '100vw', height: '100dvh', background: '#000', overflow: 'hidden' }}>
+      <Visualizer
+        getTimeDomainData={activeIndex !== null ? getTimeDomainData : null}
+        track={activeTrack}
       />
 
       <div className="track-bar">

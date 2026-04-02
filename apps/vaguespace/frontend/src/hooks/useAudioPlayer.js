@@ -6,7 +6,7 @@ export function useAudioPlayer() {
   const audioRef = useRef(null)
   const activeIndexRef = useRef(null)
   const analyserRef = useRef(null)
-  const dataRef = useRef(new Uint8Array(128))
+  const dataRef = useRef(new Uint8Array(2048))
   const contextRef = useRef(null)
 
   useEffect(() => {
@@ -34,19 +34,19 @@ export function useAudioPlayer() {
     if (analyserRef.current) return
     const ctx = new (window.AudioContext || window.webkitAudioContext)()
     const analyser = ctx.createAnalyser()
-    analyser.fftSize = 256
-    analyser.smoothingTimeConstant = 0.75
+    analyser.fftSize = 2048
+    analyser.smoothingTimeConstant = 0.8
     const source = ctx.createMediaElementSource(audioRef.current)
     source.connect(analyser)
     analyser.connect(ctx.destination)
     contextRef.current = ctx
     analyserRef.current = analyser
-    dataRef.current = new Uint8Array(analyser.frequencyBinCount)
+    dataRef.current = new Uint8Array(analyser.fftSize)
   }
 
-  const getAudioData = () => {
+  const getTimeDomainData = () => {
     if (!analyserRef.current) return null
-    analyserRef.current.getByteFrequencyData(dataRef.current)
+    analyserRef.current.getByteTimeDomainData(dataRef.current)
     return dataRef.current
   }
 
@@ -77,5 +77,5 @@ export function useAudioPlayer() {
     else playTrack(index)
   }
 
-  return { activeIndex, toggle, getAudioData }
+  return { activeIndex, toggle, getTimeDomainData }
 }

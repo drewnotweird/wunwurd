@@ -1,94 +1,90 @@
-import { Canvas, useFrame } from '@react-three/fiber'
-import { Icosahedron, Points } from '@react-three/drei'
-import { useRef, useMemo } from 'react'
-import * as THREE from 'three'
-import './Visualizer.css'
+import { useEffect, useRef } from 'react'
 
-// Audio-reactive mesh
-function ReactiveGeometry({ audioData, baseColor, accentColor }) {
-  const meshRef = useRef()
-  const materialsRef = useRef([])
-  
-  useFrame(() => {
-    if (!meshRef.current || !audioData) return
-    
-    // Rotate based on average audio frequency
-    const avgFreq = audioData.reduce((a, b) => a + b) / audioData.length / 255
-    meshRef.current.rotation.x += avgFreq * 0.01
-    meshRef.current.rotation.y += avgFreq * 0.015
-    
-    // Scale based on bass frequencies
-    const bass = audioData.slice(0, 10).reduce((a, b) => a + b) / 10 / 255
-    meshRef.current.scale.set(1 + bass * 0.3, 1 + bass * 0.3, 1 + bass * 0.3)
-  })
+const SLICE_WIDTH = (2 * Math.PI) / 2048
 
-  return (
-    <Icosahedron ref={meshRef} args={[2, 4]} scale={1}>
-      <meshPhongMaterial
-        color={accentColor}
-        emissive={baseColor}
-        emissiveIntensity={0.5}
-        wireframe={false}
-      />
-    </Icosahedron>
-  )
-}
+export default function Visualizer({ getTimeDomainData, track }) {
+  const canvasRef = useRef(null)
+  const rafRef = useRef(null)
+  const frameRef = useRef(0)
+  const trackRef = useRef(track)
 
-// Particle system
-function AudioParticles({ audioData }) {
-  const pointsRef = useRef()
-  const particleCount = 100
+  useEffect(() => { trackRef.current = track }, [track])
 
-  const geometry = useMemo(() => {
-    const geom = new THREE.BufferGeometry()
-    const positions = new Float32Array(particleCount * 3)
-    
-    for (let i = 0; i < particleCount * 3; i += 3) {
-      positions[i] = (Math.random() - 0.5) * 20
-      positions[i + 1] = (Math.random() - 0.5) * 20
-      positions[i + 2] = (Math.random() - 0.5) * 20
+  const getDataRef = useRef(getTimeDomainData)
+  useEffect(() => { getDataRef.current = getTimeDomainData }, [getTimeDomainData])
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    const ctx = canvas.getContext('2d')
+
+    // offscreen canvas for the trail effect
+    const tmp = document.createElement('canvas')
+    tmp.width = canvas.width
+    tmp.height = canvas.height
+    const tmpCtx = tmp.getContext('2d')
+
+    const w = canvas.width
+    const h = canvas.height
+
+    function draw() {
+      rafRef.current = requestAnimationFrame(draw)
+      frameRef.current++
+      const i = frameRef.current
+
+      const { stepFactor, colorStepFactor, opacity, radius } = trackRef.current
+
+      const buf = getDataRef.current?.() ?? new Uint8Array(2048).fill(128)
+
+      // save last frame to offscreen, cropped inward by stepFactor (zoom trail)
+      tmpCtx.drawImage(
+        canvas,
+        w / stepFactor,
+        h / stepFactor,
+        w * (stepFactor - 2) / stepFactor,
+        h * (stepFactor - 2) / stepFactor,
+        0, 0, w, h
+      )
+
+      // clear
+      ctx.fillStyle = 'rgb(0,0,0)'
+      ctx.fillRect(0, 0, w, h)
+
+      // colour — same sine cycling as the original
+      const csf = 199 - colorStepFactor
+      const r = Math.sin(i / csf / 5) * 127.5 + 127.5
+      const g = Math.sin(i / csf / 3) * 127.5 + 127.5
+      const b = Math.sin(i / csf) * 127.5 + 127.5
+      ctx.fillStyle = `rgb(${r|0},${g|0},${b|0})`
+
+      // draw previous frame with opacity
+      ctx.globalAlpha = opacity
+      ctx.drawImage(tmp, 0, 0)
+      ctx.globalAlpha = 1
+
+      // draw waveform ring
+      let theta = 0
+      for (let n = 0; n < 2048; n++) {
+        theta += SLICE_WIDTH
+        const amp = buf[n] / 256
+        const ro = amp * h * 0.2 + h * 0.09
+        const x = w / 2 + Math.cos(theta) * ro
+        const y = h / 2 + Math.sin(theta) * ro
+        ctx.beginPath()
+        ctx.arc(x, y, radius, 0, 2 * Math.PI)
+        ctx.fill()
+      }
     }
-    
-    geom.setAttribute('position', new THREE.BufferAttribute(positions, 3))
-    return geom
-  }, [])
 
-  useFrame(() => {
-    if (!pointsRef.current || !audioData) return
-
-    const positions = pointsRef.current.geometry.attributes.position.array
-    for (let i = 0; i < positions.length; i += 3) {
-      const freq = audioData[(i / 3) % audioData.length] / 255
-      positions[i + 2] += freq * 0.1
-    }
-    
-    pointsRef.current.geometry.attributes.position.needsUpdate = true
-  })
+    draw()
+    return () => cancelAnimationFrame(rafRef.current)
+  }, []) // intentionally empty — all dynamic values read via refs
 
   return (
-    <Points ref={pointsRef} geometry={geometry}>
-      <pointsMaterial color="#ffffff" size={0.1} sizeAttenuation transparent />
-    </Points>
-  )
-}
-
-// Main Visualizer
-export default function Visualizer({ audioData, baseColor = '#0d0d1a', accentColor = '#4a6fa5' }) {
-  return (
-    <div className="visualizer">
-      <Canvas camera={{ position: [0, 0, 10], fov: 75 }}>
-        <color attach="background" args={[baseColor]} />
-        
-        <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} intensity={1} />
-        
-        <ReactiveGeometry 
-          audioData={audioData} 
-          baseColor={baseColor} 
-          accentColor={accentColor} 
-        />
-        <AudioParticles audioData={audioData} />
-      </Canvas>
-    </div>
+    <canvas
+      ref={canvasRef}
+      width={window.innerWidth * window.devicePixelRatio}
+      height={window.innerHeight * window.devicePixelRatio}
+      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
+    />
   )
 }
