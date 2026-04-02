@@ -1,32 +1,26 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { MeshDistortMaterial, CameraShake } from '@react-three/drei'
+import { MeshDistortMaterial, CameraShake, Stars } from '@react-three/drei'
 import { useRef, useMemo, useEffect } from 'react'
 import * as THREE from 'three'
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
-import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass.js'
 
 // ── Planet ─────────────────────────────────────────────────────────────────
-function Planet({ getAudioDataRef, config }) {
+function Planet({ getAudioDataRef }) {
   const matRef = useRef()
   const meshRef = useRef()
 
   useFrame((state) => {
     const data = getAudioDataRef.current?.()
-    let melody = 0, bass = 0
+    let amp = 0
     if (data) {
-      let b = 0; for (let i = 0; i < 8; i++) b += data[i]
-      bass = Math.min(1, b / 8 / 200)
-      let m = 0; for (let i = 8; i < 48; i++) m += data[i]
-      melody = Math.min(1, m / 40 / 180)
+      let s = 0; for (let i = 0; i < 32; i++) s += data[i]
+      amp = Math.min(1, s / 32 / 180)
     }
     if (matRef.current) {
-      matRef.current.distort = THREE.MathUtils.lerp(matRef.current.distort, 0.4 + melody * 0.5, 0.05)
+      matRef.current.distort = THREE.MathUtils.lerp(matRef.current.distort, 0.3 + amp * 0.4, 0.05)
     }
     if (meshRef.current) {
-      meshRef.current.rotation.y += 0.002 + bass * 0.015
-      meshRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.08) * 0.05
+      meshRef.current.rotation.y += 0.003
+      meshRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.1) * 0.05
     }
   })
 
@@ -36,12 +30,13 @@ function Planet({ getAudioDataRef, config }) {
         <icosahedronGeometry args={[1, 4]} />
         <MeshDistortMaterial
           ref={matRef}
-          color={config.planetBg}
-          emissive={config.planetFg}
-          emissiveIntensity={0.3}
-          distort={0.4}
+          color="#600935"
+          emissive="#de77c7"
+          emissiveIntensity={0.8}
+          distort={0.3}
           speed={2}
-          roughness={0.1}
+          roughness={0}
+          metalness={0.1}
         />
       </mesh>
     </group>
@@ -52,7 +47,7 @@ function Planet({ getAudioDataRef, config }) {
 function SpaceDust() {
   const meshRef = useRef()
   const dummy = useMemo(() => new THREE.Object3D(), [])
-  const particles = useMemo(() => Array.from({ length: 10000 }, () => ({
+  const particles = useMemo(() => Array.from({ length: 5000 }, () => ({
     t: Math.random() * 100,
     factor: 20 + Math.random() * 100,
     speed: 0.01 + Math.random() / 200,
@@ -64,7 +59,7 @@ function SpaceDust() {
   useFrame(() => {
     particles.forEach((p, i) => {
       p.t += p.speed / 2
-      const s = Math.cos(p.t)
+      const s = Math.max(0.01, Math.abs(Math.cos(p.t)))
       dummy.position.set(
         p.xFactor + Math.cos(p.t / 10 * p.factor) + Math.sin(p.t) * p.factor / 10,
         p.yFactor + Math.sin(p.t / 10 * p.factor) + Math.cos(p.t * 2) * p.factor / 10,
@@ -79,27 +74,23 @@ function SpaceDust() {
   })
 
   return (
-    <instancedMesh ref={meshRef} args={[null, null, 10000]}>
+    <instancedMesh ref={meshRef} args={[null, null, 5000]}>
       <dodecahedronGeometry args={[0.2, 0]} />
       <meshPhongMaterial color="#050505" />
     </instancedMesh>
   )
 }
 
-// ── Sparks — simple lines matching solarstorm layout ──────────────────────
-function Sparks({ getAudioDataRef, config }) {
-  const groupRef = useRef()
-  const matsRef = useRef([])
+// ── Sparks ─────────────────────────────────────────────────────────────────
+const COLORS = ['#c06995','#de77c7','#df86df','#d998ee','#ceadf4','#c6bff9']
 
+function Sparks() {
+  const groupRef = useRef()
   const lines = useMemo(() => {
     const radius = 10
     const rv = () => 0.2 + Math.random() * 0.8
     return Array.from({ length: 20 }, (_, index) => {
-      const pos = new THREE.Vector3(
-        Math.sin(0) * radius * rv(),
-        Math.cos(0) * radius * rv(),
-        0
-      )
+      const pos = new THREE.Vector3(Math.sin(0) * radius * rv(), Math.cos(0) * radius * rv(), 0)
       const points = Array.from({ length: 30 }, (_, i) => {
         const angle = (i / 20) * Math.PI * 2
         return pos.add(new THREE.Vector3(
@@ -108,16 +99,15 @@ function Sparks({ getAudioDataRef, config }) {
           0
         )).clone()
       })
-      const curve = new THREE.CatmullRomCurve3(points)
-      const pts = curve.getPoints(200)
-      const geo = new THREE.BufferGeometry().setFromPoints(pts)
+      const geo = new THREE.BufferGeometry().setFromPoints(
+        new THREE.CatmullRomCurve3(points).getPoints(200)
+      )
       return {
         geo,
-        color: config.sparkColors[Math.floor(Math.random() * config.sparkColors.length)],
-        opacity: 0.4 + Math.random() * 0.5,
+        color: COLORS[Math.floor(Math.random() * COLORS.length)],
       }
     })
-  }, [config.sparkColors])
+  }, [])
 
   useFrame(() => {
     if (groupRef.current) {
@@ -127,75 +117,30 @@ function Sparks({ getAudioDataRef, config }) {
   })
 
   return (
-    <group ref={groupRef}>
-      <group position={[-20, -10, -10]} scale={[1, 1.3, 1]}>
-        {lines.map((l, i) => (
-          <line key={i} geometry={l.geo}>
-            <lineBasicMaterial
-              color={l.color}
-              transparent
-              opacity={l.opacity}
-              depthTest={false}
-            />
-          </line>
-        ))}
-      </group>
+    <group ref={groupRef} position={[-20, -10, -10]} scale={[1, 1.3, 1]}>
+      {lines.map((l, i) => (
+        <line key={i} geometry={l.geo}>
+          <lineBasicMaterial color={l.color} transparent opacity={0.7} depthTest={false} />
+        </line>
+      ))}
     </group>
   )
 }
 
-// ── Post-processing ────────────────────────────────────────────────────────
-function Effects({ getAudioDataRef }) {
-  const { gl, scene, camera, size } = useThree()
-  const composerRef = useRef()
-  const bloomRef = useRef()
-
-  useEffect(() => {
-    const composer = new EffectComposer(gl)
-    composer.addPass(new RenderPass(scene, camera))
-    const bloom = new UnrealBloomPass(new THREE.Vector2(size.width, size.height), 2, 1, 0)
-    composer.addPass(bloom)
-    bloomRef.current = bloom
-    const film = new FilmPass(0.35)
-    film.renderToScreen = true
-    composer.addPass(film)
-    composerRef.current = composer
-    return () => composer.dispose()
-  }, [gl, scene, camera])
-
-  useEffect(() => {
-    composerRef.current?.setSize(size.width, size.height)
-  }, [size])
-
-  useFrame(() => {
-    if (!composerRef.current) return
-    const data = getAudioDataRef.current?.()
-    if (data && bloomRef.current) {
-      let b = 0; for (let i = 0; i < 8; i++) b += data[i]
-      const bass = Math.min(1, b / 8 / 200)
-      bloomRef.current.strength = 1.75 + bass * 3
-    }
-    composerRef.current.render()
-  }, 1)
-
-  return null
-}
-
 // ── Scene ──────────────────────────────────────────────────────────────────
-function Scene({ getAudioDataRef, config }) {
+function Scene({ getAudioDataRef }) {
   return (
     <>
       <CameraShake yawFrequency={0.05} rollFrequency={0.2} pitchFrequency={0.1} />
       <pointLight distance={100} intensity={4} color="white" />
-      <Planet getAudioDataRef={getAudioDataRef} config={config} />
+      <Stars radius={100} depth={50} count={3000} factor={4} saturation={0} fade />
+      <Planet getAudioDataRef={getAudioDataRef} />
       <SpaceDust />
-      <Sparks getAudioDataRef={getAudioDataRef} config={config} />
-      <Effects getAudioDataRef={getAudioDataRef} />
+      <Sparks />
     </>
   )
 }
 
-// ── Main export ────────────────────────────────────────────────────────────
 export default function SolarScene({ config, getAudioData }) {
   const getAudioDataRef = useRef(getAudioData)
   useEffect(() => { getAudioDataRef.current = getAudioData }, [getAudioData])
@@ -206,7 +151,7 @@ export default function SolarScene({ config, getAudioData }) {
       style={{ position: 'absolute', inset: 0 }}
       onCreated={({ gl }) => gl.setClearColor(new THREE.Color('#020207'))}
     >
-      <Scene getAudioDataRef={getAudioDataRef} config={config} />
+      <Scene getAudioDataRef={getAudioDataRef} />
     </Canvas>
   )
 }
