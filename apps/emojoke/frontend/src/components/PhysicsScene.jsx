@@ -2,12 +2,13 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import Matter from 'matter-js'
 import { JOKES } from '../data/jokes.js'
 
-const R = 44               // circle radius px
-const EXP_W = 300          // expanded width px
-const EXP_H = 220          // expanded height px
+const R = 52               // circle radius px (bigger)
+const EXP_W = 320          // expanded width px
+const EXP_H = 240          // expanded height px
 const REPEL_R = 90         // cursor repulsion radius px
 const REPEL_F = 0.0025     // repulsion force strength
 const TRANSITION = 380     // ms
+const STAGGER = 180        // ms between each circle dropping
 
 export default function PhysicsScene() {
   const containerRef = useRef(null)
@@ -17,8 +18,8 @@ export default function PhysicsScene() {
   const bodyMap = useRef({})
   const elMap = useRef({})
   const cursorRef = useRef({ x: -999, y: -999 })
-  const expandedRef = useRef(null)      // currently expanded id (for RAF skip)
-  const handsOffRef = useRef(new Set()) // ids the RAF loop must never touch
+  const expandedRef = useRef(null)
+  const handsOffRef = useRef(new Set())
   const [expandedId, setExpandedId] = useState(null)
 
   useEffect(() => { expandedRef.current = expandedId }, [expandedId])
@@ -45,29 +46,34 @@ export default function PhysicsScene() {
 
     buildWalls()
 
-    // Spawn circles from above
+    // Create all bodies high off-screen but don't add to world yet — stagger the drops
     const W = container.clientWidth
     JOKES.forEach((joke, i) => {
       const cols = Math.max(1, Math.floor(W / (R * 2 + 10)))
       const col = i % cols
       const row = Math.floor(i / cols)
       const x = R + 10 + col * (R * 2 + 10) + (row % 2) * R
-      const y = -R - row * (R * 2.2 + 10)
+      const y = -R * 2
+
       const body = Matter.Bodies.circle(x, y, R, {
-        restitution: 0.45,
+        restitution: 0.65,
         friction: 0.05,
-        frictionAir: 0.01,
+        frictionAir: 0.008,
         label: String(joke.id),
       })
       bodyMap.current[joke.id] = body
-      Matter.World.add(world, body)
+
+      // Stagger each circle dropping in
+      setTimeout(() => {
+        if (worldRef.current) {
+          Matter.World.add(worldRef.current, body)
+        }
+      }, i * STAGGER)
     })
 
-    // Rebuild walls on resize
     const ro = new ResizeObserver(() => buildWalls())
     ro.observe(container)
 
-    // RAF loop
     let lastTime = performance.now()
     let rafId
 
@@ -84,7 +90,6 @@ export default function PhysicsScene() {
         const body = bodyMap.current[id]
         if (!body || body.isStatic) return
 
-        // Cursor repulsion
         const dx = body.position.x - cx
         const dy = body.position.y - cy
         const dist = Math.sqrt(dx * dx + dy * dy)
@@ -93,7 +98,6 @@ export default function PhysicsScene() {
           Matter.Body.applyForce(body, body.position, { x: (dx / dist) * f, y: (dy / dist) * f })
         }
 
-        // Don't touch elements mid-transition or while expanded
         if (handsOffRef.current.has(id)) return
         const el = elMap.current[id]
         if (!el) return
@@ -120,11 +124,9 @@ export default function PhysicsScene() {
     const W = containerRef.current.clientWidth
     const H = containerRef.current.clientHeight
 
-    // Keep hands-off during the entire transition
     handsOffRef.current.add(id)
     setExpandedId(null)
 
-    // Shrink back to circle, staying at centre
     el.style.transition = `left ${TRANSITION}ms ease, top ${TRANSITION}ms ease, width ${TRANSITION}ms ease, height ${TRANSITION}ms ease, border-radius ${TRANSITION}ms ease, box-shadow ${TRANSITION}ms ease`
     el.style.width = `${R * 2}px`
     el.style.height = `${R * 2}px`
@@ -134,7 +136,6 @@ export default function PhysicsScene() {
     el.style.left = `${W / 2 - R}px`
     el.style.top = `${H / 2 - R}px`
 
-    // Once transition finishes, hand off to physics at exactly that position
     setTimeout(() => {
       el.style.transition = ''
       el.style.transform = ''
@@ -145,7 +146,6 @@ export default function PhysicsScene() {
         Matter.Body.setVelocity(body, { x: (Math.random() - 0.5) * 3, y: 1 })
         Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.1)
       }
-      // Now let the RAF loop take over
       handsOffRef.current.delete(id)
     }, TRANSITION + 20)
   }, [])
@@ -203,32 +203,62 @@ export default function PhysicsScene() {
       onMouseMove={handleMouseMove}
       onTouchMove={handleTouchMove}
     >
-      {JOKES.map((joke) => (
-        <div
-          key={joke.id}
-          ref={(el) => { elMap.current[joke.id] = el }}
-          onClick={() => handleTap(joke.id)}
-          style={{
-            position: 'absolute',
-            width: R * 2,
-            height: R * 2,
-            borderRadius: '50%',
-            background: '#fff',
-            boxShadow: '0 2px 12px rgba(0,0,0,0.12)',
-            cursor: 'pointer',
-            userSelect: 'none',
-            WebkitUserSelect: 'none',
-            overflow: 'hidden',
-            zIndex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <EmojiContent joke={joke} isExpanded={expandedId === joke.id} />
-        </div>
-      ))}
+      {JOKES.map((joke) => {
+        const isExpanded = expandedId === joke.id
+        return (
+          <div
+            key={joke.id}
+            ref={(el) => { elMap.current[joke.id] = el }}
+            onClick={() => handleTap(joke.id)}
+            style={{
+              position: 'absolute',
+              width: R * 2,
+              height: R * 2,
+              borderRadius: '50%',
+              background: '#fff',
+              boxShadow: '0 2px 12px rgba(0,0,0,0.12)',
+              cursor: 'pointer',
+              userSelect: 'none',
+              WebkitUserSelect: 'none',
+              overflow: 'hidden',
+              zIndex: 1,
+            }}
+          >
+            {/* Emoji — absolutely centred in the circle at all times */}
+            <span style={{
+              position: 'absolute',
+              top: isExpanded ? 24 : '50%',
+              left: '50%',
+              transform: isExpanded ? 'translateX(-50%)' : 'translate(-50%, -50%)',
+              fontSize: isExpanded ? 52 : R * 1.05,
+              lineHeight: 1,
+              transition: 'font-size 0.3s ease, top 0.3s ease, transform 0.3s ease',
+              pointerEvents: 'none',
+            }}>
+              {joke.emoji}
+            </span>
+
+            {/* Joke text — only takes up space when expanded */}
+            {isExpanded && (
+              <p style={{
+                position: 'absolute',
+                top: 100,
+                left: 0,
+                right: 0,
+                padding: '0 24px',
+                textAlign: 'center',
+                fontFamily: "'Georgia', serif",
+                fontSize: '1.2rem',
+                lineHeight: 1.6,
+                color: '#333',
+                pointerEvents: 'none',
+              }}>
+                {joke.joke}
+              </p>
+            )}
+          </div>
+        )
+      })}
 
       <div
         onClick={() => expandedRef.current !== null && collapse(expandedRef.current)}
@@ -242,37 +272,5 @@ export default function PhysicsScene() {
         }}
       />
     </div>
-  )
-}
-
-function EmojiContent({ joke, isExpanded }) {
-  return (
-    <>
-      <span style={{
-        fontSize: isExpanded ? 52 : R * 1.1,
-        lineHeight: 1,
-        display: 'block',
-        flexShrink: 0,
-        transition: 'font-size 0.3s ease',
-        marginTop: isExpanded ? 28 : 0,
-        pointerEvents: 'none',
-      }}>
-        {joke.emoji}
-      </span>
-
-      <p style={{
-        marginTop: 16,
-        padding: '0 20px',
-        textAlign: 'center',
-        fontSize: '1.05rem',
-        lineHeight: 1.5,
-        color: '#333',
-        opacity: isExpanded ? 1 : 0,
-        transition: `opacity ${isExpanded ? '0.25s 0.2s' : '0.1s 0s'} ease`,
-        pointerEvents: 'none',
-      }}>
-        {joke.joke}
-      </p>
-    </>
   )
 }
