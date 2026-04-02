@@ -22,6 +22,8 @@ export default function PhysicsScene() {
   const expandedRef = useRef(null)
   const handsOffRef = useRef(new Set())
   const [expandedId, setExpandedId] = useState(null)
+  const [textVisibleId, setTextVisibleId] = useState(null)
+  const TEXT_FADE = 220  // ms for text fade in/out
 
   useEffect(() => { expandedRef.current = expandedId }, [expandedId])
 
@@ -126,29 +128,32 @@ export default function PhysicsScene() {
     const H = containerRef.current.clientHeight
 
     handsOffRef.current.add(id)
-    setExpandedId(null)
-
-    el.style.transition = `left ${TRANSITION}ms ease, top ${TRANSITION}ms ease, width ${TRANSITION}ms ease, height ${TRANSITION}ms ease, border-radius ${TRANSITION}ms ease, box-shadow ${TRANSITION}ms ease`
-    el.style.width = `${R * 2}px`
-    el.style.height = `${R * 2}px`
-    el.style.borderRadius = '50%'
-    el.style.zIndex = '1'
-    el.style.boxShadow = '0 2px 12px rgba(0,0,0,0.12)'
-    el.style.left = `${W / 2 - R}px`
-    el.style.top = `${H / 2 - R}px`
-
+    // Fade text out first, then start collapse after fade
+    setTextVisibleId(null)
     setTimeout(() => {
-      el.style.transition = ''
-      el.style.transform = ''
-      if (body) {
-        Matter.World.add(worldRef.current, body)
-        Matter.Body.setStatic(body, false)
-        Matter.Body.setPosition(body, { x: W / 2, y: H / 2 })
-        Matter.Body.setVelocity(body, { x: (Math.random() - 0.5) * 3, y: 1 })
-        Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.1)
-      }
-      handsOffRef.current.delete(id)
-    }, TRANSITION + 20)
+      setExpandedId(null)
+      el.style.transition = `left ${TRANSITION}ms ease, top ${TRANSITION}ms ease, width ${TRANSITION}ms ease, height ${TRANSITION}ms ease, border-radius ${TRANSITION}ms ease, box-shadow ${TRANSITION}ms ease`
+      el.style.width = `${R * 2}px`
+      el.style.height = `${R * 2}px`
+      el.style.borderRadius = '50%'
+      el.style.zIndex = '1'
+      el.style.boxShadow = '0 2px 12px rgba(0,0,0,0.12)'
+      el.style.left = `${W / 2 - R}px`
+      el.style.top = `${H / 2 - R}px`
+
+      setTimeout(() => {
+        el.style.transition = ''
+        el.style.transform = ''
+        if (body) {
+          Matter.World.add(worldRef.current, body)
+          Matter.Body.setStatic(body, false)
+          Matter.Body.setPosition(body, { x: W / 2, y: H / 2 })
+          Matter.Body.setVelocity(body, { x: (Math.random() - 0.5) * 3, y: 1 })
+          Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.1)
+        }
+        handsOffRef.current.delete(id)
+      }, TRANSITION + 20)
+    }, TEXT_FADE + 20)
   }, [])
 
   const expand = useCallback((id) => {
@@ -174,6 +179,8 @@ export default function PhysicsScene() {
     el.style.boxShadow = '0 8px 40px rgba(0,0,0,0.2)'
 
     setExpandedId(id)
+    // Fade text in after card has finished opening
+    setTimeout(() => setTextVisibleId(id), TRANSITION + 40)
   }, [])
 
   const handleTap = useCallback((id) => {
@@ -239,7 +246,7 @@ export default function PhysicsScene() {
               {joke.emoji}
             </span>
 
-            {/* Joke text — only takes up space when expanded */}
+            {/* Joke text — present in DOM when expanded, fades in/out */}
             {isExpanded && (
               <p style={{
                 position: 'absolute',
@@ -248,11 +255,13 @@ export default function PhysicsScene() {
                 right: 0,
                 padding: `0 ${WIDE ? 32 : 24}px`,
                 textAlign: 'center',
-                fontFamily: "'Barriecito', cursive",
+                fontFamily: "'DynaPuff', cursive",
                 fontSize: WIDE ? '1.9rem' : '1.4rem',
                 lineHeight: 1.5,
                 color: '#333',
                 pointerEvents: 'none',
+                opacity: textVisibleId === joke.id ? 1 : 0,
+                transition: `opacity ${TEXT_FADE}ms ease`,
               }}>
                 {joke.joke}
               </p>
