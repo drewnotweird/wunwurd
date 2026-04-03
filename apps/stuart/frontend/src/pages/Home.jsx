@@ -1,15 +1,18 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import confetti from 'canvas-confetti'
 import './Home.css'
 
 export default function Home() {
   const audioRef = useRef(null)
   const containerRef = useRef(null)
+  const baseUrl = import.meta.env.BASE_URL
 
   useEffect(() => {
     // Autoplay on mount
     if (audioRef.current) {
-      audioRef.current.play()
+      audioRef.current.play().catch(() => {
+        // Browser blocked autoplay - will play on user interaction
+      })
       triggerBigConfetti()
     }
   }, [])
@@ -31,31 +34,28 @@ export default function Home() {
       const gif = document.createElement('div')
       gif.className = 'falling-40'
       gif.style.left = Math.random() * 100 + '%'
-      // Randomly pick one of the 40 GIFs (40_1.gif through 40_5.gif)
       const gifNum = Math.floor(Math.random() * 5) + 1
-      gif.style.backgroundImage = `url(/40_${gifNum}.gif)`
+      gif.style.backgroundImage = `url(${baseUrl}40_${gifNum}.gif)`
       containerRef.current.appendChild(gif)
 
       setTimeout(() => gif.remove(), 4000)
     }
 
-    // Drop GIFs every 800ms continuously
     const interval = setInterval(dropGif, 800)
     return () => clearInterval(interval)
-  }, [])
+  }, [baseUrl])
 
   return (
     <div className="home" ref={containerRef}>
       {/* Background image */}
-      <div className="background" style={{ backgroundImage: 'url(/stuart.jpg)' }} />
+      <div className="background" style={{ backgroundImage: `url(${baseUrl}stuart.jpg)` }} />
 
-      {/* Hidden audio element - autoplays */}
+      {/* Audio element - served from public folder */}
       <audio
         ref={audioRef}
-        src="https://p.scdn.co/mp3-preview/5fBlnN4KvXlH1T5CmNE5Sm"
-        crossOrigin="anonymous"
-        autoPlay
+        src={`${baseUrl}happy-birthday.mp3`}
         loop
+        autoPlay
       />
     </div>
   )
