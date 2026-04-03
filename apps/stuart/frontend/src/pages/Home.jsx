@@ -45,7 +45,9 @@ export default function Home() {
       const gif = document.createElement('div')
       gif.className = 'falling-40'
       gif.style.left = Math.random() * 100 + '%'
-      gif.style.backgroundImage = 'url(/40.gif)'
+      // Randomly pick one of the 40 GIFs (40_1.gif through 40_5.gif)
+      const gifNum = Math.floor(Math.random() * 5) + 1
+      gif.style.backgroundImage = `url(/40_${gifNum}.gif)`
       containerRef.current.appendChild(gif)
 
       setTimeout(() => gif.remove(), 4000)
@@ -58,7 +60,7 @@ export default function Home() {
   return (
     <div className="home" ref={containerRef}>
       {/* Background image */}
-      <div className="background" style={{ backgroundImage: 'url(/birthday-bg.jpg)' }} />
+      <div className="background" style={{ backgroundImage: 'url(/stuart.jpg)' }} />
 
       {/* Content overlay */}
       <div className="content">
