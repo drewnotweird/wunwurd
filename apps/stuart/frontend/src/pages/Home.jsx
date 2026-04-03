@@ -52,7 +52,7 @@ export default function Home() {
       {/* Hidden audio element - autoplays */}
       <audio
         ref={audioRef}
-        src="https://p.scdn.co/mp3-preview/4b3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e"
+        src="https://p.scdn.co/mp3-preview/5fBlnN4KvXlH1T5CmNE5Sm"
         crossOrigin="anonymous"
         autoPlay
         loop
