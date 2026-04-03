@@ -50,11 +50,10 @@ export default function Home() {
       {/* Background image */}
       <div className="background" style={{ backgroundImage: `url(${baseUrl}stuart.jpg)` }} />
 
-      {/* Audio element - Spotify preview with CORS */}
+      {/* Audio element - local MP3 file */}
       <audio
         ref={audioRef}
-        src="https://p.scdn.co/mp3-preview/5fBlnN4KvXlH1T5CmNE5Sm"
-        crossOrigin="anonymous"
+        src={`${baseUrl}stevie.mp3`}
         loop
         autoPlay
       />
