@@ -11,7 +11,7 @@ export default function Home() {
     // Autoplay on mount
     if (audioRef.current) {
       audioRef.current.play().catch(() => {
-        // Browser blocked autoplay - will play on user interaction
+        // Browser blocked autoplay - no action needed
       })
       triggerBigConfetti()
     }
@@ -50,10 +50,11 @@ export default function Home() {
       {/* Background image */}
       <div className="background" style={{ backgroundImage: `url(${baseUrl}stuart.jpg)` }} />
 
-      {/* Audio element - served from public folder */}
+      {/* Audio element - Spotify preview with CORS */}
       <audio
         ref={audioRef}
-        src={`${baseUrl}happy-birthday.mp3`}
+        src="https://p.scdn.co/mp3-preview/5fBlnN4KvXlH1T5CmNE5Sm"
+        crossOrigin="anonymous"
         loop
         autoPlay
       />
