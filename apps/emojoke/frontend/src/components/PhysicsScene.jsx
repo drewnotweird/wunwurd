@@ -139,14 +139,15 @@ export default function PhysicsScene() {
     
     setTimeout(() => {
       setExpandedId(null)
-      // Reset to circle and position at top off-screen
+      // Reset to circle and position at random horizontal position off-screen at top
+      const randomX = Math.random() * W
       el.style.opacity = '1'
       el.style.width = `${R * 2}px`
       el.style.height = `${R * 2}px`
       el.style.borderRadius = '50%'
       el.style.zIndex = '1'
       el.style.boxShadow = '0 2px 12px rgba(0,0,0,0.12)'
-      el.style.left = `${W / 2 - R}px`
+      el.style.left = `${randomX - R}px`
       el.style.top = `${-R * 2}px`
       el.style.transition = ''
       el.style.transform = ''
@@ -154,7 +155,7 @@ export default function PhysicsScene() {
       if (body) {
         Matter.World.add(worldRef.current, body)
         Matter.Body.setStatic(body, false)
-        Matter.Body.setPosition(body, { x: W / 2, y: -R })
+        Matter.Body.setPosition(body, { x: randomX, y: -R })
         Matter.Body.setVelocity(body, { x: 0, y: 0 })
         Matter.Body.setAngularVelocity(body, 0)
       }
