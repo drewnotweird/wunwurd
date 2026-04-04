@@ -20,7 +20,7 @@ export const TRACKS = [
     colorStepFactor: 100,
     opacity: 0.8,
     radius: 10,
-    amplitudeScale: 0.5,
+    amplitudeScale: 0.3,
     bgColor: 'rgb(0, 0, 44)',
   },
   {
@@ -32,7 +32,7 @@ export const TRACKS = [
     colorStepFactor: 40,
     opacity: 0.8,
     radius: 10,
-    amplitudeScale: 0.5,
+    amplitudeScale: 0.4,
     bgColor: 'rgb(49, 20, 0)',
   },
   {
@@ -44,7 +44,7 @@ export const TRACKS = [
     colorStepFactor: 60,
     opacity: 0.8,
     radius: 10,
-    amplitudeScale: 0.5,
+    amplitudeScale: 0.2,
     bgColor: 'rgb(0, 34, 45)',
   },
   {
@@ -56,7 +56,7 @@ export const TRACKS = [
     colorStepFactor: 120,
     opacity: 0.8,
     radius: 10,
-    amplitudeScale: 0.5,
+    amplitudeScale: 0.1,
     bgColor: 'rgb(45, 23, 0)',
   },
   {
