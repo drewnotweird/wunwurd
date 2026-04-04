@@ -127,9 +127,9 @@ export default function PhysicsScene() {
     const W = containerRef.current.clientWidth
 
     handsOffRef.current.add(id)
-    // Remove body from physics world immediately so it doesn't interfere
-    if (body && worldRef.current) {
-      Matter.World.remove(worldRef.current, body)
+    // Make body static so it doesn't interfere during animation
+    if (body) {
+      Matter.Body.setStatic(body, true)
     }
     
     // Fade text out and card out simultaneously
@@ -153,11 +153,11 @@ export default function PhysicsScene() {
       el.style.transform = ''
 
       if (body) {
-        Matter.World.add(worldRef.current, body)
-        Matter.Body.setStatic(body, false)
+        // Reposition and unlock
         Matter.Body.setPosition(body, { x: randomX, y: -R })
         Matter.Body.setVelocity(body, { x: 0, y: 0 })
         Matter.Body.setAngularVelocity(body, 0)
+        Matter.Body.setStatic(body, false)
       }
       handsOffRef.current.delete(id)
     }, TEXT_FADE + 20)
