@@ -127,6 +127,11 @@ export default function PhysicsScene() {
     const W = containerRef.current.clientWidth
 
     handsOffRef.current.add(id)
+    // Remove body from physics world immediately so it doesn't interfere
+    if (body && worldRef.current) {
+      Matter.World.remove(worldRef.current, body)
+    }
+    
     // Fade text out and card out simultaneously
     setTextVisibleId(null)
     el.style.transition = `opacity ${TEXT_FADE}ms ease`
@@ -135,7 +140,6 @@ export default function PhysicsScene() {
     setTimeout(() => {
       setExpandedId(null)
       // Reset to circle and position at top off-screen
-      el.style.transition = ''
       el.style.opacity = '1'
       el.style.width = `${R * 2}px`
       el.style.height = `${R * 2}px`
@@ -144,19 +148,17 @@ export default function PhysicsScene() {
       el.style.boxShadow = '0 2px 12px rgba(0,0,0,0.12)'
       el.style.left = `${W / 2 - R}px`
       el.style.top = `${-R * 2}px`
+      el.style.transition = ''
+      el.style.transform = ''
 
-      setTimeout(() => {
-        el.style.transition = ''
-        el.style.transform = ''
-        if (body) {
-          Matter.World.add(worldRef.current, body)
-          Matter.Body.setStatic(body, false)
-          Matter.Body.setPosition(body, { x: W / 2, y: -R })
-          Matter.Body.setVelocity(body, { x: 0, y: 0 })
-          Matter.Body.setAngularVelocity(body, 0)
-        }
-        handsOffRef.current.delete(id)
-      }, 20)
+      if (body) {
+        Matter.World.add(worldRef.current, body)
+        Matter.Body.setStatic(body, false)
+        Matter.Body.setPosition(body, { x: W / 2, y: -R })
+        Matter.Body.setVelocity(body, { x: 0, y: 0 })
+        Matter.Body.setAngularVelocity(body, 0)
+      }
+      handsOffRef.current.delete(id)
     }, TEXT_FADE + 20)
   }, [])
 
