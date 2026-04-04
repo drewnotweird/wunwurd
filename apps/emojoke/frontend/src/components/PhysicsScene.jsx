@@ -125,21 +125,25 @@ export default function PhysicsScene() {
     if (!el) return
 
     const W = containerRef.current.clientWidth
-    const H = containerRef.current.clientHeight
 
     handsOffRef.current.add(id)
-    // Fade text out first, then start collapse after fade
+    // Fade text out and card out simultaneously
     setTextVisibleId(null)
+    el.style.transition = `opacity ${TEXT_FADE}ms ease`
+    el.style.opacity = '0'
+    
     setTimeout(() => {
       setExpandedId(null)
-      el.style.transition = `left ${TRANSITION}ms ease, top ${TRANSITION}ms ease, width ${TRANSITION}ms ease, height ${TRANSITION}ms ease, border-radius ${TRANSITION}ms ease, box-shadow ${TRANSITION}ms ease`
+      // Reset to circle and position at top off-screen
+      el.style.transition = ''
+      el.style.opacity = '1'
       el.style.width = `${R * 2}px`
       el.style.height = `${R * 2}px`
       el.style.borderRadius = '50%'
       el.style.zIndex = '1'
       el.style.boxShadow = '0 2px 12px rgba(0,0,0,0.12)'
       el.style.left = `${W / 2 - R}px`
-      el.style.top = `${H / 2 - R}px`
+      el.style.top = `${-R * 2}px`
 
       setTimeout(() => {
         el.style.transition = ''
@@ -147,12 +151,12 @@ export default function PhysicsScene() {
         if (body) {
           Matter.World.add(worldRef.current, body)
           Matter.Body.setStatic(body, false)
-          Matter.Body.setPosition(body, { x: W / 2, y: H / 2 })
-          Matter.Body.setVelocity(body, { x: (Math.random() - 0.5) * 3, y: 1 })
-          Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.1)
+          Matter.Body.setPosition(body, { x: W / 2, y: -R })
+          Matter.Body.setVelocity(body, { x: 0, y: 0 })
+          Matter.Body.setAngularVelocity(body, 0)
         }
         handsOffRef.current.delete(id)
-      }, TRANSITION + 20)
+      }, 20)
     }, TEXT_FADE + 20)
   }, [])
 
@@ -230,6 +234,7 @@ export default function PhysicsScene() {
               WebkitUserSelect: 'none',
               overflow: 'hidden',
               zIndex: 1,
+              opacity: 1,
             }}
           >
             {/* Emoji — absolutely centred in the circle at all times */}
