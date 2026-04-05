@@ -25,13 +25,12 @@ export default function Home() {
 
       <section>
         <p>
-          I also volunteer for <a href="https://makeithappen.club/" target="_blank" rel="noreferrer">Make It Happen</a>; mentor
-          final year design students at GCU; run an Instagram{' '}
+          I also volunteer for <a href="https://makeithappen.club/" target="_blank" rel="noreferrer">Make It Happen</a>; <a href="https://www.facebook.com/watch/?v=292154525613676" target="_blank" rel="noreferrer">mentor</a> final year design students at GCU; run an Instagram{' '}
           <a href="https://www.instagram.com/introducing___" target="_blank" rel="noreferrer">introducing</a> different
           creatives; let people{' '}
           <a href="https://www.whiskyblender.com/" target="_blank" rel="noreferrer">create their own whisky</a>;{' '}
           <a href="https://justgiving.com/fundraising/fulltandy" target="_blank" rel="noreferrer">raise funds</a> for Glasgow
-          NE Foodbank; enjoy the odd  <a href="/bigjuicy" target="_blank" rel="noreferrer">Big Juicy</a>, tell <a href="/emojokes" target="_blank" rel="noreferrer">bad jokes</a>, and <a href="/pointing" target="_blank" rel="noreferrer">point at things</a> (oh, did I mention I used to be in <a href="/vaguespace" target="_blank" rel="noreferrer">a band</a>).
+          NE Foodbank; enjoy the odd  <a href="/bigjuicy" target="_blank" rel="noreferrer">Big Juicy</a>, tell <a href="/emojokes" target="_blank" rel="noreferrer">bad jokes</a>, and <a href="/pointing" target="_blank" rel="noreferrer">point at things</a>.
         </p>
       </section>
 

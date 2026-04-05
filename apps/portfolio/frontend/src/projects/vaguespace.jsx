@@ -10,16 +10,12 @@ export default function VagueSpace() {
       subtitle="True Scottish Indie Rock"
       tags="Performing live 2003—2013"
     >
-      <section>
-        <p>I spent well over 10 years pretending to be a drummer in a band my friends and I started while we were still at school. This page is less about design and more about remembering how fun it all was. That said, being in a band is a great way to develop design skills: posters, merch, website, social presence, album art, music videos, project management, and more!</p>
-      </section>
 
       <ImageSection images={[
         { src: `${BASE}/vaguespace.gif`, layout: 'full' },
       ]} />
-
       <section>
-        <h2>Shirts</h2>
+        <p>I spent well over 10 years pretending to be a drummer in a band my friends and I started while we were still at school. This page is less about design and more about remembering how fun it all was. That said, being in a band is a great way to develop design skills: posters, merch, website, social presence, album art, music videos, project management, and more!</p>
         <p>By far the greatest thing about being in a band is the gigs. For me, this was because it was the ultimate excuse to meet up with pals and have a night out. And because you have to sell Tshirts, you end up with a bunch of people you know and love (plus the occasional stranger) all wearing your band name.</p>
       </section>
 
@@ -53,6 +49,11 @@ export default function VagueSpace() {
         { src: `${BASE}/vaguespace29.jpg`, layout: 'third' },
         { src: `${BASE}/vaguespace01.jpg`, layout: 'full' },
       ]} />
+
+      <section>
+        <p>Sample our <a href="/vaguespace" target="_blank" rel="noreferrer">Equilibrium EP</a>.</p>
+      </section>
+
     </ProjectLayout>
   )
 }
