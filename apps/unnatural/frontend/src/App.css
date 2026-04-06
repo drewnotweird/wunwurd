@@ -1,0 +1,59 @@
+.stage {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* A4 ratio: 1 : √2 (1 : 1.41421356)
+   Fit within the viewport leaving 4vw padding on all sides.
+   Width is the lesser of:
+     - 92vw  (viewport width − 2×4vw)
+     - (100vh − 8vw) / √2  (height-constrained width)
+*/
+.paper {
+  aspect-ratio: 1 / 1.41421356;
+  width: min(92vw, calc((100vh - 8vw) / 1.41421356));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+/* Each segment is 1/3 of the paper height */
+.segment-window {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Strip is REPS×N = 56 images wide — expressed as a % of the window */
+.segment-strip {
+  display: flex;
+  height: 100%;
+  width: 5600%; /* 56 × 100% of segment-window */
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform;
+}
+
+/* Each cell is 1/56 of the strip = exactly one segment-window wide */
+.segment-cell {
+  flex: 0 0 calc(100% / 56);
+  height: 100%;
+  overflow: hidden;
+  background: #e8e8e8;
+}
+
+.segment-cell img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
