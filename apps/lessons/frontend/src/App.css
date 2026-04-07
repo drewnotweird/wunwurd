@@ -1,0 +1,326 @@
+/* ── Layout ── */
+
+.stage {
+  position: fixed;
+  inset: 0;
+  color: #e3d4c7;
+}
+
+/* Fixed noise background — never moves */
+/* background-image set via inline style in App.jsx using import.meta.env.BASE_URL */
+.bg {
+  position: fixed;
+  inset: 0;
+  background-color: #222222;
+  background-size: cover;
+  pointer-events: none;
+}
+
+/* ── Chrome elements — all fixed in place ── */
+
+.ui-label,
+.ui-number,
+.ui-small,
+.ui-share {
+  position: fixed;
+  font-size: 14px;
+  font-family: 'Spline Sans Mono', sans-serif;
+  line-height: 16px;
+  letter-spacing: normal;
+  text-transform: none;
+  opacity: 0.6;
+  margin: 0;
+  z-index: 10;
+}
+
+/* Top-left: static, never animates */
+.ui-label {
+  top: 4vw;
+  left: 4vw;
+  width: 75%;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* Top-right: number counter */
+.ui-number {
+  top: 4vw;
+  right: 4vw;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Bottom-left: fades */
+.ui-small {
+  bottom: 4vw;
+  left: 4vw;
+  width: 70%;
+  max-width: 1200px;
+  transition: opacity 0.25s ease;
+}
+
+.small--in  { opacity: 0.6; }
+.small--out { opacity: 0; }
+
+/* Bottom-right: static, href updates silently */
+.ui-share {
+  bottom: 0;
+  right: 0;
+  padding: 4vw;
+}
+
+.ui-share a {
+  color: #e3d4c7;
+  text-decoration: none;
+}
+
+/* ── Main content ── */
+
+.content {
+  position: fixed;
+  inset: 0;
+  padding: 0 8vw;
+  display: grid;
+  align-items: center;
+}
+
+.content p {
+  display: block;
+  margin: 0;
+}
+
+/* ── Main text animations ── */
+
+@keyframes exit-next {
+  0%   { opacity: 1; transform: translateY(0) skewY(0deg); }
+  100% { opacity: 0; transform: translateY(-4vh) skewY(-1deg); }
+}
+
+@keyframes exit-prev {
+  0%   { opacity: 1; transform: translateY(0) skewY(0deg); }
+  100% { opacity: 0; transform: translateY(4vh) skewY(1deg); }
+}
+
+@keyframes enter-next {
+  0%   { opacity: 0; transform: translateY(5vh) skewY(1deg); }
+  60%  { opacity: 1; }
+  100% { opacity: 1; transform: translateY(0) skewY(0deg); }
+}
+
+@keyframes enter-prev {
+  0%   { opacity: 0; transform: translateY(-5vh) skewY(-1deg); }
+  60%  { opacity: 1; }
+  100% { opacity: 1; transform: translateY(0) skewY(0deg); }
+}
+
+.exit-next { animation: exit-next 300ms cubic-bezier(0.4, 0, 1, 1) forwards; }
+.exit-prev { animation: exit-prev 300ms cubic-bezier(0.4, 0, 1, 1) forwards; }
+.enter-next { animation: enter-next 450ms cubic-bezier(0, 0, 0.2, 1) forwards; }
+.enter-prev { animation: enter-prev 450ms cubic-bezier(0, 0, 0.2, 1) forwards; }
+
+/* ── Navigation buttons ── */
+
+.nav {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #e3d4c7;
+  font-size: 24px;
+  padding: 16px 20px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 20;
+  font-family: sans-serif;
+}
+
+.nav--prev { left: 0; }
+.nav--next { right: 0; }
+
+.stage:hover .nav,
+.nav:focus {
+  opacity: 0.4;
+}
+
+.nav:hover {
+  opacity: 0.8 !important;
+}
+
+@media (pointer: coarse) {
+  .nav { opacity: 0.25; }
+}
+
+/* ── Per-lesson typography (preserved exactly from original) ── */
+
+/* LESSON 1 */
+.lesson-1 {
+  font-family: 'Yeseva One';
+  letter-spacing: -0.6vw;
+}
+.lesson-1 p { font-size: 10vw; line-height: 9vw; }
+@media (orientation: portrait) {
+  .lesson-1 p { font-size: 15vw; line-height: 13vw; }
+}
+
+/* LESSON 2 */
+.lesson-2 { font-family: 'Zilla Slab Highlight'; }
+.lesson-2 p { font-size: 11vw; line-height: 11vw; }
+@media (orientation: portrait) {
+  .lesson-2 p { font-size: 16vw; line-height: 16vw; }
+}
+
+/* LESSON 3 */
+.lesson-3 { font-family: 'Racing Sans One'; text-transform: uppercase; }
+.lesson-3 p { font-size: 10vw; line-height: 8vw; }
+@media (orientation: portrait) {
+  .lesson-3 p { font-size: 13vw; line-height: 11vw; }
+}
+
+/* LESSON 4 */
+.lesson-4 { font-family: 'Calistoga'; text-transform: uppercase; }
+.lesson-4 p { font-size: 9vw; line-height: 8vw; }
+@media (orientation: portrait) {
+  .lesson-4 p { font-size: 14vw; line-height: 14vw; }
+}
+
+/* LESSON 5 */
+.lesson-5 { font-family: 'Sansita Swashed'; }
+.lesson-5 p { font-size: 11vw; line-height: 9vw; }
+@media (orientation: portrait) {
+  .lesson-5 p { font-size: 17vw; line-height: 16vw; }
+}
+
+/* LESSON 6 */
+.lesson-6 { font-family: 'Bungee'; }
+.lesson-6 p { font-size: 8vw; line-height: 7vw; }
+@media (orientation: portrait) {
+  .lesson-6 p { font-size: 11vw; line-height: 11vw; }
+}
+
+/* LESSON 7 */
+.lesson-7 { font-family: 'Press Start 2P'; text-transform: uppercase; }
+.lesson-7 p { font-size: 9vw; line-height: 11vw; }
+@media (orientation: portrait) {
+  .lesson-7 p { font-size: 15vw; line-height: 19vw; }
+}
+
+/* LESSON 8 */
+.lesson-8 { font-family: 'Special Elite'; }
+.lesson-8 p { font-size: 7vw; line-height: 6vw; }
+@media (orientation: portrait) {
+  .lesson-8 p { font-size: 12vw; line-height: 11vw; }
+}
+
+/* LESSON 9 */
+.lesson-9 { font-family: 'Stardos Stencil'; }
+.lesson-9 p { font-size: 9vw; line-height: 9vw; }
+@media (orientation: portrait) {
+  .lesson-9 p { font-size: 13vw; line-height: 13vw; }
+}
+
+/* LESSON 10 */
+.lesson-10 { font-family: 'Raleway Dots'; }
+.lesson-10 p { font-size: 9vw; line-height: 9vw; }
+@media (orientation: portrait) {
+  .lesson-10 p { font-size: 14vw; line-height: 14vw; }
+}
+
+/* LESSON 11 */
+.lesson-11 { font-family: 'Finger Paint'; }
+.lesson-11 p { font-size: 9vw; line-height: 10vw; }
+@media (orientation: portrait) {
+  .lesson-11 p { font-size: 14vw; line-height: 15vw; }
+}
+
+/* LESSON 12 */
+.lesson-12 { font-family: 'Barrio'; }
+.lesson-12 p { font-size: 10vw; line-height: 9vw; }
+@media (orientation: portrait) {
+  .lesson-12 p { font-size: 15vw; line-height: 14vw; }
+}
+
+/* LESSON 13 */
+.lesson-13 { font-family: 'Yatra One'; }
+.lesson-13 p { font-size: 6vw; line-height: 6vw; }
+@media (orientation: portrait) {
+  .lesson-13 p { font-size: 11vw; line-height: 11vw; }
+}
+
+/* LESSON 14 */
+.lesson-14 { font-family: 'Katibeh'; text-transform: uppercase; }
+.lesson-14 p { font-size: 15vw; line-height: 8vw; padding-top: 8vw; }
+@media (orientation: portrait) {
+  .lesson-14 p { font-size: 17vw; line-height: 12vw; padding-top: 12vw; }
+}
+
+/* LESSON 15 */
+.lesson-15 { font-family: 'Life Savers'; }
+.lesson-15 p { font-size: 7vw; line-height: 7vw; }
+@media (orientation: portrait) {
+  .lesson-15 p { font-size: 12vw; line-height: 14vw; }
+}
+
+/* LESSON 16 */
+.lesson-16 { font-family: 'Lily Script One'; }
+.lesson-16 p { font-size: 11vw; line-height: 11vw; }
+@media (orientation: portrait) {
+  .lesson-16 p { font-size: 12vw; line-height: 12vw; }
+}
+
+/* LESSON 17 */
+.lesson-17 { font-family: 'Sarina'; }
+.lesson-17 p { font-size: 7vw; line-height: 7vw; }
+@media (orientation: portrait) {
+  .lesson-17 p { font-size: 16vw; line-height: 16vw; }
+}
+
+/* LESSON 18 */
+.lesson-18 { font-family: 'Anybody'; font-style: italic; font-weight: 700; }
+.lesson-18 p { font-size: 5vw; line-height: 6vw; }
+@media (orientation: portrait) {
+  .lesson-18 p { font-size: 8vw; line-height: 11vw; }
+}
+
+/* LESSON 19 */
+.lesson-19 { font-family: 'Cabin Sketch'; font-weight: 700; }
+.lesson-19 p { font-size: 6vw; line-height: 6vw; }
+@media (orientation: portrait) {
+  .lesson-19 p { font-size: 11vw; line-height: 11vw; }
+}
+
+/* LESSON 20 */
+.lesson-20 { font-family: 'Bebas Neue'; }
+.lesson-20 p { font-size: 10vw; line-height: 8vw; }
+@media (orientation: portrait) {
+  .lesson-20 p { font-size: 15vw; line-height: 13vw; }
+}
+
+/* LESSON 21 */
+.lesson-21 { font-family: 'Graduate'; text-transform: uppercase; }
+.lesson-21 p { font-size: 10vw; line-height: 9vw; }
+@media (orientation: portrait) {
+  .lesson-21 p { font-size: 23vw; line-height: 22vw; }
+}
+
+/* LESSON 22 — reuse Yeseva One (no original style defined, falls through to a reasonable choice) */
+.lesson-22 { font-family: 'Yeseva One'; }
+.lesson-22 p { font-size: 7vw; line-height: 7vw; }
+@media (orientation: portrait) {
+  .lesson-22 p { font-size: 12vw; line-height: 12vw; }
+}
+
+/* LESSON 23 */
+.lesson-23 { font-family: 'Bebas Neue'; letter-spacing: 0.05em; }
+.lesson-23 p { font-size: 14vw; line-height: 12vw; }
+@media (orientation: portrait) {
+  .lesson-23 p { font-size: 20vw; line-height: 18vw; }
+}
+
+/* LESSON 24 */
+.lesson-24 { font-family: 'Spline Sans Mono'; }
+.lesson-24 p { font-size: 7vw; line-height: 8vw; }
+@media (orientation: portrait) {
+  .lesson-24 p { font-size: 11vw; line-height: 12vw; }
+}
