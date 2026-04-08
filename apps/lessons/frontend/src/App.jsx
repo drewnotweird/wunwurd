@@ -82,13 +82,21 @@ export default function App() {
     }, 60)
 
     setTimeout(() => {
+      // Phase 2: swap content while still invisible, no animation class
       setIdx(toIdx)
-      setAnimClass(`enter-${dir}`)
-      setSmallVisible(true)
-      setTimeout(() => {
-        setAnimClass('')
-        transitioning.current = false
-      }, 450)
+      setAnimClass('hidden')
+
+      // Phase 3: enter animation starts only after content has committed to DOM
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setAnimClass(`enter-${dir}`)
+          setSmallVisible(true)
+          setTimeout(() => {
+            setAnimClass('')
+            transitioning.current = false
+          }, 450)
+        })
+      })
     }, 300)
   }, [])
 
