@@ -25,7 +25,7 @@ export default function Home() {
 
       <section>
         <p>
-          I also volunteer for <a href="https://makeithappen.club/" target="_blank" rel="noreferrer">Make It Happen</a>; <a href="https://www.facebook.com/watch/?v=292154525613676" target="_blank" rel="noreferrer">mentor</a> final year design students at GCU; run an Instagram{' '}
+          I also volunteer for <a href="https://makeithappen.club/" target="_blank" rel="noreferrer">Make It Happen</a>; <a href="/lessons" target="_blank" rel="noreferrer">mentor</a> final year design students at GCU; run an Instagram{' '}
           <a href="https://www.instagram.com/introducing___" target="_blank" rel="noreferrer">introducing</a> different
           creatives; let people{' '}
           <a href="https://www.whiskyblender.com/" target="_blank" rel="noreferrer">create their own whisky</a>;{' '}
