@@ -18,9 +18,13 @@
   background: #000;
   padding: 4px 8px;
   z-index: 10;
+  text-transform: uppercase;
 }
 
-.ui-title { pointer-events: none; }
+.ui-title {
+  pointer-events: none;
+  font-size: 22px;
+}
 
 .credit-name {
   cursor: pointer;
@@ -32,20 +36,20 @@
 
 /* Landscape / desktop: stacked, title left-centre, credits right-centre */
 @media (orientation: landscape) {
-  .ui-title,
   .ui-credits {
     font-size: clamp(10px, 1.1vw, 16px);
   }
 
   .ui-title {
-    left: 2vw;
+    font-size: clamp(18px, 2vw, 32px);
+    left: 6vw;
     top: 50%;
     transform: translateY(-50%);
     white-space: nowrap;
   }
 
   .ui-credits {
-    right: 2vw;
+    right: 6vw;
     top: 50%;
     transform: translateY(-50%);
     text-align: left;
@@ -64,16 +68,16 @@
   }
 
   .ui-title {
-    top: 2vw;
+    top: 6vw;
     left: 50%;
     transform: translateX(-50%);
     white-space: nowrap;
   }
 
   .ui-credits {
-    bottom: 2vw;
-    left: 4vw;
-    right: 4vw;
+    bottom: 6vw;
+    left: 6vw;
+    right: 6vw;
     text-align: center;
   }
 }
