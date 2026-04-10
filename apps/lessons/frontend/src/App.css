@@ -4,6 +4,8 @@
   position: fixed;
   inset: 0;
   color: #e3d4c7;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 /* Fixed noise background — never moves */
