@@ -22,8 +22,8 @@ function MonsterCard({ monster, label, side }) {
 export default function CompareOverlay({ wrongMonster, correctMonster }) {
   return (
     <div className="compare-overlay">
-      <MonsterCard monster={wrongMonster} label="YOUR PICK" side="wrong" />
-      <MonsterCard monster={correctMonster} label="CORRECT" side="correct" />
+      <MonsterCard monster={wrongMonster} label="Mashed" side="wrong" />
+      <MonsterCard monster={correctMonster} label="Correct" side="correct" />
     </div>
   )
 }

@@ -91,7 +91,7 @@ export default function GameScreen({ level, totalLevels, onComplete, onGameOver,
         autoStart={level === 1}
         showCountdown={phase === 'countdown'}
         onCountdownDone={handleCountdownDone}
-        slideIn={level > 1}
+        showHint={phase === 'generating' && level > 1}
       />
 
       {/* Hand slap overlay */}
@@ -103,7 +103,7 @@ export default function GameScreen({ level, totalLevels, onComplete, onGameOver,
       {phase === 'celebrating' && (
         <div className="level-clear">
           <div className="level-clear-level">LEVEL {level}</div>
-          <div className="level-clear-cleared">CLEARED!</div>
+          <div className="level-clear-cleared">MASHED!</div>
           <div className="level-clear-time">{levelTime.toFixed(2)}s</div>
         </div>
       )}

@@ -5,6 +5,19 @@
   background: #150b2e;
 }
 
+/* Noise texture overlay */
+.app-root::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+}
+
 /* ===== GAME SCREEN ===== */
 .game-screen {
   position: fixed;
@@ -21,17 +34,7 @@
 }
 
 .card-table::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 40px,
-    rgba(255,255,255,0.012) 40px,
-    rgba(255,255,255,0.012) 80px
-  );
-  pointer-events: none;
+  content: none;
 }
 
 .card-table.fail {
@@ -165,20 +168,22 @@
   justify-content: center;
   background: linear-gradient(160deg, #150b2e 0%, #0a0515 100%);
   transform: translateY(0);
-  transition: transform 1s cubic-bezier(0.23, 1, 0.32, 1),
-              background 0.3s ease-out;
+  transition: transform 1s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-/* Entering: start off-screen above with no transition so the element
-   is placed instantly. When this class is removed the transition fires
-   and the panel slides down into view. */
-.generator-panel.entering {
-  transform: translateY(-100%);
-  transition: none;
-}
-
-.generator-panel.active {
+/* Green overlay that fades in/out smoothly — avoids gradient-to-solid flicker */
+.generator-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
   background: #1b5e20;
+  opacity: 0;
+  transition: opacity 0.4s ease-out;
+  pointer-events: none;
+}
+
+.generator-panel.active::before {
+  opacity: 1;
 }
 
 .generator-panel.revealed {
@@ -315,8 +320,9 @@
     0 calc(var(--machine-h) * 0.028) 0 #5a0808,
     0 calc(var(--machine-h) * 0.035) 20px rgba(0,0,0,0.55),
     inset 0 2px 5px rgba(255,150,150,0.45);
-  transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1.2),
-              box-shadow 0.12s cubic-bezier(0.4, 0, 0.2, 1.2);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1.2),
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1.2),
+              background 0.4s ease-out;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
@@ -360,18 +366,133 @@
   100% { transform: translateX(-50%) scale(1); opacity: 1; }
 }
 
-/* ===== COUNTDOWN (positioned over generator button) ===== */
-.generator-countdown {
+/* Machine THUD shake */
+.generator-machine.shaking {
+  animation: machineThud 0.6s ease-out;
+}
+
+@keyframes machineThud {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  8%   { transform: translate(-7px, -4px) rotate(-0.6deg); }
+  18%  { transform: translate(8px, 5px) rotate(0.6deg); }
+  30%  { transform: translate(-6px, -3px) rotate(-0.45deg); }
+  42%  { transform: translate(6px, 3px) rotate(0.45deg); }
+  55%  { transform: translate(-4px, -2px) rotate(-0.25deg); }
+  68%  { transform: translate(4px, 2px) rotate(0.25deg); }
+  82%  { transform: translate(-2px, -1px) rotate(-0.1deg); }
+  92%  { transform: translate(2px, 1px) rotate(0.1deg); }
+}
+
+/* Emanating rings from button on press */
+.button-thud-ring {
   position: absolute;
   left: 50%;
-  top: 71%;
-  transform: translate(-50%, -50%);
+  top: 74%;
+  width: 34%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.button-thud-ring--1 { border: 3px solid rgba(165, 214, 167, 0.9); animation: thudRing 0.55s ease-out 0s forwards; }
+.button-thud-ring--2 { border: 2px solid rgba(165, 214, 167, 0.75); animation: thudRing 0.55s ease-out 0.1s forwards; }
+.button-thud-ring--3 { border: 2px solid rgba(165, 214, 167, 0.6); animation: thudRing 0.55s ease-out 0.21s forwards; }
+.button-thud-ring--4 { border: 1px solid rgba(165, 214, 167, 0.5); animation: thudRing 0.55s ease-out 0.33s forwards; }
+.button-thud-ring--5 { border: 1px solid rgba(165, 214, 167, 0.35); animation: thudRing 0.55s ease-out 0.46s forwards; }
+
+@keyframes thudRing {
+  0%   { transform: translate(-50%, -50%) scale(0.9); opacity: 1; }
+  40%  { opacity: 0.55; }
+  100% { transform: translate(-50%, -50%) scale(4.2); opacity: 0; }
+}
+
+/* Starburst on monster lock — sits before .generator-machine in DOM so it's behind it */
+.generator-starburst {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 140vmax;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%) scale(0.12) rotate(-8deg);
+  background: repeating-conic-gradient(
+    rgba(255, 215, 60, 0.8) 0deg 9deg,
+    transparent 9deg 22deg
+  );
+  border-radius: 50%;
+  pointer-events: none;
+  animation: starburstBurst 0.75s cubic-bezier(0.15, 0.7, 0.3, 1) forwards;
+}
+
+@keyframes starburstBurst {
+  0%   { transform: translate(-50%, -50%) scale(0.12) rotate(-8deg); opacity: 1; }
+  30%  { opacity: 0.85; }
+  100% { transform: translate(-50%, -50%) scale(1) rotate(6deg); opacity: 0; }
+}
+
+/* ===== PANEL HINTS (inside generator panel, beside machine) ===== */
+.panel-hint {
+  position: absolute;
+  left: 3%;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  pointer-events: none;
+  z-index: 5;
+  animation: fadeIn 0.5s ease-out both;
+}
+
+@media (orientation: portrait) {
+  .panel-hint {
+    left: 50%;
+    top: auto;
+    bottom: 14%;
+    transform: translateX(-50%);
+    align-items: center;
+    text-align: center;
+  }
+}
+
+.panel-hint-text {
+  font-family: 'Knewave', cursive;
+  font-size: clamp(24px, 4.5vw, 50px);
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.05;
+  text-shadow: 2px 2px 10px rgba(0,0,0,0.7);
+}
+
+.hint-arrow--up {
+  display: none;
+  width: clamp(28px, 5vw, 48px);
+  height: auto;
+  filter: drop-shadow(0 1px 4px rgba(0,0,0,0.5));
+}
+
+.hint-arrow--right {
+  display: block;
+  width: clamp(80px, 14vw, 140px);
+  height: auto;
+  filter: drop-shadow(0 1px 4px rgba(0,0,0,0.5));
+}
+
+@media (orientation: portrait) {
+  .hint-arrow--up    { display: block; }
+  .hint-arrow--right { display: none; }
+}
+
+/* ===== COUNTDOWN (positioned to the right of the generator in landscape) ===== */
+.generator-countdown {
+  position: absolute;
+  right: 4%;
+  top: 50%;
+  transform: translateY(-50%);
   font-family: 'Creepster', sans-serif;
   font-size: clamp(70px, 18vw, 130px);
   color: #ffffff;
-  text-shadow:
-    0 0 30px rgba(255,255,255,0.5),
-    3px 3px 0 rgba(0,0,0,0.5);
+  text-shadow: 3px 3px 0 rgba(0,0,0,0.4);
   pointer-events: none;
   z-index: 5;
   white-space: nowrap;
@@ -379,10 +500,16 @@
 }
 
 .generator-countdown--mash {
-  font-size: clamp(100px, 28vw, 220px);
-  text-shadow:
-    0 0 60px rgba(255,255,255,0.6),
-    4px 4px 0 rgba(0,0,0,0.5);
+  font-size: clamp(60px, 16vw, 120px);
+}
+
+@media (orientation: portrait) {
+  .generator-countdown {
+    right: auto;
+    left: 50%;
+    top: 80%;
+    transform: translate(-50%, -50%);
+  }
 }
 
 @keyframes countdownPop {
@@ -452,11 +579,11 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(160deg, #150b2e 0%, #0a0515 100%);
+  background-color: #150b2e;
   gap: 16px;
   overflow: hidden;
   transform: translateY(0);
-  transition: background 0.25s ease-out,
+  transition: background-color 0.4s ease-out,
               transform 1s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
@@ -466,7 +593,7 @@
 }
 
 .start-screen.start-active {
-  background: #1b5e20;
+  background-color: #1b5e20;
 }
 
 .start-screen::before {
@@ -539,11 +666,11 @@
   animation: fadeIn 0.5s 0.3s ease-out both;
 }
 
-/* "Mash the button to start" hint — sits to the left of the machine */
+/* "Mash that button" hint — landscape: left of machine; portrait: bottom centre */
 .start-hint {
   position: absolute;
   left: 3%;
-  top: 58%;
+  top: 50%;
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
@@ -556,7 +683,19 @@
   animation: fadeIn 0.5s 1.4s ease-out both;
 }
 
+@media (orientation: portrait) {
+  .start-hint {
+    left: 50%;
+    top: auto;
+    bottom: 3%;
+    transform: translateX(-50%);
+    align-items: center;
+    text-align: center;
+  }
+}
+
 .start-hint--out {
+  animation: none; /* cancel the fill-mode so opacity transition can take over */
   opacity: 0;
 }
 
@@ -567,12 +706,6 @@
   margin: 0;
   line-height: 1.05;
   text-shadow: 2px 2px 10px rgba(0,0,0,0.7);
-}
-
-.start-hint-arrow {
-  width: clamp(80px, 14vw, 140px);
-  height: auto;
-  filter: drop-shadow(0 1px 4px rgba(0,0,0,0.5));
 }
 
 /* ===== GAME OVER ===== */
@@ -734,10 +867,10 @@
 }
 
 .level-clear-level {
-  font-family: 'Creepster', sans-serif;
+  font-family: 'Knewave', cursive;
   font-size: clamp(22px, 6vw, 44px);
   color: rgba(255,255,255,0.7);
-  letter-spacing: 0.15em;
+  letter-spacing: 0.05em;
   animation: lcSlideUp 0.4s cubic-bezier(0.2, 1.4, 0.4, 1) 0.1s both;
 }
 
@@ -751,10 +884,10 @@
 }
 
 .level-clear-time {
-  font-family: 'Creepster', sans-serif;
+  font-family: 'Knewave', cursive;
   font-size: clamp(18px, 5vw, 36px);
   color: rgba(255,255,255,0.6);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.05em;
   animation: lcSlideUp 0.4s ease-out 0.5s both;
 }
 
@@ -839,9 +972,8 @@
 }
 
 .compare-card-label {
-  font-family: 'Creepster', sans-serif;
-  font-size: clamp(14px, 3.5vw, 22px);
-  letter-spacing: 0.1em;
+  font-family: 'Knewave', cursive;
+  font-size: clamp(20px, 5vw, 30px);
   color: #fff;
   text-shadow: 0 2px 8px rgba(0,0,0,0.6);
 }
