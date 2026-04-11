@@ -3,9 +3,21 @@ import StartScreen from './components/StartScreen'
 import GameScreen from './components/GameScreen'
 import GameOver from './components/GameOver'
 import WinScreen from './components/WinScreen'
+import { TOTAL_LEVELS } from './data/levels'
 import './App.css'
 
-const TOTAL_LEVELS = 10
+const LAST_MONSTER_KEY = 'mm_last_monster'
+
+function loadLastMonster() {
+  try {
+    const saved = localStorage.getItem(LAST_MONSTER_KEY)
+    return saved ? JSON.parse(saved) : null
+  } catch { return null }
+}
+
+function saveLastMonster(monster) {
+  try { localStorage.setItem(LAST_MONSTER_KEY, JSON.stringify(monster)) } catch {}
+}
 
 export default function App() {
   const [screen, setScreen] = useState('start')
@@ -13,8 +25,11 @@ export default function App() {
   const [totalTime, setTotalTime] = useState(0)
   const accTimeRef = useRef(0)
   const levelRef = useRef(1)
-  const prevMonsterRef = useRef(null) // arrangement to start each generator from
-  const startSlideInRef = useRef(false) // true when returning from game
+  const prevMonsterRef = useRef(null)
+  const startSlideInRef = useRef(false)
+
+  // Initialise from localStorage so home screen shows the last played monster
+  const [homeMonster, setHomeMonster] = useState(loadLastMonster)
 
   function startGame(initialMonster) {
     prevMonsterRef.current = initialMonster ?? null
@@ -27,6 +42,8 @@ export default function App() {
 
   function onLevelComplete(timeUsed, lockedMonster) {
     prevMonsterRef.current = lockedMonster ?? null
+    saveLastMonster(lockedMonster)
+    setHomeMonster(lockedMonster)
     accTimeRef.current += timeUsed
     if (levelRef.current >= TOTAL_LEVELS) {
       setTotalTime(accTimeRef.current)
@@ -37,16 +54,24 @@ export default function App() {
     }
   }
 
-  function onGameOver() {
-    // Generator curtain is already fully down when this fires — start screen
-    // appears seamlessly beneath it, no additional slide-in needed.
+  function onGameOver(lastMonster) {
+    if (lastMonster) {
+      saveLastMonster(lastMonster)
+      setHomeMonster(lastMonster)
+    }
     startSlideInRef.current = false
     setScreen('start')
   }
 
   return (
     <div className="app-root">
-      {screen === 'start' && <StartScreen onPlay={startGame} slideIn={startSlideInRef.current} />}
+      {screen === 'start' && (
+        <StartScreen
+          onPlay={startGame}
+          slideIn={startSlideInRef.current}
+          initialMonster={homeMonster}
+        />
+      )}
       {screen === 'game' && (
         <GameScreen
           key={level}

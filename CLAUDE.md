@@ -31,6 +31,19 @@ On this machine, `npm install` sometimes creates `node_modules/.bin/vite` as a p
 ### pointing
 - Photos follow the cursor/touch; hotspots calibrated per photo in `src/data/images.js`
 
+### monstermash
+- Match-the-monster card game: generator spins up a monster, player finds it among scattered cards
+- 15 levels defined in `src/data/levels.js` (LEVEL_CONFIG array); level config drives both time limit and card count
+- Level 1: 10s / 2 cards → Level 15: 1s / 12 cards (see levels.js for full table)
+- Game phases per level: `generating → countdown → playing → slapping → celebrating/comparing/timeout → [curtain drops] → next level / home`
+- Generator curtain (z-index 50) covers all transitions; slides up on `revealed=true`; slides back down to end a level
+- Button pressed state: yellow (matching machine casing); before press: red
+- Home screen starts at last game monster (stored in `localStorage` key `mm_last_monster`)
+- `src/data/monsters.js` — heads/bodies/legs image arrays (3 each); titleHeads/Bodies/Legs for start screen (face 0 & 2 are monsters, face 1 is title)
+- Timer: full-screen background wash (opacity 0.17) that shrinks left→right; green→yellow→red
+- Starburst effect on monster lock: `repeating-conic-gradient` expanding and fading (1.6s)
+- TimeoutScreen shown when timer expires before returning to home
+
 ## New app checklist
 When setting up any new app, always do all of the following before considering it done:
 1. `vite.config.js` — `base: process.env.VITE_BASE_PATH || '/'`

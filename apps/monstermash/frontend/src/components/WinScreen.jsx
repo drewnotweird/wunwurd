@@ -62,7 +62,7 @@ export default function WinScreen({ totalTime, onPlay }) {
       </div>
 
       <div className="win-time" style={{ position: 'relative', zIndex: 1 }}>
-        All 10 levels in {timeStr}s
+        All 15 levels in {timeStr}s
       </div>
 
       <button

@@ -16,10 +16,13 @@ export default function Generator({ revealed, onLocked, initialMonster, autoStar
   const [buttonPressed, setButtonPressed] = useState(!!autoStart)
   const [shaking, setShaking] = useState(false)
   const [thumped, setThumped] = useState(false)
+  const hintDismissedRef = useRef(false)
 
-  // Reset button colour after curtain rises off-screen (~1100ms transition)
+  // Once the curtain rises, permanently suppress the locked hint so it
+  // doesn't reappear when the curtain comes back down.
   useEffect(() => {
     if (!revealed) return
+    hintDismissedRef.current = true
     const t = setTimeout(() => setButtonPressed(false), 1100)
     return () => clearTimeout(t)
   }, [revealed])
@@ -80,7 +83,7 @@ export default function Generator({ revealed, onLocked, initialMonster, autoStar
     doneCountRef.current += 1
     if (doneCountRef.current >= 3) {
       setLocked(true)
-      setButtonPressed(false) // start fading background back to purple immediately
+      setButtonPressed(false) // fade background back to purple immediately
       setTimeout(() => onLocked(targetRef.current), 600)
     }
   }
@@ -91,7 +94,7 @@ export default function Generator({ revealed, onLocked, initialMonster, autoStar
   return (
     <div className={`generator-panel${revealed ? ' revealed' : ''}${buttonPressed ? ' active' : ''}`}>
 
-      {/* Starburst — rendered before machine so it's behind it in DOM stacking order */}
+      {/* Starburst — rendered before machine so it's visually behind it */}
       {locked && <div className="generator-starburst" aria-hidden="true" />}
 
       <div className={`generator-machine${shaking ? ' shaking' : ''}`}>
@@ -123,7 +126,7 @@ export default function Generator({ revealed, onLocked, initialMonster, autoStar
         />
       </div>
 
-      {/* Countdown — outside machine, positioned to the right in landscape */}
+      {/* Countdown — outside the machine, shown to the right in landscape */}
       {countVisible && (
         <div
           className={`generator-countdown${isMash ? ' generator-countdown--mash' : ''}`}
@@ -133,17 +136,19 @@ export default function Generator({ revealed, onLocked, initialMonster, autoStar
         </div>
       )}
 
-      {/* "Find this monster and mash it!" hint — when locked, during countdown */}
-      {locked && (
-        <div className="panel-hint" key="find-hint" aria-hidden="true">
-          <svg viewBox="0 0 48 80" className="hint-arrow--up" aria-hidden="true">
-            <path d="M24,72 C20,52 28,32 24,8" stroke="white" strokeWidth="3" fill="none" strokeLinecap="round" />
-            <path d="M24,8 L12,26 M24,8 L36,26" stroke="white" strokeWidth="3" fill="none" strokeLinecap="round" />
+      {/* "Find this monster" hint — shown when locked, dismissed once curtain rises */}
+      {locked && !hintDismissedRef.current && (
+        <div className="panel-hint panel-hint--find" key="find-hint" aria-hidden="true">
+          <p className="panel-hint-text">Find this<br />monster</p>
+          <svg viewBox="0 0 110 40" className="hint-arrow--right" aria-hidden="true">
+            <path d="M 5,21 C 22,19 46,22 68,20 C 82,18 94,20 104,20" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" />
+            <path d="M 104,20 C 96,15 88,11 83,9" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" />
+            <path d="M 104,20 C 96,25 89,29 84,32" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" />
           </svg>
-          <p className="panel-hint-text">Find this<br />monster<br />and mash it!</p>
-          <svg viewBox="0 0 110 56" className="hint-arrow--right" aria-hidden="true">
-            <path d="M 6,28 C 24,12 70,44 104,28" stroke="white" strokeWidth="3" fill="none" strokeLinecap="round" />
-            <path d="M 104,28 L 88,16 M 104,28 L 88,40" stroke="white" strokeWidth="3" fill="none" strokeLinecap="round" />
+          <svg viewBox="0 0 48 84" className="hint-arrow--up" aria-hidden="true">
+            <path d="M 25,80 C 23,62 27,44 22,24 C 20,16 21,10 24,5" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" />
+            <path d="M 24,5 C 18,14 13,20 10,28" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" />
+            <path d="M 24,5 C 30,13 35,19 38,26" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" />
           </svg>
         </div>
       )}
@@ -151,14 +156,18 @@ export default function Generator({ revealed, onLocked, initialMonster, autoStar
       {/* "Ready to mash again?" hint — between levels, before player presses */}
       {showHint && !spinning && !locked && (
         <div className="panel-hint" key="ready-hint" aria-hidden="true">
-          <p className="panel-hint-text">Ready to<br />mash again?</p>
-          <svg viewBox="0 0 48 80" className="hint-arrow--up" aria-hidden="true">
-            <path d="M24,8 C20,28 28,52 24,72" stroke="white" strokeWidth="3" fill="none" strokeLinecap="round" />
-            <path d="M24,72 L12,54 M24,72 L36,54" stroke="white" strokeWidth="3" fill="none" strokeLinecap="round" />
+          <p className="panel-hint-text">Let's mash<br />another!</p>
+          {/* Landscape: downward-curving arrow toward the button */}
+          <svg viewBox="0 0 110 70" className="hint-arrow--right hint-arrow--down" aria-hidden="true">
+            <path d="M 5,10 C 22,13 48,11 68,32 C 84,48 96,58 106,64" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M 106,64 C 98,60 86,57 82,52" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" />
+            <path d="M 106,64 C 103,55 102,46 100,42" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" />
           </svg>
-          <svg viewBox="0 0 110 56" className="hint-arrow--right" aria-hidden="true">
-            <path d="M 6,28 C 24,12 70,44 104,28" stroke="white" strokeWidth="3" fill="none" strokeLinecap="round" />
-            <path d="M 104,28 L 88,16 M 104,28 L 88,40" stroke="white" strokeWidth="3" fill="none" strokeLinecap="round" />
+          {/* Portrait: up arrow */}
+          <svg viewBox="0 0 48 84" className="hint-arrow--up" aria-hidden="true">
+            <path d="M 25,80 C 23,62 27,44 22,24 C 20,16 21,10 24,5" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" />
+            <path d="M 24,5 C 18,14 13,20 10,28" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" />
+            <path d="M 24,5 C 30,13 35,19 38,26" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" />
           </svg>
         </div>
       )}

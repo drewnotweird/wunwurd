@@ -1,13 +1,50 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useMemo } from 'react'
 import Generator from './Generator'
 import CardTable from './CardTable'
 import HandSlap from './HandSlap'
-import Timer from './Timer'
 import CompareOverlay from './CompareOverlay'
+import TimeoutScreen from './TimeoutScreen'
+import { LEVEL_CONFIG } from '../data/levels'
+
+const BURST_COLOURS = ['#ffd54f', '#ff5722', '#4caf50', '#2196f3', '#e91e63', '#ff9800', '#8bc34a', '#00bcd4']
+
+function MashedBurst() {
+  const pieces = useMemo(() =>
+    Array.from({ length: 28 }, (_, i) => ({
+      id: i,
+      angle: (i / 28) * 360 + (Math.random() - 0.5) * 10,
+      distance: 90 + Math.random() * 140,
+      size: 7 + Math.random() * 11,
+      color: BURST_COLOURS[i % BURST_COLOURS.length],
+      duration: 0.55 + Math.random() * 0.4,
+      delay: Math.random() * 0.18,
+      shape: Math.random() > 0.5 ? '50%' : '2px',
+    })), [])
+
+  return (
+    <div className="mashed-burst" aria-hidden="true">
+      {pieces.map(p => (
+        <div
+          key={p.id}
+          className="mashed-burst-piece"
+          style={{
+            '--angle': `${p.angle}deg`,
+            '--dist': `${p.distance}px`,
+            width: p.size,
+            height: p.size,
+            background: p.color,
+            borderRadius: p.shape,
+            animationDuration: `${p.duration}s`,
+            animationDelay: `${p.delay}s`,
+          }}
+        />
+      ))}
+    </div>
+  )
+}
 
 export default function GameScreen({ level, totalLevels, onComplete, onGameOver, initialMonster }) {
   const [phase, setPhase] = useState('generating')
-  // generating → countdown → playing → slapping (any tap) → done
   const [monster, setMonster] = useState(null)
   const [generatorRevealed, setGeneratorRevealed] = useState(false)
   const [slapTarget, setSlapTarget] = useState(null)
@@ -16,7 +53,9 @@ export default function GameScreen({ level, totalLevels, onComplete, onGameOver,
   const [levelTime, setLevelTime] = useState(0)
   const startTimeRef = useRef(0)
 
-  const timeLimit = 11 - level // 10s for L1, 1s for L10
+  const cfg = LEVEL_CONFIG[level - 1] ?? LEVEL_CONFIG[LEVEL_CONFIG.length - 1]
+  const timeLimit = cfg.time
+  const cardCount = cfg.cards
 
   function handleMonsterLocked(m) {
     setMonster(m)
@@ -26,7 +65,6 @@ export default function GameScreen({ level, totalLevels, onComplete, onGameOver,
   function handleCountdownDone() {
     setGeneratorRevealed(true)
     startTimeRef.current = performance.now()
-    // Short delay so generator starts moving before cards become interactive
     setTimeout(() => setPhase('playing'), 250)
   }
 
@@ -40,10 +78,10 @@ export default function GameScreen({ level, totalLevels, onComplete, onGameOver,
 
   function handleTimeout() {
     if (phase !== 'playing') return
-    setPhase('fail')
-    // Let the shake settle, then lower curtain over the card table before exiting
-    setTimeout(() => setGeneratorRevealed(false), 550)
-    setTimeout(onGameOver, 1650)
+    setPhase('timeout')
+    // Lower curtain over timeout screen, then exit
+    setTimeout(() => setGeneratorRevealed(false), 2200)
+    setTimeout(() => onGameOver(monster), 3300)
   }
 
   function handleSlapDone() {
@@ -51,39 +89,34 @@ export default function GameScreen({ level, totalLevels, onComplete, onGameOver,
     if (slapCorrect) {
       setLevelTime(elapsed)
       setPhase('celebrating')
-      // Lower curtain over celebration screen, then advance to next level
       setTimeout(() => setGeneratorRevealed(false), 1700)
       setTimeout(() => onComplete(elapsed, monster), 2800)
     } else {
       setPhase('comparing')
-      // Lower curtain over compare screen, then exit to home
       setTimeout(() => setGeneratorRevealed(false), 2200)
-      setTimeout(onGameOver, 3350)
+      setTimeout(() => onGameOver(monster), 3350)
     }
   }
 
   const tableActive = phase === 'playing'
-  const tableFail = phase === 'fail' || phase === 'comparing' || phase === 'celebrating'
+  const tableFail = phase === 'fail' || phase === 'comparing' || phase === 'celebrating' || phase === 'timeout'
 
   return (
     <div className="game-screen">
-      {/* Card table lives behind the generator curtain */}
       {monster && (
         <CardTable
           monster={monster}
           level={level}
+          cardCount={cardCount}
           active={tableActive}
           onCardTap={handleCardTap}
           fail={tableFail || phase === 'slapping'}
+          timerDuration={timeLimit}
+          onTimeout={handleTimeout}
+          revealed={generatorRevealed}
         />
       )}
 
-      {/* Timer bar — unmounts when player taps a card */}
-      {phase === 'playing' && (
-        <Timer duration={timeLimit} onTimeout={handleTimeout} />
-      )}
-
-      {/* Generator panel — slides up on reveal */}
       <Generator
         revealed={generatorRevealed}
         onLocked={handleMonsterLocked}
@@ -94,23 +127,28 @@ export default function GameScreen({ level, totalLevels, onComplete, onGameOver,
         showHint={phase === 'generating' && level > 1}
       />
 
-      {/* Hand slap overlay */}
       {phase === 'slapping' && slapTarget && (
         <HandSlap target={slapTarget} isCorrect={slapCorrect} onComplete={handleSlapDone} />
       )}
 
-      {/* Level clear celebration */}
       {phase === 'celebrating' && (
         <div className="level-clear">
+          <MashedBurst key={level} />
           <div className="level-clear-level">LEVEL {level}</div>
           <div className="level-clear-cleared">MASHED!</div>
           <div className="level-clear-time">{levelTime.toFixed(2)}s</div>
+          {levelTime < timeLimit * 0.45 && (
+            <div className="level-clear-bonus">LIGHTNING FAST!</div>
+          )}
         </div>
       )}
 
-      {/* Compare overlay — wrong vs correct after a bad tap */}
       {phase === 'comparing' && wrongMonster && monster && (
         <CompareOverlay wrongMonster={wrongMonster} correctMonster={monster} />
+      )}
+
+      {phase === 'timeout' && monster && (
+        <TimeoutScreen level={level} correctMonster={monster} />
       )}
     </div>
   )
