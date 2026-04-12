@@ -8,6 +8,7 @@ import { LEVEL_CONFIG } from '../data/levels'
 
 const BURST_COLOURS = ['#ffd54f', '#ff6d00', '#e91e63', '#00e5ff', '#76ff03', '#ff1744', '#ffea00', '#d500f9', '#00e676', '#ff9100']
 
+
 function MashedBurst() {
   const pieces = useMemo(() =>
     Array.from({ length: 56 }, (_, i) => ({
