@@ -16,17 +16,22 @@ export default function Generator({ revealed, onLocked, initialMonster, autoStar
   const [buttonPressed, setButtonPressed] = useState(!!autoStart)
   const [shaking, setShaking] = useState(false)
   const [thumped, setThumped] = useState(false)
+  const [labelVisible, setLabelVisible] = useState(level !== 1)
   const hintDismissedRef = useRef(false)
 
   // Once the curtain rises, permanently suppress the locked hint so it
   // doesn't reappear when the curtain comes back down.
   useEffect(() => {
-    if (!revealed) return
-    // Delay dismissal until curtain has fully cleared (1s transition) so
-    // the hint rides up with the curtain rather than vanishing mid-animation
+    if (!revealed) {
+      // Curtain coming back down — fade label in when curtain settles
+      const t = setTimeout(() => setLabelVisible(true), 1100)
+      return () => clearTimeout(t)
+    }
+    // Curtain going up — hide label once fully off screen
     const t1 = setTimeout(() => { hintDismissedRef.current = true }, 1100)
     const t2 = setTimeout(() => setButtonPressed(false), 1100)
-    return () => { clearTimeout(t1); clearTimeout(t2) }
+    const t3 = setTimeout(() => setLabelVisible(false), 1100)
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3) }
   }, [revealed])
 
   // Countdown state — driven by showCountdown prop
@@ -114,8 +119,8 @@ export default function Generator({ revealed, onLocked, initialMonster, autoStar
           <Segment ref={legsRef} images={legs} onDone={handleSegmentDone} initialFace={initialMonster?.legs ?? 0} />
         </div>
         {locked && <div className="generator-locked-badge">LOCKED IN!</div>}
-        {level !== null && (
-          <div className={`generator-level-label${spinning || level === 1 ? ' generator-level-label--fade' : ''}`}>
+        {level !== null && labelVisible && (
+          <div className="generator-level-label generator-level-label--fade">
             LEVEL {level}
           </div>
         )}

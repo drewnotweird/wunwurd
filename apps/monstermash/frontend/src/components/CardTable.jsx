@@ -43,7 +43,9 @@ function getLayout(desiredCount) {
   const aspect = 2088 / 1370 // h/w
   const spacePerCard = (availW * availH) / desiredCount
   const rawW = Math.sqrt(spacePerCard / (aspect * 2.2))
-  const cardW = Math.max(80, Math.min(320, Math.round(rawW)))
+  const maxH = availH * 0.55
+  const maxW = Math.round(maxH / aspect)
+  const cardW = Math.max(80, Math.min(Math.min(320, maxW), Math.round(rawW)))
   const cardH = Math.round(cardW * aspect)
 
   const stepX = Math.round(cardW * 1.08)

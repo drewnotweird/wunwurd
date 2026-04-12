@@ -327,13 +327,13 @@
 
 .generator-level-label {
   position: absolute;
-  bottom: 5.5%;
+  bottom: 3.5%;
   left: 50%;
   transform: translateX(-50%);
-  font-family: 'Creepster', sans-serif;
-  font-size: clamp(12px, calc(var(--machine-w) * 0.055), 36px);
+  font-family: 'Knewave', cursive;
+  font-size: clamp(13px, calc(var(--machine-w) * 0.062), 38px);
   color: #5a0a0a;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.05em;
   white-space: nowrap;
   pointer-events: none;
   opacity: 1;
@@ -455,7 +455,6 @@
 }
 
 .generator-countdown--mash {
-  left: 50%;
   font-size: clamp(70px, 14vw, 140px);
 }
 
@@ -508,6 +507,7 @@
     bottom: 8%;
     transform: none;
     width: 100%;
+    max-width: 100%;
     justify-content: center;
     align-items: center;
     text-align: center;
@@ -720,6 +720,7 @@
     bottom: 8%;
     transform: none;
     width: 100%;
+    max-width: 100%;
     text-align: center;
   }
 }
@@ -911,7 +912,7 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
-  background: radial-gradient(ellipse at center, #010801 0%, #041a08 55%, #07300f 100%);
+  background: radial-gradient(ellipse at center, #010d0d 0%, #063535 55%, #0a5a5a 100%);
   animation: lcFadeIn 0.25s ease-out forwards;
   pointer-events: none;
 }
@@ -1004,7 +1005,7 @@
   align-items: center;
   justify-content: center;
   gap: clamp(16px, 5vw, 48px);
-  background: radial-gradient(ellipse at center, #0a0101 0%, #220412 50%, #3d0a28 100%);
+  background: radial-gradient(ellipse at center, #050002 0%, #1a0318 50%, #380830 100%);
   animation: compareFadeIn 0.35s ease-out forwards;
 }
 
@@ -1048,8 +1049,8 @@
 }
 
 .compare-card--correct .compare-card-inner {
-  border-color: #69f0ae;
-  box-shadow: 0 8px 32px rgba(105,240,174,0.4);
+  border: 8px solid #ffffff;
+  box-shadow: 0 8px 32px rgba(255,255,255,0.3);
 }
 
 .compare-card-part {
@@ -1090,7 +1091,7 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  background: radial-gradient(ellipse at center, #0a0101 0%, #220412 50%, #3d0a28 100%);
+  background: radial-gradient(ellipse at center, #050002 0%, #1a0318 50%, #380830 100%);
   animation: compareFadeIn 0.3s ease-out forwards;
 }
 

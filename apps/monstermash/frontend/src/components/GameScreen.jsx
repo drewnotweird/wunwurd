@@ -6,19 +6,19 @@ import CompareOverlay from './CompareOverlay'
 import TimeoutScreen from './TimeoutScreen'
 import { LEVEL_CONFIG } from '../data/levels'
 
-const BURST_COLOURS = ['#ffd54f', '#ff5722', '#4caf50', '#2196f3', '#e91e63', '#ff9800', '#8bc34a', '#00bcd4']
+const BURST_COLOURS = ['#ffd54f', '#ff6d00', '#e91e63', '#00e5ff', '#76ff03', '#ff1744', '#ffea00', '#d500f9', '#00e676', '#ff9100']
 
 function MashedBurst() {
   const pieces = useMemo(() =>
-    Array.from({ length: 28 }, (_, i) => ({
+    Array.from({ length: 56 }, (_, i) => ({
       id: i,
-      angle: (i / 28) * 360 + (Math.random() - 0.5) * 10,
-      distance: 90 + Math.random() * 140,
-      size: 7 + Math.random() * 11,
+      angle: (i / 56) * 360 + (Math.random() - 0.5) * 12,
+      distance: 160 + Math.random() * 280,
+      size: 10 + Math.random() * 18,
       color: BURST_COLOURS[i % BURST_COLOURS.length],
-      duration: 0.55 + Math.random() * 0.4,
-      delay: Math.random() * 0.18,
-      shape: Math.random() > 0.5 ? '50%' : '2px',
+      duration: 0.7 + Math.random() * 0.6,
+      delay: Math.random() * 0.25,
+      shape: Math.random() > 0.5 ? '50%' : '3px',
     })), [])
 
   return (
@@ -80,8 +80,8 @@ export default function GameScreen({ level, totalLevels, onComplete, onGameOver,
     if (phase !== 'playing') return
     setPhase('timeout')
     // Lower curtain over timeout screen, then exit
-    setTimeout(() => setGeneratorRevealed(false), 2200)
-    setTimeout(() => onGameOver(monster), 3300)
+    setTimeout(() => setGeneratorRevealed(false), 3500)
+    setTimeout(() => onGameOver(monster), 4600)
   }
 
   function handleSlapDone() {
@@ -89,12 +89,12 @@ export default function GameScreen({ level, totalLevels, onComplete, onGameOver,
     if (slapCorrect) {
       setLevelTime(elapsed)
       setPhase('celebrating')
-      setTimeout(() => setGeneratorRevealed(false), 1700)
-      setTimeout(() => onComplete(elapsed, monster), 2800)
+      setTimeout(() => setGeneratorRevealed(false), 3000)
+      setTimeout(() => onComplete(elapsed, monster), 4100)
     } else {
       setPhase('comparing')
-      setTimeout(() => setGeneratorRevealed(false), 2200)
-      setTimeout(() => onGameOver(monster), 3350)
+      setTimeout(() => setGeneratorRevealed(false), 3500)
+      setTimeout(() => onGameOver(monster), 4600)
     }
   }
 
