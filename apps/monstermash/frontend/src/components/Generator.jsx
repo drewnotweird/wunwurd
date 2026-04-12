@@ -205,7 +205,7 @@ export default function Generator({ revealed, onLocked, initialMonster, autoStar
       {/* "Ready to mash again?" hint — between levels, before player presses */}
       {showHint && !spinning && !locked && (
         <div className="panel-hint" key="ready-hint" aria-hidden="true">
-          <p className="panel-hint-text">Let's mash<br /> another!</p>
+          <p className="panel-hint-text">Ready?</p>
           {/* Landscape: downward-curving arrow toward the button */}
           <svg viewBox="0 0 110 70" className="hint-arrow--right hint-arrow--down" aria-hidden="true">
             <path d="M 5,10 C 22,13 48,11 68,32 C 84,48 96,58 106,64" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
