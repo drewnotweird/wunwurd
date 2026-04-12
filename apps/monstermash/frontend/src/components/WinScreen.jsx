@@ -34,6 +34,7 @@ function Confetti() {
           className="confetti-piece"
           style={{
             left: `${p.left}%`,
+            top: '-120px',
             backgroundColor: p.color,
             animationDuration: `${p.duration}s`,
             animationDelay: `${p.delay}s`,
@@ -54,15 +55,15 @@ export default function WinScreen({ totalTime, onPlay }) {
       <Confetti />
 
       <div className="win-title" style={{ position: 'relative', zIndex: 1 }}>
-        YOU<br />WIN!
+        YOU WIN!
+      </div>
+
+      <div className="win-time" style={{ position: 'relative', zIndex: 1 }}>
+        You completed the game in {timeStr}s, giving you the title of…
       </div>
 
       <div className="win-player-title" style={{ position: 'relative', zIndex: 1 }}>
         {title}
-      </div>
-
-      <div className="win-time" style={{ position: 'relative', zIndex: 1 }}>
-        All 15 levels in {timeStr}s
       </div>
 
       <button
@@ -70,7 +71,7 @@ export default function WinScreen({ totalTime, onPlay }) {
         onPointerDown={onPlay}
         style={{ position: 'relative', zIndex: 1, background: 'linear-gradient(135deg, #ffd54f 0%, #ff9800 100%)', color: '#1a0a2e' }}
       >
-        PLAY AGAIN
+        GO AGAIN!
       </button>
     </div>
   )

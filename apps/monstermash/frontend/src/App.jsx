@@ -31,6 +31,15 @@ export default function App() {
   // Initialise from localStorage so home screen shows the last played monster
   const [homeMonster, setHomeMonster] = useState(loadLastMonster)
 
+  // DEV SHORTCUT: press W to jump to win screen
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.key === 'w' || e.key === 'W') { accTimeRef.current = 35; setTotalTime(35); setScreen('win') }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [])
+
   // Set texture CSS variables with correct base path for deployment
   useEffect(() => {
     const base = import.meta.env.BASE_URL

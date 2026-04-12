@@ -58,7 +58,7 @@ export default function HandSlap({ target, isCorrect, onComplete }) {
       el.style.transition = 'top 0.35s cubic-bezier(0.4, 0, 0.8, 1)'
       el.style.top = `${vh}px`
     }, 560)
-    const t3 = setTimeout(onComplete, 1400)
+    const t3 = setTimeout(onComplete, 900)
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3) }
   }, [target])
 
@@ -72,7 +72,7 @@ export default function HandSlap({ target, isCorrect, onComplete }) {
           <filter id="splat-goo" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur in="SourceGraphic" stdDeviation="14" result="blur" />
             <feColorMatrix in="blur" mode="matrix"
-              values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -9"
+              values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 28 -12"
               result="goo" />
             <feComposite in="SourceGraphic" in2="goo" operator="atop" />
           </filter>
@@ -109,37 +109,8 @@ export default function HandSlap({ target, isCorrect, onComplete }) {
           className="goo-burst"
           style={{ left: impact.x, top: impact.y, position: 'fixed', zIndex: 28, pointerEvents: 'none' }}
         >
-          {/* Central splat — SVG star-burst with irregular lobes */}
-          <svg className="goo-central" viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">
-            <path fill="#00c853" d="
-              M 0,-85 C 12,-70 28,-72 22,-50
-              C 40,-58 55,-48 42,-30
-              C 62,-28 72,-12 55,0
-              C 72,10 65,28 46,28
-              C 54,44 44,58 26,52
-              C 22,70 8,76 0,62
-              C -8,76 -22,70 -26,52
-              C -44,58 -54,44 -46,28
-              C -65,28 -72,10 -55,0
-              C -72,-12 -62,-28 -42,-30
-              C -55,-48 -40,-58 -22,-50
-              C -28,-72 -12,-70 0,-85 Z
-            "/>
-            <path fill="#1b5e20" opacity="0.5" d="
-              M 0,-60 C 8,-48 20,-50 15,-34
-              C 30,-40 40,-30 28,-18
-              C 44,-16 50,-4 36,2
-              C 50,10 44,24 30,22
-              C 36,34 26,44 14,38
-              C 10,50 2,54 0,42
-              C -2,54 -10,50 -14,38
-              C -26,44 -36,34 -30,22
-              C -44,24 -50,10 -36,2
-              C -50,-4 -44,-16 -28,-18
-              C -40,-30 -30,-40 -15,-34
-              C -20,-50 -8,-48 0,-60 Z
-            "/>
-          </svg>
+          {/* Central splat core */}
+          <div className="goo-central" />
 
           {/* Radiating blobs — filter merges them when overlapping */}
           {PIECES.map(p => (

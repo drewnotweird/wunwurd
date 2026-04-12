@@ -90,8 +90,8 @@ export default function GameScreen({ level, totalLevels, onComplete, onGameOver,
     if (slapCorrect) {
       setLevelTime(elapsed)
       setPhase('celebrating')
-      setTimeout(() => setGeneratorRevealed(false), 3000)
-      setTimeout(() => onComplete(elapsed, monster), 4100)
+      setTimeout(() => setGeneratorRevealed(false), 1800)
+      setTimeout(() => onComplete(elapsed, monster), 2700)
     } else {
       setPhase('comparing')
       setTimeout(() => setGeneratorRevealed(false), 3500)
