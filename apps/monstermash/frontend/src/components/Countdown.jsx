@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 const STEPS = ['3', '2', '1', 'MASH!']
-const DURATIONS = [900, 900, 900, 700]
+const DURATIONS = [500, 500, 500, 500]
 
 export default function Countdown({ onDone }) {
   const [step, setStep] = useState(0)

@@ -3,7 +3,7 @@ import Segment from './Segment'
 import { heads, bodies, legs } from '../data/monsters'
 
 const COUNT_STEPS = ['3', '2', '1', 'MASH!']
-const COUNT_DURATIONS = [900, 900, 900, 700]
+const COUNT_DURATIONS = [500, 500, 500, 500]
 
 const GOLD_COLOURS = ['#ffd54f', '#ffea00', '#ffe082', '#fff176', '#ffc400', '#ffab00', '#ffffff', '#fff9c4']
 
