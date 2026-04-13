@@ -1,0 +1,491 @@
+/* ─── Reset & base ─────────────────────────────────────────────────────────── */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --red: #CC0000;
+  --red-dark: #990000;
+  --red-deep: #660000;
+  --nav-h: 60px;
+  --nav-item-w: 60px;
+  --card-radius: 0px;
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
+
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* ─── App shell ────────────────────────────────────────────────────────────── */
+
+.app {
+  position: fixed;
+  inset: 0;
+  background: var(--red-deep);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Slides container ─────────────────────────────────────────────────────── */
+
+.slides-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ─── Individual slide ─────────────────────────────────────────────────────── */
+
+.slide {
+  position: absolute;
+  inset: 0;
+  transform: translateX(calc(var(--offset, 0) * 100%));
+  transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+/* ─── Intro slide ──────────────────────────────────────────────────────────── */
+
+.intro-slide {
+  height: 100%;
+  background: var(--red);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 28px 20px;
+  text-align: center;
+  color: white;
+  gap: 16px;
+}
+
+.intro-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.intro-tagline {
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.intro-title {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: clamp(3rem, 14vw, 5rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.intro-desc {
+  font-size: 1rem;
+  line-height: 1.6;
+  opacity: 0.88;
+  max-width: 320px;
+}
+
+.intro-start-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: white;
+  color: var(--red);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 14px 28px;
+  border-radius: 4px;
+  transition: opacity 0.15s, transform 0.15s;
+  margin-top: 4px;
+}
+
+.intro-start-btn:active {
+  opacity: 0.85;
+  transform: scale(0.97);
+}
+
+.intro-arrow {
+  font-size: 1.3rem;
+}
+
+.intro-hint {
+  font-size: 0.8rem;
+  opacity: 0.55;
+  letter-spacing: 0.03em;
+  margin-top: auto;
+  padding-bottom: 4px;
+}
+
+/* ─── Word card ────────────────────────────────────────────────────────────── */
+
+.word-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
+/* ── Photo area ─────────────────────────────────────────────── */
+
+.word-photo {
+  flex: 0 0 38%;
+  position: relative;
+  overflow: hidden;
+  background: var(--red);
+}
+
+.word-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+.photo-placeholder {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--red);
+}
+
+.photo-letter {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: clamp(6rem, 20vw, 12rem);
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.18);
+  line-height: 1;
+  user-select: none;
+}
+
+/* ── Word content ───────────────────────────────────────────── */
+
+.word-content {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 22px 24px;
+}
+
+.word-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.word-title {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: clamp(2rem, 8vw, 2.8rem);
+  font-weight: 700;
+  color: var(--red);
+  line-height: 1;
+  text-transform: lowercase;
+  letter-spacing: -0.01em;
+}
+
+.word-title::first-letter {
+  text-transform: uppercase;
+}
+
+/* ── Sound button ───────────────────────────────────────────── */
+
+.sound-btn {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--red);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 4px;
+  transition: background 0.15s, transform 0.15s;
+}
+
+.sound-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.sound-btn:active {
+  transform: scale(0.92);
+}
+
+.sound-btn--unavailable {
+  background: #ddd;
+  color: #aaa;
+  cursor: default;
+}
+
+.sound-btn--playing {
+  background: var(--red-dark);
+}
+
+/* ── Phonetic ───────────────────────────────────────────────── */
+
+.word-phonetic {
+  font-size: 0.9rem;
+  color: #888;
+  margin-bottom: 14px;
+  font-style: italic;
+  letter-spacing: 0.02em;
+}
+
+/* ── Entries ────────────────────────────────────────────────── */
+
+.word-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.entry {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.entry-meta {
+  font-size: 0.82rem;
+  color: #999;
+  font-style: italic;
+}
+
+.entry-plural {
+  font-style: normal;
+  color: #bbb;
+}
+
+.definition {
+  font-size: 0.97rem;
+  color: #1a1a1a;
+  line-height: 1.5;
+}
+
+.def-num {
+  font-weight: 600;
+}
+
+.examples {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 2px;
+  padding-left: 4px;
+  border-left: 2px solid #f0f0f0;
+}
+
+.example {
+  font-style: italic;
+  color: #666;
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+/* ─── Alphabet nav ─────────────────────────────────────────────────────────── */
+
+.alphabet-nav {
+  position: relative;
+  flex-shrink: 0;
+  /* Salmon/muted red for inactive area */
+  background: #e06655;
+  height: calc(var(--nav-h) + env(safe-area-inset-bottom, 0px));
+  /* overflow visible so the triangle can poke above the bar */
+  overflow: visible;
+}
+
+/* Upward-pointing triangle — red, same as active slot */
+.alphabet-nav::before {
+  content: '';
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 14px solid transparent;
+  border-right: 14px solid transparent;
+  border-bottom: 14px solid var(--red);
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Red highlight behind the center slot */
+.alphabet-nav::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: calc(50% - 30px);
+  width: var(--nav-item-w);
+  height: var(--nav-h);
+  background: var(--red);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Items container — clips letters at the left/right edges */
+.nav-items {
+  position: absolute;
+  inset: 0;
+  height: var(--nav-h);
+  overflow: hidden;
+}
+
+/* Each item is anchored at nav center, then offset by --nav-offset slots */
+.nav-item {
+  position: absolute;
+  top: 0;
+  left: calc(50% - 30px);
+  width: var(--nav-item-w);
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.03em;
+  z-index: 2;
+  transform: translateX(calc(var(--nav-offset) * var(--nav-item-w)));
+  transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Active letter is white (on the red background behind it) */
+.nav-item.active {
+  color: white;
+}
+
+.nav-item svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
+/* ─── Desktop nav arrows ───────────────────────────────────────────────────── */
+
+.nav-arrow {
+  display: none; /* hidden on mobile */
+}
+
+/* ─── Desktop layout ───────────────────────────────────────────────────────── */
+
+@media (min-width: 740px) {
+  :root {
+    --card-w: 440px;
+    --slide-step: 480px;
+    --card-radius: 12px;
+  }
+
+  .app {
+    background: radial-gradient(ellipse at center, #7a0000 0%, #3a0000 100%);
+  }
+
+  /* Cards are narrower, centered, with rounded corners */
+  .slide {
+    /* Instead of full-width, position as a centered card */
+    left: calc(50% - var(--card-w) / 2);
+    right: auto;
+    top: 0;
+    bottom: 0;
+    width: var(--card-w);
+    transform: translateX(calc(var(--offset, 0) * var(--slide-step)));
+  }
+
+  .word-card,
+  .intro-slide {
+    border-radius: var(--card-radius);
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Dim non-active slides */
+  .slide:not(.active) .word-card,
+  .slide:not(.active) .intro-slide {
+    opacity: 0.55;
+    filter: brightness(0.8);
+    transition: opacity 0.32s, filter 0.32s;
+  }
+
+  .slide.active .word-card,
+  .slide.active .intro-slide {
+    opacity: 1;
+    filter: none;
+    transition: opacity 0.32s, filter 0.32s;
+  }
+
+  /* Desktop nav arrows */
+  .nav-arrow {
+    display: flex;
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    font-size: 1.4rem;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: background 0.15s;
+    backdrop-filter: blur(4px);
+  }
+
+  .nav-arrow:hover {
+    background: rgba(255, 255, 255, 0.28);
+  }
+
+  .nav-arrow--prev {
+    left: calc(50% - var(--card-w) / 2 - 68px);
+  }
+
+  .nav-arrow--next {
+    right: calc(50% - var(--card-w) / 2 - 68px);
+  }
+
+  /* Slightly larger photo on desktop */
+  .word-photo {
+    flex: 0 0 42%;
+  }
+
+  .word-content {
+    padding: 24px 28px 28px;
+  }
+}
+
+@media (min-width: 1100px) {
+  :root {
+    --card-w: 500px;
+    --slide-step: 560px;
+  }
+}
