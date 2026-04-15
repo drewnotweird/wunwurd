@@ -83,7 +83,7 @@ function WordSlide({ word }) {
     <div className="word-card">
       <div className="word-photo">
         {hasPhoto ? (
-          <img src={word.photo} alt={`${word.word} — Glasgow Dictionary`} />
+          <img src={`${import.meta.env.BASE_URL}${word.photo.replace(/^\//, '')}`} alt={`${word.word} — Glasgow Dictionary`} />
         ) : (
           <div className="photo-placeholder">
             <span className="photo-letter">{word.letter.toUpperCase()}</span>
