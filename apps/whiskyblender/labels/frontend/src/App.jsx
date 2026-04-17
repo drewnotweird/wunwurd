@@ -1,5 +1,67 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { BASE_LABELS, ALL_TEMPLATES, getTemplatesForBase, LABEL_DIMS } from './data/labels';
+
+// ─── URL encoding / decoding ──────────────────────────────────────────────────
+
+// Form field key → URL param name
+const FIELD_TO_PARAM = {
+  blendName:    'blend-name',
+  createdBy:    'created-by',
+  distillery:   'distillery',
+  reference:    'reference',
+  color:        'color',
+  labelStyle:   'labelstyle',
+  singleCask:   'single-cask',
+  series:       'series',
+  customerName: 'customer-name',
+  description:  'description',
+  keyImage:     'key-image',
+  website:      'website',
+  // 'image' (file blob) is intentionally excluded
+};
+const PARAM_TO_FIELD = Object.fromEntries(Object.entries(FIELD_TO_PARAM).map(([k, v]) => [v, k]));
+
+function encodeToUrl(base, template, formData) {
+  const params = new URLSearchParams();
+  params.set('base', base.id);
+  params.set('tmpl', template.id);
+  Object.entries(formData).forEach(([key, value]) => {
+    if (key === 'image') return;
+    const param = FIELD_TO_PARAM[key] || key;
+    if (value !== null && value !== undefined && value !== '' && value !== false) {
+      params.set(param, String(value));
+    }
+  });
+  return params.toString();
+}
+
+function decodeFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const baseId = params.get('base');
+  const tmplId = params.get('tmpl');
+  if (!baseId || !tmplId) return null;
+
+  const base = BASE_LABELS.find(b => b.id === baseId);
+  const template = ALL_TEMPLATES[tmplId];
+  if (!base || !template) return null;
+
+  // Start with field defaults
+  const formData = {};
+  template.fields.forEach(f => {
+    if (f.type === 'select') formData[f.key] = f.options[0].value;
+    else if (f.type === 'checkbox') formData[f.key] = false;
+    else formData[f.key] = '';
+  });
+
+  // Override with URL values
+  params.forEach((value, param) => {
+    if (param === 'base' || param === 'tmpl') return;
+    const key = PARAM_TO_FIELD[param] || param;
+    formData[key] = key === 'singleCask' ? value === 'true' : value;
+  });
+
+  return { base, template, formData };
+}
 
 // ─── Utilities ────────────────────────────────────────────────────────────────
 
@@ -634,17 +696,58 @@ function StepThree({ baseLabel, template, onGenerate, onBack }) {
 // ─── App ──────────────────────────────────────────────────────────────────────
 
 export default function App() {
-  const [step, setStep] = useState(1);
-  const [selectedBase, setSelectedBase] = useState(null);
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
-  const [formData, setFormData] = useState(null);
+  // Initialise from URL params if present (direct/shared link to a label)
+  const initial = useMemo(() => {
+    const decoded = decodeFromUrl();
+    if (decoded) return { step: 4, ...decoded };
+    return { step: 1, base: null, template: null, formData: null };
+  }, []);
+
+  const [step, setStep] = useState(initial.step);
+  const [selectedBase, setSelectedBase] = useState(initial.base || null);
+  const [selectedTemplate, setSelectedTemplate] = useState(initial.template || null);
+  const [formData, setFormData] = useState(initial.formData || null);
+
+  // Handle browser back/forward while on the label output view
+  useEffect(() => {
+    const onPopState = () => {
+      const decoded = decodeFromUrl();
+      if (decoded) {
+        setSelectedBase(decoded.base);
+        setSelectedTemplate(decoded.template);
+        setFormData(decoded.formData);
+        setStep(4);
+      } else {
+        setFormData(null);
+        setStep(prev => (prev === 4 ? 3 : prev));
+      }
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
 
   const handleBaseSelect = (base) => { setSelectedBase(base); setStep(2); };
   const handleTemplateSelect = (tmpl) => { setSelectedTemplate(tmpl); setStep(3); };
-  const handleGenerate = (data) => { setFormData(data); setStep(4); };
-  const handleBackToStep1 = () => { setSelectedBase(null); setSelectedTemplate(null); setFormData(null); setStep(1); };
-  const handleBackToStep2 = () => { setSelectedTemplate(null); setFormData(null); setStep(2); };
-  const handleBackToStep3 = () => { setFormData(null); setStep(3); };
+
+  const handleGenerate = (data) => {
+    setFormData(data);
+    setStep(4);
+    const qs = encodeToUrl(selectedBase, selectedTemplate, data);
+    window.history.pushState({}, '', `?${qs}`);
+  };
+
+  const handleBackToStep1 = () => {
+    setSelectedBase(null); setSelectedTemplate(null); setFormData(null); setStep(1);
+    window.history.pushState({}, '', window.location.pathname);
+  };
+  const handleBackToStep2 = () => {
+    setSelectedTemplate(null); setFormData(null); setStep(2);
+    window.history.pushState({}, '', window.location.pathname);
+  };
+  const handleBackToStep3 = () => {
+    setFormData(null); setStep(3);
+    window.history.pushState({}, '', window.location.pathname);
+  };
 
   return (
     <div className={`app${step === 4 ? ' app--output' : ''}`}>
