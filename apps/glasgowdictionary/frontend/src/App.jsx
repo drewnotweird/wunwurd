@@ -38,23 +38,41 @@ function IntroSlide({ onStart }) {
 
 // ─── Sound button ──────────────────────────────────────────────────────────────
 
+// Shared reference so only one soundbite plays at a time
+let currentAudio = null;
+
 function SoundButton({ audio }) {
   const audioRef = useRef(null);
   const [playing, setPlaying] = useState(false);
 
   const handlePlay = () => {
-    if (!audioRef.current) return;
-    audioRef.current.currentTime = 0;
-    audioRef.current.play();
+    const el = audioRef.current;
+    if (!el) return;
+
+    // Stop any other playing audio
+    if (currentAudio && currentAudio !== el) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+      // The other button's 'pause' event will clear its own state
+    }
+
+    currentAudio = el;
+    el.currentTime = 0;
+    el.play();
     setPlaying(true);
   };
 
   useEffect(() => {
     const el = audioRef.current;
     if (!el) return;
-    const onEnd = () => setPlaying(false);
+    const onEnd = () => { setPlaying(false); currentAudio = null; };
+    const onPause = () => setPlaying(false);
     el.addEventListener('ended', onEnd);
-    return () => el.removeEventListener('ended', onEnd);
+    el.addEventListener('pause', onPause);
+    return () => {
+      el.removeEventListener('ended', onEnd);
+      el.removeEventListener('pause', onPause);
+    };
   }, []);
 
   return (
