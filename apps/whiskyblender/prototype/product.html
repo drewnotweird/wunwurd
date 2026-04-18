@@ -241,6 +241,19 @@
                             + '<label for="variant-' + v.value + '">' + v.label + '</label>';
                         form.appendChild(span);
                     });
+
+                    // Swap main image on variant change
+                    var hasVariantImages = product.variants.some(function (v) { return v.image; });
+                    if (hasVariantImages) {
+                        var mainImg = gallery.querySelector('.wb-slider-slide:first-child > img');
+                        form.addEventListener('change', function (e) {
+                            if (e.target.name !== 'variant') return;
+                            var selected = product.variants.find(function (v) { return v.value === e.target.value; });
+                            if (selected && selected.image && mainImg) {
+                                mainImg.src = selected.image;
+                            }
+                        });
+                    }
                 }
                 form.innerHTML += '<label for="quantity">Quantity</label>'
                     + '<div class="wb-price-per-item">'

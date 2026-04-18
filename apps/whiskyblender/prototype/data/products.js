@@ -157,9 +157,9 @@ window.WB_PRODUCTS = {
     bottleSize: '500ml + 200ml',
     abv: '46%',
     variants: [
-      { label: 'One of each', value: 'both' },
-      { label: '500ml only', value: 'gardi-500ml' },
-      { label: '200ml only', value: 'gardi-200ml' },
+      { label: 'One of each', value: 'both',        image: 'images/products/doctorsspecial/doctorsspecial01.jpg' },
+      { label: '500ml only',  value: 'gardi-500ml', image: 'images/products/doctorsspecial/doctorsspecial50001.jpg' },
+      { label: '200ml only',  value: 'gardi-200ml', image: 'images/products/doctorsspecial/doctorsspecial20001.jpg' },
     ],
     collection: 'andrewsofbothwell',
     description: `
@@ -274,9 +274,9 @@ window.WB_PRODUCTS = {
     bottleSize: '500ml',
     abv: '46%',
     variants: [
-      { label: 'Scotsman & Englishman (pair)', value: 'both' },
-      { label: 'Scotsman only', value: 'scotsman' },
-      { label: 'Englishman only', value: 'englishman' },
+      { label: 'Scotsman & Englishman (pair)', value: 'both',       image: 'images/products/scotsenglishman/scotsenglishman01.jpg' },
+      { label: 'Scotsman only',               value: 'scotsman',   image: 'images/products/scotsenglishman/scotsman01.jpg' },
+      { label: 'Englishman only',             value: 'englishman', image: 'images/products/scotsenglishman/englishman01.jpg' },
     ],
     collection: 'andrewsofbothwell',
     description: `
@@ -505,12 +505,12 @@ window.WB_PRODUCTS = {
     bottleSize: '200ml',
     abv: '46%',
     variants: [
-      { label: '4 pack (bird, tree, bell & fish)', value: 'both' },
-      { label: 'Glasgow 850', value: 'glasgow850' },
-      { label: 'Bird that never flew', value: 'bird' },
-      { label: 'Tree that never grew', value: 'tree' },
-      { label: 'Bell that never rang', value: 'bell' },
-      { label: 'Fish that never swam', value: 'fish' },
+      { label: '4 pack (bird, tree, bell & fish)', value: 'both',      image: 'images/products/collaborations/glasgow850_four.jpg' },
+      { label: 'Glasgow 850',                      value: 'glasgow850', image: 'images/products/collaborations/glasgow850_main.jpg' },
+      { label: 'Bird that never flew',             value: 'bird',       image: 'images/products/collaborations/glasgow850_bird.jpg' },
+      { label: 'Tree that never grew',             value: 'tree',       image: 'images/products/collaborations/glasgow850_tree.jpg' },
+      { label: 'Bell that never rang',             value: 'bell',       image: 'images/products/collaborations/glasgow850_bell.jpg' },
+      { label: 'Fish that never swam',             value: 'fish',       image: 'images/products/collaborations/glasgow850_fish.jpg' },
     ],
     collection: 'collaborations',
     description: `
