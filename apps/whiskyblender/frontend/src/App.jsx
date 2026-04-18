@@ -23,7 +23,7 @@ export default function App() {
       <header className="hero">
         <div className="hero__inner">
           <p className="hero__eyebrow">Drewnotweird</p>
-          <h1 className="hero__title">Whisky Blender</h1>
+          <img src={`${BASE_URL}wb-logo.svg`} alt="Whisky Blender" className="hero__logo" />
           <p className="hero__desc">Drew's toolkit for crafting</p>
         </div>
       </header>

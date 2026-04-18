@@ -5,7 +5,7 @@
         <meta name="theme-color" content="#000000" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
 
-        <title>Whisky Blender | Bottle something special!</title>
+        <title id="page-title">Whisky Blender | Bottle something special!</title>
 
         <link href="https://fonts.googleapis.com/css?family=Raleway:400,600,700" rel="stylesheet" />
         <link rel="stylesheet" type="text/css" href="css/wb-base.css" />
@@ -21,7 +21,7 @@
         <meta content="all,follow,index" name="robots" />
         <meta
             content="Great tasting, unique and personalised whisky gifts. For that special occasion, or just a wee treat for yersel."
-            name="desciption" />
+            name="description" />
         <meta property="og:title" content="Whisky Blender | Bottle something special!" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="images/covers/wb-index.jpg" />
@@ -40,17 +40,18 @@
             content="Great tasting, unique and personalised whisky gifts. For that special occasion, or just a wee treat for yersel." />
         <meta name="twitter:creator" content="whisky_blender" />
         <meta name="twitter:domain" content="https://www.whiskyblender.com" />
+
+        <!-- Data layer -->
+        <script src="data/collections.js"></script>
+
         <script>
             function includeHTML() {
                 var z, i, elmnt, file, xhttp;
-                /*loop through a collection of all HTML elements:*/
                 z = document.getElementsByTagName("*");
                 for (i = 0; i < z.length; i++) {
                     elmnt = z[i];
-                    /*search for elements with a certain attribute:*/
                     file = elmnt.getAttribute("w3-include-html");
                     if (file) {
-                        /*make an HTTP request using the attribute value as the file name:*/
                         xhttp = new XMLHttpRequest();
                         xhttp.onreadystatechange = function () {
                             if (this.readyState == 4) {
@@ -60,39 +61,32 @@
                                 if (this.status == 404) {
                                     elmnt.innerHTML = "Page not found.";
                                 }
-                                /*remove the attribute, and call this function once more:*/
                                 elmnt.removeAttribute("w3-include-html");
                                 includeHTML();
                             }
                         };
                         xhttp.open("GET", file, true);
                         xhttp.send();
-                        /*exit the function:*/
                         return;
                     }
                 }
             }
         </script>
     </head>
-    <body class="wb-christmas-off">
-        <div w3-include-html="wb-snow.html"></div>
+    <body id="occasion-body">
+        <div id="snow-include"></div>
         <div w3-include-html="wb-header.html"></div>
-        <main>
+        <main id="occasion-main" style="display:none">
             <section>
                 <div class="wb-container">
-                    <div class="wb-imagebg" style="background-image: url(images/occassions/christmas_full.png)">
+                    <div class="wb-imagebg" id="occasion-hero">
                         <div class="wb-padding">
-                            <h1 class="wb-medium-heading">Christmas</h1>
+                            <h1 class="wb-medium-heading" id="occasion-title"></h1>
                             <p class="wb-collection-sub">Give the gift of whisky</p>
                         </div>
                     </div>
                     <div class="wb-padding wb-collection-copy">
-                        <p>
-                            From stocking fillers to show-stoppers under the tree, Christmas is made for sharing a dram
-                            or two! Whether it’s for family, friends, or a well-earned treat for yourself, our festive
-                            gift ideas—from personalised bottles to limited-edition blends—are sure to spread some
-                            holiday cheer.
-                        </p>
+                        <p id="occasion-description"></p>
                         <div w3-include-html="wb-products.html"></div>
                     </div>
                 </div>
@@ -101,9 +95,44 @@
                 <div w3-include-html="wb-createunique.html"></div>
             </section>
         </main>
+        <div id="occasion-not-found" style="display:none; padding: 60px 24px; text-align:center;">
+            <p>Occasion not found.</p>
+        </div>
         <div w3-include-html="wb-footer.html"></div>
+
         <script>
-            includeHTML();
+            (function () {
+                var params = new URLSearchParams(window.location.search);
+                var handle = params.get('handle');
+                var occasion = handle && window.WB_COLLECTIONS && window.WB_COLLECTIONS[handle];
+
+                if (!occasion || occasion.template !== 'occasions') {
+                    document.getElementById('occasion-not-found').style.display = 'block';
+                    includeHTML();
+                    return;
+                }
+
+                // Page title
+                document.getElementById('page-title').textContent = 'Whisky Blender | ' + occasion.title;
+
+                // Body class
+                if (occasion.bodyClass) {
+                    document.getElementById('occasion-body').className = occasion.bodyClass;
+                }
+
+                // Snow include (Christmas only)
+                if (occasion.hasSnow) {
+                    document.getElementById('snow-include').setAttribute('w3-include-html', 'wb-snow.html');
+                }
+
+                // Hero
+                document.getElementById('occasion-hero').style.backgroundImage = 'url(' + occasion.coverImage + ')';
+                document.getElementById('occasion-title').textContent = occasion.title;
+                document.getElementById('occasion-description').textContent = occasion.description;
+
+                document.getElementById('occasion-main').style.display = '';
+                includeHTML();
+            })();
         </script>
     </body>
 </html>

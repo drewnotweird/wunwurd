@@ -32,6 +32,7 @@ function servePrototype() {
     configureServer(server) {
       server.middlewares.use('/whiskyblender/prototype', (req, res, next) => {
         let urlPath = req.url || '/'
+        urlPath = urlPath.split('?')[0]
         if (urlPath === '' || urlPath === '/') urlPath = '/index.html'
         const filePath = path.join(protoDir, urlPath)
         if (!filePath.startsWith(protoDir)) return next()

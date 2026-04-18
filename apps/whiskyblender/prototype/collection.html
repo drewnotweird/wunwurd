@@ -5,7 +5,7 @@
         <meta name="theme-color" content="#000000" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
 
-        <title>Whisky Blender | Bottle something special!</title>
+        <title id="page-title">Whisky Blender | Bottle something special!</title>
 
         <link href="https://fonts.googleapis.com/css?family=Raleway:400,600,700" rel="stylesheet" />
         <link rel="stylesheet" type="text/css" href="css/wb-base.css" />
@@ -13,6 +13,7 @@
         <link rel="stylesheet" type="text/css" href="css/wb-fonts.css" />
         <link rel="stylesheet" type="text/css" href="css/wb-header.css" />
         <link rel="stylesheet" type="text/css" href="css/wb-footer.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-home.css" />
         <link rel="stylesheet" type="text/css" href="css/wb-products.css" />
         <link rel="icon" type="image/png" sizes="600x600" href="images/wb-favicon.png" />
 
@@ -20,7 +21,7 @@
         <meta content="all,follow,index" name="robots" />
         <meta
             content="Great tasting, unique and personalised whisky gifts. For that special occasion, or just a wee treat for yersel."
-            name="desciption" />
+            name="description" />
         <meta property="og:title" content="Whisky Blender | Bottle something special!" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="images/covers/wb-index.jpg" />
@@ -39,17 +40,19 @@
             content="Great tasting, unique and personalised whisky gifts. For that special occasion, or just a wee treat for yersel." />
         <meta name="twitter:creator" content="whisky_blender" />
         <meta name="twitter:domain" content="https://www.whiskyblender.com" />
+
+        <!-- Data layer -->
+        <script src="data/products.js"></script>
+        <script src="data/collections.js"></script>
+
         <script>
             function includeHTML() {
                 var z, i, elmnt, file, xhttp;
-                /*loop through a collection of all HTML elements:*/
                 z = document.getElementsByTagName("*");
                 for (i = 0; i < z.length; i++) {
                     elmnt = z[i];
-                    /*search for elements with a certain attribute:*/
                     file = elmnt.getAttribute("w3-include-html");
                     if (file) {
-                        /*make an HTTP request using the attribute value as the file name:*/
                         xhttp = new XMLHttpRequest();
                         xhttp.onreadystatechange = function () {
                             if (this.readyState == 4) {
@@ -59,14 +62,12 @@
                                 if (this.status == 404) {
                                     elmnt.innerHTML = "Page not found.";
                                 }
-                                /*remove the attribute, and call this function once more:*/
                                 elmnt.removeAttribute("w3-include-html");
                                 includeHTML();
                             }
                         };
                         xhttp.open("GET", file, true);
                         xhttp.send();
-                        /*exit the function:*/
                         return;
                     }
                 }
@@ -75,56 +76,90 @@
     </head>
     <body>
         <div w3-include-html="wb-header.html"></div>
-        <main>
+        <main id="collection-main" style="display:none">
             <section>
                 <div class="wb-container">
-                    <div class="wb-imagebg" style="background-image: url(images/products/football/football.jpg)">
+                    <div class="wb-imagebg" id="collection-hero">
                         <div class="wb-padding">
-                            <h1 class="wb-medium-heading">Football</h1>
+                            <h1 class="wb-medium-heading" id="collection-title"></h1>
                             <p class="wb-collection-sub">Collection</p>
                         </div>
                     </div>
                     <div class="wb-padding wb-collection-copy">
-                        <p>
-                            We love partnering with clubs to create something truly special—giving fans the perfect way
-                            to toast and celebrate their teams.
-                        </p>
-                        <ul class="wb-productsgrid">
-                            <li class="wb-productcell">
-                                <div class="wb-productitem" onclick="location.href='80yearsofthebinos.html';">
-                                    <div class="wb-productmedia">
-                                        <div class="wb-productimage">
-                                            <img
-                                                src="images/products/football/80yearsofthebinos/80yearsofthebinos-01.jpg"
-                                                alt="80 Years of the Binos" />
-                                        </div>
-                                        <div class="wb-productbadge"></div>
-                                    </div>
-                                    <div class="wb-productcontent">
-                                        <div class="wb-productinfo">
-                                            <h3 class="wb-producttitle wb-tiny-heading">
-                                                <a href="80yearsofthebinos.html">80 Years of the Binos</a>
-                                            </h3>
-                                            <div class="wb-productdetails">
-                                                <div class="wb-productcosts">
-                                                    <div class="wb-product-price">From £80.00</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
+                        <p id="collection-description"></p>
+                        <ul class="wb-productsgrid" id="collection-grid"></ul>
                     </div>
                 </div>
             </section>
-            <section class="wb-banded">
+            <section class="wb-banded" id="collab-cta" style="display:none">
                 <div w3-include-html="wb-letscollab.html"></div>
             </section>
         </main>
+        <div id="collection-not-found" style="display:none; padding: 60px 24px; text-align:center;">
+            <p>Collection not found.</p>
+        </div>
         <div w3-include-html="wb-footer.html"></div>
+
         <script>
-            includeHTML();
+            (function () {
+                var params = new URLSearchParams(window.location.search);
+                var handle = params.get('handle');
+                var collection = handle && window.WB_COLLECTIONS && window.WB_COLLECTIONS[handle];
+
+                if (!collection) {
+                    document.getElementById('collection-not-found').style.display = 'block';
+                    includeHTML();
+                    return;
+                }
+
+                // Page title
+                document.getElementById('page-title').textContent = 'Whisky Blender | ' + collection.title;
+
+                // Hero
+                document.getElementById('collection-hero').style.backgroundImage = 'url(' + collection.coverImage + ')';
+                document.getElementById('collection-title').textContent = collection.title;
+                document.getElementById('collection-description').textContent = collection.description;
+
+                // Products grid
+                var grid = document.getElementById('collection-grid');
+                collection.products.forEach(function (productHandle) {
+                    var product = window.WB_PRODUCTS && window.WB_PRODUCTS[productHandle];
+                    if (!product) return;
+
+                    var soldOutClass = product.soldOut ? ' wb-soldout' : '';
+                    var badgeHtml = product.soldOut
+                        ? '<div class="wb-soldoutbadge">Sold out</div>'
+                        : (product.badge === 'Sale' ? '<div class="wb-salebadge">Sale</div>' : '');
+                    var priceHtml = product.comparePrice
+                        ? '<div class="wb-product-notprice"><s>' + product.comparePrice + '</s></div><div class="wb-product-price">' + product.price + '</div>'
+                        : '<div class="wb-product-price">' + product.price + '</div>';
+                    var href = 'product.html?handle=' + product.handle;
+
+                    var li = document.createElement('li');
+                    li.className = 'wb-productcell';
+                    li.innerHTML = '<div class="wb-productitem' + soldOutClass + '" onclick="location.href=\'' + href + '\'">'
+                        + '<div class="wb-productmedia">'
+                        + '<div class="wb-productimage"><img src="' + product.images[0] + '" alt="' + product.title + '" /></div>'
+                        + '<div class="wb-productbadge">' + badgeHtml + '</div>'
+                        + '</div>'
+                        + '<div class="wb-productcontent">'
+                        + '<div class="wb-productinfo">'
+                        + '<h3 class="wb-producttitle wb-tiny-heading"><a href="' + href + '">' + product.title + '</a></h3>'
+                        + '<div class="wb-productdetails"><div class="wb-productcosts">' + priceHtml + '</div></div>'
+                        + '</div>'
+                        + '</div>'
+                        + '</div>';
+                    grid.appendChild(li);
+                });
+
+                // Optional collab CTA band
+                if (collection.showCollabCta) {
+                    document.getElementById('collab-cta').style.display = '';
+                }
+
+                document.getElementById('collection-main').style.display = '';
+                includeHTML();
+            })();
         </script>
     </body>
 </html>

@@ -465,11 +465,14 @@ function LabelOutput({ baseLabel, template, formData, onBack }) {
 // ─── App shell ────────────────────────────────────────────────────────────────
 
 function AppShell({ children }) {
+  const baseUrl = import.meta.env.BASE_URL;
   return (
     <div className="app">
       <header className="app-header">
         <div className="app-header__inner">
-          <a className="app-header__brand" href="../">Whisky Blender</a>
+          <a className="app-header__brand" href="../">
+            <img src={`${baseUrl}wb-logo.svg`} alt="Whisky Blender" className="app-header__logo" />
+          </a>
           <span className="app-header__title">Label Generator</span>
         </div>
       </header>
@@ -631,38 +634,64 @@ function StepThreeOrOutput() {
   const { baseId, templateId } = useParams();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [showOutput, setShowOutput] = useState(false);
+  const [imageUrl, setImageUrl] = useState(null);
+  const lastDataRef = useRef(null);
 
   const base = BASE_LABELS.find(b => b.id === baseId);
   const template = ALL_TEMPLATES[templateId];
   if (!base || !template) return <Navigate to="/" replace />;
 
-  const hasOutput = searchParams.toString() !== '';
+  // URL params encode text fields; image lives in state only (blob URL not serialisable)
+  const hasUrlData = searchParams.toString() !== '';
+  const isOutput = showOutput || hasUrlData;
+
   const decodedData = useMemo(
-    () => hasOutput ? decodeFormData(template, searchParams) : null,
+    () => hasUrlData ? decodeFormData(template, searchParams) : null,
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [searchParams.toString()],
   );
 
-  // Persist last generated values so the form stays pre-populated on Edit
-  const lastDataRef = useRef(null);
-  if (decodedData) lastDataRef.current = decodedData;
+  // Merge URL-decoded text fields with in-memory image
+  const outputData = useMemo(() => {
+    const textData = decodedData || lastDataRef.current || {};
+    return imageUrl ? { ...textData, image: imageUrl } : textData;
+  }, [decodedData, imageUrl]);
 
-  const handleGenerate = (data) => setSearchParams(encodeFormData(data));
-  const handleEdit = () => setSearchParams({});
+  const handleGenerate = (data) => {
+    lastDataRef.current = data;
+    if (data.image) setImageUrl(data.image);
+    const encoded = encodeFormData(data);
+    if (Object.keys(encoded).length > 0) {
+      setSearchParams(encoded);
+    } else {
+      // Image-only template — no URL params, use state flag to show output
+      setShowOutput(true);
+    }
+  };
 
-  if (hasOutput && decodedData) {
+  const handleEdit = () => {
+    setSearchParams({});
+    setShowOutput(false);
+  };
+
+  if (isOutput) {
     return (
       <div className="app app--output">
-        <LabelOutput baseLabel={base} template={template} formData={decodedData} onBack={handleEdit} />
+        <LabelOutput baseLabel={base} template={template} formData={outputData} onBack={handleEdit} />
       </div>
     );
   }
+
+  const formInitial = lastDataRef.current
+    ? { ...lastDataRef.current, image: imageUrl }
+    : null;
 
   return (
     <StepThree
       baseLabel={base}
       template={template}
-      initialValues={lastDataRef.current}
+      initialValues={formInitial}
       onGenerate={handleGenerate}
       onBack={() => navigate(`/${baseId}/`)}
     />

@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="theme-color" content="#000000" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+
+        <title id="page-title">Whisky Blender | Bottle something special!</title>
+
+        <link href="https://fonts.googleapis.com/css?family=Raleway:400,600,700" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="css/wb-base.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-global.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-fonts.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-header.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-footer.css" />
+        <link rel="stylesheet" type="text/css" href="css/wb-products.css" />
+        <link rel="icon" type="image/png" sizes="600x600" href="images/wb-favicon.png" />
+
+        <meta content="Andrews of Bothwell" name="author" />
+        <meta content="all,follow,index" name="robots" />
+        <meta
+            content="Great tasting, unique and personalised whisky gifts. For that special occasion, or just a wee treat for yersel."
+            name="description" />
+        <meta property="og:title" content="Whisky Blender | Bottle something special!" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="images/covers/wb-index.jpg" />
+        <meta property="og:site_name" content="Whisky Blender" />
+        <meta property="og:url" content="https://www.whiskyblender.com/" />
+        <meta
+            property="og:description"
+            content="Great tasting, unique and personalised whisky gifts. For that special occasion, or just a wee treat for yersel." />
+        <meta property="fb:app_id" content="194489270627737" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@whisky_blender" />
+        <meta name="twitter:title" content="Whisky Blender | Scotch just got personal" />
+        <meta name="twitter:image:src" content="images/covers/wb-index.jpg" />
+        <meta
+            name="twitter:description"
+            content="Great tasting, unique and personalised whisky gifts. For that special occasion, or just a wee treat for yersel." />
+        <meta name="twitter:creator" content="whisky_blender" />
+        <meta name="twitter:domain" content="https://www.whiskyblender.com" />
+
+        <!-- Data layer -->
+        <script src="data/products.js"></script>
+        <script src="data/collections.js"></script>
+
+        <script>
+            function includeHTML() {
+                var z, i, elmnt, file, xhttp;
+                z = document.getElementsByTagName("*");
+                for (i = 0; i < z.length; i++) {
+                    elmnt = z[i];
+                    file = elmnt.getAttribute("w3-include-html");
+                    if (file) {
+                        xhttp = new XMLHttpRequest();
+                        xhttp.onreadystatechange = function () {
+                            if (this.readyState == 4) {
+                                if (this.status == 200) {
+                                    elmnt.innerHTML = this.responseText;
+                                }
+                                if (this.status == 404) {
+                                    elmnt.innerHTML = "Page not found.";
+                                }
+                                elmnt.removeAttribute("w3-include-html");
+                                includeHTML();
+                            }
+                        };
+                        xhttp.open("GET", file, true);
+                        xhttp.send();
+                        return;
+                    }
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div w3-include-html="wb-header.html"></div>
+        <main id="product-main" style="display:none">
+            <section class="wb-first-item">
+                <div class="wb-container">
+                    <div class="wb-padding">
+                        <product-info>
+                            <div class="wb-page-width">
+                                <div class="wb-product-grid">
+                                    <!-- ── Media gallery ── -->
+                                    <div class="wb-product-media">
+                                        <media-gallery class="wb-column-sticky">
+                                            <ul class="wb-slider-gallery" id="slider-gallery"></ul>
+                                            <div class="wb-slider-buttons">
+                                                <button
+                                                    type="button"
+                                                    class="wb-slider-button-prev"
+                                                    name="previous"
+                                                    aria-label="Slide left"
+                                                    disabled="disabled">
+                                                    <img src="icons/wb-caret-black.svg" class="wb-icon-caret" />
+                                                </button>
+                                                <div class="slider-counter caption">
+                                                    <span class="slider-counter--current">1</span>
+                                                    <span aria-hidden="true"> / </span>
+                                                    <span class="wb-visually-hidden">of</span>
+                                                    <span class="slider-counter--total">1</span>
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    class="wb-slider-button-next"
+                                                    name="next"
+                                                    aria-label="Slide right">
+                                                    <img src="icons/wb-caret-black.svg" class="wb-icon-caret" />
+                                                </button>
+                                            </div>
+                                        </media-gallery>
+                                    </div>
+
+                                    <!-- ── Product info ── -->
+                                    <div class="wb-productinfo">
+                                        <div class="wb-column-sticky">
+                                            <h1 class="wb-producttitle wb-medium-heading" id="product-title"></h1>
+                                            <div class="wb-productdetails">
+                                                <ul class="wb-meta-deetz" id="product-meta"></ul>
+                                                <div class="wb-productcosts">
+                                                    <div class="wb-product-notprice" id="product-compare-price" style="display:none"></div>
+                                                    <div class="wb-product-price" id="product-price"></div>
+                                                    <div class="wb-productbadge" id="product-badge"></div>
+                                                </div>
+                                            </div>
+                                            <form class="wb-bottle-form" id="product-form"></form>
+                                            <div class="wb-product-description" id="product-description"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </product-info>
+                    </div>
+                </div>
+            </section>
+            <section class="wb-banded">
+                <div class="wb-container">
+                    <div class="wb-padding">
+                        <div class="wb-collection-header">
+                            <h3 class="wb-subtle-heading">You may also like</h3>
+                            <a class="wb-float-right" href="shop.html">See more</a>
+                        </div>
+                        <div w3-include-html="wb-related.html"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <div id="product-not-found" style="display:none; padding: 60px 24px; text-align:center;">
+            <p>Product not found.</p>
+        </div>
+        <div w3-include-html="wb-footer.html"></div>
+
+        <script>
+            (function () {
+                // Parse ?handle=xxx from query string
+                var params = new URLSearchParams(window.location.search);
+                var handle = params.get('handle');
+                var product = handle && window.WB_PRODUCTS && window.WB_PRODUCTS[handle];
+
+                if (!product) {
+                    document.getElementById('product-not-found').style.display = 'block';
+                    includeHTML();
+                    return;
+                }
+
+                // Page title
+                document.getElementById('page-title').textContent = 'Whisky Blender | ' + product.title;
+
+                // Gallery
+                var gallery = document.getElementById('slider-gallery');
+                product.images.forEach(function (src, i) {
+                    var li = document.createElement('li');
+                    li.className = 'wb-slider-slide';
+                    if (i === 0) {
+                        li.innerHTML = '<span class="wb-productmedia-icon"><img src="icons/wb-zoomin-black.svg" class="wb-icon-zoom" /></span>'
+                            + '<img src="' + src + '" alt="' + product.title + '" />';
+                    } else {
+                        li.innerHTML = '<img src="' + src + '" alt="' + product.title + '" />';
+                    }
+                    gallery.appendChild(li);
+                });
+
+                // Slider counter total
+                document.querySelector('.slider-counter--total').textContent = product.images.length;
+                // Hide prev/next if single image
+                if (product.images.length <= 1) {
+                    document.querySelector('.wb-slider-buttons').style.display = 'none';
+                }
+
+                // Title
+                document.getElementById('product-title').textContent = product.title;
+
+                // Meta details
+                var meta = document.getElementById('product-meta');
+                if (product.type) {
+                    var li = document.createElement('li');
+                    li.textContent = product.type;
+                    meta.appendChild(li);
+                }
+                if (product.bottleSize) {
+                    var li = document.createElement('li');
+                    li.textContent = product.bottleSize;
+                    meta.appendChild(li);
+                }
+                if (product.abv) {
+                    var li = document.createElement('li');
+                    li.textContent = product.abv + ' abv.';
+                    meta.appendChild(li);
+                }
+
+                // Price
+                document.getElementById('product-price').textContent = product.price;
+                if (product.comparePrice) {
+                    var compareEl = document.getElementById('product-compare-price');
+                    compareEl.innerHTML = '<s>' + product.comparePrice + '</s>';
+                    compareEl.style.display = '';
+                }
+
+                // Badge
+                if (product.badge) {
+                    var badgeEl = document.getElementById('product-badge');
+                    if (product.soldOut) {
+                        badgeEl.innerHTML = '<div class="wb-soldoutbadge">' + product.badge + '</div>';
+                    } else {
+                        badgeEl.innerHTML = '<div class="wb-salebadge">' + product.badge + '</div>';
+                    }
+                }
+
+                // Form — variants or quantity-only
+                var form = document.getElementById('product-form');
+                if (product.variants && product.variants.length > 0) {
+                    var labelEl = document.createElement('label');
+                    labelEl.setAttribute('for', 'variant');
+                    labelEl.textContent = 'Option';
+                    form.appendChild(labelEl);
+                    product.variants.forEach(function (v, i) {
+                        var span = document.createElement('span');
+                        span.className = 'wb-radio';
+                        span.innerHTML = '<input type="radio" name="variant" value="' + v.value + '" id="variant-' + v.value + '"' + (i === 0 ? ' checked' : '') + ' />'
+                            + '<label for="variant-' + v.value + '">' + v.label + '</label>';
+                        form.appendChild(span);
+                    });
+                }
+                form.innerHTML += '<label for="quantity">Quantity</label>'
+                    + '<div class="wb-price-per-item">'
+                    + '<quantity-input class="wb-quantity">'
+                    + '<button class="wb-quantity-button disabled" name="minus" type="button">-</button>'
+                    + '<input class="wb-quantity-input" type="number" name="quantity" data-cart-quantity="0" data-min="1" min="1" step="1" value="1" />'
+                    + '<button class="wb-quantity-button" name="plus" type="button">+</button>'
+                    + '</quantity-input>'
+                    + '</div>';
+                if (!product.soldOut) {
+                    form.innerHTML += '<div class="wb-buttons">'
+                        + '<button class="wb-button" type="submit" name="add">Add to basket</button>'
+                        + '<button class="wb-button wb-primary-button" type="submit" name="buy">Buy it now</button>'
+                        + '</div>';
+                } else {
+                    form.innerHTML += '<div class="wb-buttons">'
+                        + '<button class="wb-button" type="button" disabled>Sold out</button>'
+                        + '</div>';
+                }
+
+                // Description + collection ref + drawers
+                var desc = document.getElementById('product-description');
+                var html = product.description || '';
+
+                // Collection reference
+                if (product.collection && window.WB_COLLECTIONS && window.WB_COLLECTIONS[product.collection]) {
+                    var col = window.WB_COLLECTIONS[product.collection];
+                    html += '<p class="wb-collection-ref">Part of the <a href="collection.html?handle=' + col.handle + '">' + col.title + '</a> collection.</p>';
+                }
+
+                // Tasting notes drawer
+                if (product.tastingNotes) {
+                    html += '<ul class="wb-product-drawers">'
+                        + '<li>'
+                        + '<a class="wb-drawer">Tasting notes</a>'
+                        + '<div class="wb-drawer-content">' + product.tastingNotes + '</div>'
+                        + '</li>'
+                        + '</ul>';
+                }
+
+                html += '<button class="wb-share-button"><img src="icons/wb-share-black.svg" class="wb-icon-share" /> Share</button>';
+                desc.innerHTML = html;
+
+                // Drawer toggle
+                var drawers = desc.getElementsByClassName('wb-drawer');
+                for (var i = 0; i < drawers.length; i++) {
+                    drawers[i].addEventListener('click', function () {
+                        this.classList.toggle('active');
+                        var content = this.nextElementSibling;
+                        content.style.display = content.style.display === 'block' ? 'none' : 'block';
+                    });
+                }
+
+                // Slider navigation
+                var slides = gallery.getElementsByClassName('wb-slider-slide');
+                var current = 0;
+                var counterEl = document.querySelector('.slider-counter--current');
+                function goTo(n) {
+                    slides[current].style.display = 'none';
+                    current = (n + slides.length) % slides.length;
+                    slides[current].style.display = 'block';
+                    counterEl.textContent = current + 1;
+                    document.querySelector('.wb-slider-button-prev').disabled = current === 0;
+                    document.querySelector('.wb-slider-button-next').disabled = current === slides.length - 1;
+                }
+                if (slides.length > 1 && !window.matchMedia('(min-width: 768px)').matches) {
+                    for (var j = 1; j < slides.length; j++) slides[j].style.display = 'none';
+                    document.querySelector('.wb-slider-button-prev').addEventListener('click', function () { goTo(current - 1); });
+                    document.querySelector('.wb-slider-button-next').addEventListener('click', function () { goTo(current + 1); });
+                }
+
+                document.getElementById('product-main').style.display = '';
+                includeHTML();
+            })();
+        </script>
+    </body>
+</html>
