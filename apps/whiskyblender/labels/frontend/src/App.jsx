@@ -300,7 +300,6 @@ function TampaOutput({ formData, onBack }) {
           fontFamily: '"brothers", sans-serif',
           color: '#000',
           overflow: 'hidden',
-          textTransform: 'uppercase',
           letterSpacing: 1,
         }}>
           <div ref={seriesRef}>{formData.series}</div>
