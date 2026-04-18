@@ -135,6 +135,7 @@ function LabelPage({ dims, cropsFile, pageBackground, children }) {
       backgroundImage: pageBackground || 'none',
       backgroundSize: 'cover',
       margin: '0 auto',
+      color: '#000',
       textShadow: '1px 1px #ffffff',
     }}>
       {/* Crop marks overlay — extends to cropsH which equals total page height */}
@@ -209,18 +210,16 @@ function TampaOutput({ formData, onBack }) {
           fontSize: 9,
           lineHeight: '32px',
           fontFamily: '"brothers", sans-serif',
-          zIndex: 5,
         }}>
           Whisky Club Tampa exclusive
         </div>
 
-        {/* Horizontal accent line */}
+        {/* Horizontal accent line — no z-index so ship image (z-index:1) sits on top */}
         <div style={{
           position: 'absolute',
           top: 152, left: -9,
           width: 570, height: 2,
           backgroundColor: accent,
-          zIndex: 5,
         }} />
 
         {/* Tampa logo — top right */}
@@ -246,9 +245,6 @@ function TampaOutput({ formData, onBack }) {
           zIndex: 21,
           transform: 'rotate(90deg)',
           textAlign: 'center',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
           fontFamily: '"brothers", sans-serif',
           fontSize: 12,
           letterSpacing: -0.5,
@@ -302,7 +298,6 @@ function TampaOutput({ formData, onBack }) {
           height: 20, width: 220,
           zIndex: 2,
           fontFamily: '"brothers", sans-serif',
-          textAlign: 'right',
           color: '#000',
           overflow: 'hidden',
           textTransform: 'uppercase',

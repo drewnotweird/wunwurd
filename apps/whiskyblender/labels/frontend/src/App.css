@@ -453,13 +453,11 @@ button {
 
   .output-shell {
     background: white !important;
-    min-height: unset;
+    min-height: 100vh;
   }
 
   .label-page-wrapper {
-    display: block;
     padding: 0;
-    margin: 0;
     overflow: visible;
   }
 }
