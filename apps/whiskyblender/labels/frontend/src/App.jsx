@@ -599,17 +599,17 @@ function StepTwo({ baseLabel, onSelect, onBack }) {
 
 // ─── Step 3: Fill in form ─────────────────────────────────────────────────────
 
-function StepThree({ baseLabel, template, onGenerate, onBack }) {
+function StepThree({ baseLabel, template, initialValues, onGenerate, onBack }) {
   const [values, setValues] = useState(() => {
-    const init = {};
+    const defaults = {};
     template.fields.forEach(f => {
-      if (f.type === 'select') init[f.key] = f.options[0].value;
-      else if (f.type === 'checkbox') init[f.key] = false;
-      else init[f.key] = '';
+      if (f.type === 'select') defaults[f.key] = f.options[0].value;
+      else if (f.type === 'checkbox') defaults[f.key] = false;
+      else defaults[f.key] = '';
     });
-    return init;
+    return initialValues ? { ...defaults, ...initialValues } : defaults;
   });
-  const [imageUrl, setImageUrl] = useState(null);
+  const [imageUrl, setImageUrl] = useState(initialValues?.image || null);
 
   const handleChange = (key, value) => setValues(prev => ({ ...prev, [key]: value }));
 
@@ -676,6 +676,11 @@ function StepThree({ baseLabel, template, onGenerate, onBack }) {
         ))}
         <div className="form-actions">
           <button type="submit" className="generate-btn">Generate label →</button>
+          {template.sample && (
+            <button type="button" className="sample-btn" onClick={() => onGenerate(template.sample)}>
+              Try a sample
+            </button>
+          )}
           <button type="button" className="back-btn" onClick={onBack}>← Back</button>
         </div>
       </form>
@@ -735,7 +740,7 @@ export default function App() {
     window.history.pushState({}, '', window.location.pathname);
   };
   const handleBackToStep3 = () => {
-    setFormData(null); setStep(3);
+    setStep(3);
     window.history.pushState({}, '', window.location.pathname);
   };
 
@@ -756,6 +761,7 @@ export default function App() {
         )}
         {step === 3 && selectedBase && selectedTemplate && (
           <StepThree baseLabel={selectedBase} template={selectedTemplate}
+            initialValues={formData}
             onGenerate={handleGenerate} onBack={handleBackToStep2} />
         )}
         {step === 4 && selectedBase && selectedTemplate && formData && (

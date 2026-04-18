@@ -358,6 +358,29 @@ button {
   transform: scale(0.98);
 }
 
+/* ─── Sample button ────────────────────────────────────────────────────────── */
+
+.sample-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 28px;
+  background: none;
+  border: 1px solid rgba(200, 160, 74, 0.4);
+  color: var(--gold);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border-radius: 6px;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.sample-btn:hover {
+  border-color: var(--gold);
+  background: rgba(200, 160, 74, 0.08);
+}
+
 /* ─── Back button ──────────────────────────────────────────────────────────── */
 
 .back-btn {

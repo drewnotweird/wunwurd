@@ -69,6 +69,14 @@ export const ALL_TEMPLATES = {
   'tampa-whisky-club': {
     id: 'tampa-whisky-club',
     name: 'Tampa Whisky Club',
+    sample: {
+      series: "Gaspar's Stash Series",
+      blendName: 'Orchard Galore',
+      customerName: 'Andy Davidson',
+      description: 'Inchmurrin / First Fill Bourbon / Cask No.66 / Distilled Jan 2014 / Bottled Mar 2026',
+      color: 'red',
+      keyImage: 'ship',
+    },
     fields: [
       { key: 'series',       label: 'Series',           type: 'text',   placeholder: "Gaspar's Stash Series" },
       { key: 'blendName',    label: 'Expression',       type: 'text',   placeholder: 'Name of the expression' },
@@ -82,6 +90,13 @@ export const ALL_TEMPLATES = {
   'website-options-singlemalt': {
     id: 'website-options-singlemalt',
     name: 'Website options',
+    sample: {
+      blendName: 'Highland Selection',
+      distillery: 'Glengoyne',
+      reference: '09374658G27',
+      labelStyle: 'option_1',
+      singleCask: false,
+    },
     fields: [
       { key: 'blendName',   label: 'Blend name',            type: 'text',     placeholder: 'Name of the blend' },
       { key: 'distillery',  label: 'Distilled at',          type: 'text',     placeholder: 'Name of the distillery' },
@@ -94,6 +109,12 @@ export const ALL_TEMPLATES = {
   'website-options': {
     id: 'website-options',
     name: 'Website options',
+    sample: {
+      blendName: 'The Weekend Blend',
+      createdBy: 'A. Nicolson',
+      reference: '09374658G27',
+      color: 'black',
+    },
     fields: [
       { key: 'blendName',  label: 'Blend name',   type: 'text',   placeholder: 'Name of the blend' },
       { key: 'createdBy',  label: 'Created by',   type: 'text',   placeholder: 'Blender name' },
@@ -105,6 +126,12 @@ export const ALL_TEMPLATES = {
   'single-image': {
     id: 'single-image',
     name: 'Single image',
+    sample: {
+      blendName: 'My Blend',
+      createdBy: 'A. Nicolson',
+      reference: '09374658G27',
+      color: 'black',
+    },
     fields: [
       { key: 'blendName',  label: 'Blend name',        type: 'text',   placeholder: 'Name of the blend' },
       { key: 'createdBy',  label: 'Created by',        type: 'text',   placeholder: 'Blender name' },
