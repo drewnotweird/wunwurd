@@ -63,6 +63,18 @@ a {
     text-underline-offset: 4px;
 }
 
+a,
+button,
+.wb-cards li,
+.wb-productitem,
+.wb-create-options li,
+.wb-option-control,
+.wb-quantity-button,
+.wb-radio label {
+    user-select: none;
+    -webkit-user-select: none;
+}
+
 ul {
     max-width: 768px;
 }

@@ -38,6 +38,7 @@
         <!-- Data layer -->
         <script src="data/custom-products.js"></script>
         <script src="js/confetti.min.js"></script>
+        <script src="js/wb-related.js"></script>
 
         <script>
             function includeHTML() {
@@ -164,7 +165,7 @@
                             <h3 class="wb-subtle-heading">Other options</h3>
                             <a class="wb-float-right" href="customoptions.html">See more</a>
                         </div>
-                        <div w3-include-html="wb-other-custom.html"></div>
+                        <ul id="wb-related-grid" class="wb-productsgrid wb-tightergrid"></ul>
                     </div>
                 </div>
             </section>
@@ -264,6 +265,12 @@
                     document.getElementById('product-no-blend').style.display = '';
                     document.getElementById('custom-product-main').style.display = '';
                 }
+
+                // Related custom products (blend code carried through if present)
+                WBRelated.render(
+                    document.getElementById('wb-related-grid'),
+                    { type: 'custom', handle: handle, blendCode: code }
+                );
 
                 includeHTML();
             })();

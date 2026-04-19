@@ -43,6 +43,7 @@
         <!-- Data layer -->
         <script src="data/products.js"></script>
         <script src="data/collections.js"></script>
+        <script src="js/wb-related.js"></script>
 
         <script>
             function includeHTML() {
@@ -141,7 +142,7 @@
                             <h3 class="wb-subtle-heading">You may also like</h3>
                             <a class="wb-float-right" href="shop.html">See more</a>
                         </div>
-                        <div w3-include-html="wb-related.html"></div>
+                        <ul id="wb-related-grid" class="wb-productsgrid wb-tightergrid"></ul>
                     </div>
                 </div>
             </section>
@@ -326,6 +327,12 @@
                 }
 
                 document.getElementById('product-main').style.display = '';
+                // Related products
+                WBRelated.render(
+                    document.getElementById('wb-related-grid'),
+                    { type: 'product', handle: handle }
+                );
+
                 includeHTML();
             })();
         </script>

@@ -266,7 +266,7 @@
                             <h3 class="wb-subtle-heading">Some of our bottlings</h3>
                             <a class="wb-float-right" href="shop.html">See more</a>
                         </div>
-                        <div w3-include-html="wb-related.html"></div>
+                        <ul id="wb-related-grid" class="wb-productsgrid wb-tightergrid"></ul>
                     </div>
                 </div>
             </section>
@@ -294,8 +294,12 @@
                 }
             }).mount();
         </script>
+        <script src="data/products.js"></script>
+        <script src="data/collections.js"></script>
+        <script src="js/wb-related.js"></script>
         <script>
             includeHTML();
+            WBRelated.render(document.getElementById('wb-related-grid'), { type: 'product', handle: null });
         </script>
     </body>
 </html>

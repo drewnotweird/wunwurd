@@ -463,6 +463,19 @@
     100% { transform: scale(1); }
 }
 
+@keyframes wb-fillbar-add {
+    0%   { transform: scale(0.97); }
+    55%  { transform: scale(1.03); }
+    78%  { transform: scale(0.99); }
+    100% { transform: scale(1); }
+}
+
+@keyframes wb-fillbar-remove {
+    0%   { transform: scale(1); }
+    35%  { transform: scale(0.97); }
+    100% { transform: scale(1); }
+}
+
 .wb-option-amount.wb-anim-add,
 .wb-add-option.wb-anim-add {
     animation: wb-amount-add 0.4s cubic-bezier(0.22, 0.61, 0.36, 1) both;
@@ -471,6 +484,14 @@
 .wb-option-amount.wb-anim-remove,
 .wb-remove-option.wb-anim-remove {
     animation: wb-amount-remove 0.3s ease-out both;
+}
+
+.wb-sticky-lab.wb-anim-add {
+    animation: wb-fillbar-add 0.4s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+.wb-sticky-lab.wb-anim-remove {
+    animation: wb-fillbar-remove 0.3s ease-out both;
 }
 
 .wb-lab-inputs {
