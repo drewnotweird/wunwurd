@@ -84,15 +84,20 @@
         </main>
         <div w3-include-html="wb-footer.html"></div>
 
+        <style>
+            #shop-grid {
+                transition: opacity 0.2s ease;
+            }
+            #shop-grid.wb-fading {
+                opacity: 0;
+            }
+        </style>
+
         <script>
             (function () {
-                var products   = window.WB_PRODUCTS   || {};
+                var products    = window.WB_PRODUCTS    || {};
                 var collections = window.WB_COLLECTIONS || {};
                 var shopConfig  = window.WB_SHOP_CONFIG  || { filters: [] };
-
-                // ── Determine active filter ───────────────────────────────────────
-                var params      = new URLSearchParams(window.location.search);
-                var activeFilter = params.get('filter') || 'featured';
 
                 // ── Build ordered filter list: featured … config filters … sale ──
                 var filterHandles = ['featured'].concat(shopConfig.filters).concat(['sale']);
@@ -102,31 +107,25 @@
                 filterHandles.forEach(function (handle) {
                     var label = handle === 'sale' ? 'Sale'
                               : (collections[handle] ? collections[handle].title : handle);
-                    var href  = 'shop.html?filter=' + handle;
-                    var isActive = handle === activeFilter;
 
                     var span = document.createElement('span');
                     span.className = 'wb-radio';
                     span.innerHTML =
-                        '<input type="radio" name="wb-filter" id="filter-' + handle + '"'
-                        + (isActive ? ' checked' : '') + ' />'
-                        + '<label for="filter-' + handle + '" onclick="location.href=\'' + href + '\'">'
-                        + label + '</label>';
+                        '<input type="radio" name="wb-filter" id="filter-' + handle + '" value="' + handle + '" />'
+                        + '<label for="filter-' + handle + '">' + label + '</label>';
                     filtersEl.appendChild(span);
                 });
 
-                // ── Resolve product handles for active filter ─────────────────────
-                var handles;
-                if (activeFilter === 'sale') {
-                    // All products with a sale price, in products.js order
-                    handles = Object.keys(products).filter(function (h) {
-                        return products[h].comparePrice !== null;
-                    });
-                } else if (collections[activeFilter] && collections[activeFilter].products) {
-                    handles = collections[activeFilter].products;
-                } else {
-                    // Fallback: all products
-                    handles = Object.keys(products);
+                // ── Resolve product handles for a given filter ────────────────────
+                function getHandles(filter) {
+                    if (filter === 'sale') {
+                        return Object.keys(products).filter(function (h) {
+                            return products[h].comparePrice !== null;
+                        });
+                    } else if (collections[filter] && collections[filter].products) {
+                        return collections[filter].products;
+                    }
+                    return Object.keys(products);
                 }
 
                 // ── Render product grid ───────────────────────────────────────────
@@ -162,7 +161,45 @@
                     grid.appendChild(li);
                 }
 
-                handles.forEach(renderProduct);
+                function applyFilter(filter, pushState) {
+                    // Update radio checked state
+                    filterHandles.forEach(function (h) {
+                        var input = document.getElementById('filter-' + h);
+                        if (input) input.checked = (h === filter);
+                    });
+
+                    // Update URL without reloading
+                    if (pushState) {
+                        var url = 'shop.html?filter=' + filter;
+                        history.pushState({ filter: filter }, '', url);
+                    }
+
+                    // Fade out → swap → fade in
+                    grid.classList.add('wb-fading');
+                    setTimeout(function () {
+                        grid.innerHTML = '';
+                        getHandles(filter).forEach(renderProduct);
+                        grid.classList.remove('wb-fading');
+                    }, 200);
+                }
+
+                // ── Wire up filter clicks ─────────────────────────────────────────
+                filtersEl.addEventListener('change', function (e) {
+                    if (e.target && e.target.name === 'wb-filter') {
+                        applyFilter(e.target.value, true);
+                    }
+                });
+
+                // Handle browser back/forward
+                window.addEventListener('popstate', function (e) {
+                    var filter = (e.state && e.state.filter) || 'featured';
+                    applyFilter(filter, false);
+                });
+
+                // ── Initial render ────────────────────────────────────────────────
+                var params = new URLSearchParams(window.location.search);
+                var initialFilter = params.get('filter') || 'featured';
+                applyFilter(initialFilter, false);
 
                 includeHTML();
             })();
