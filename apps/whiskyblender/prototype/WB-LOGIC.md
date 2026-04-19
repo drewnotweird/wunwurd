@@ -1,31 +1,38 @@
-# Whisky Blender Prototype — Rules & Logic
+# Whisky Blender — Rules & Logic
 
 ## Blend Codes
 
 ### Format
-`WB` followed by 6 random digits (e.g. `WB141154`). Generated at time of bottling in `thelab.html`.
+`WB` followed by 8 random alphanumeric characters (e.g. `WB4F2A91C3`). Issued by the server — never generated client-side.
 
-### Storage
-Stored in `sessionStorage` under the key `wb_XXXXXX`:
+### Issuance
+When a customer submits their blend in the Lab, the recipe is posted to a server endpoint. The server saves it to the database, generates a unique code (random, 8 alphanumeric chars), and returns it. The customer is then forwarded to their blend URL. Generating the code server-side guarantees uniqueness and ensures the URL is only handed to the customer after the save has succeeded.
+
+Uniqueness is enforced via a unique constraint on the DB column. On the rare collision, the server retries with a new code.
+
+### Recipe schema
 ```json
 {
   "name": "My Blend",
-  "creator": "whiskyblender.com",
+  "creator": "Andrew",
   "recipe": [25, 25, 25, 25, 0]
 }
 ```
 `recipe` is an array of 5 percentage values (0–100), one per lab option, summing to 100.
 
-### URL Passing
+### Retrieval
+The blend code in the URL is the only thing a customer needs to retrieve their blend — on any device, at any time. Any page that needs recipe data fetches it from the server by code. `sessionStorage` is not used for persistence; the server is the source of truth.
+
+### URL structure
 The blend code travels through the site as a `?blend=XXXXXX` query parameter. Every link in the custom product flow must carry this param forward:
-- `thelab.html` → `customoptions.html?blend=CODE`
-- `customoptions.html` → `custom-product.html?handle=HANDLE&blend=CODE`
-- `custom-product.html` "Other options" / "See more" → `customoptions.html?blend=CODE`
+- Lab → `customoptions?blend=CODE`
+- Custom Options → `custom-product?handle=HANDLE&blend=CODE`
+- Custom Product "Other options" / "See more" → `customoptions?blend=CODE`
 - Related products grid → each card href includes `&blend=CODE`
 
 ---
 
-## The Lab (`thelab.html`)
+## The Lab
 
 ### Options
 5 cask options, each with a fixed colour identity:
@@ -55,17 +62,17 @@ On mobile (viewport width < 600px), tapping anywhere on the pie wheel scrolls to
 3. Subtracting the rotation to recover the original segment angle
 4. Dividing by 72° (360° ÷ 5 options) to get the card index
 
-The pie has a `cursor: pointer` on mobile and `cursor: default` on desktop.
+The pie has `cursor: pointer` on mobile and `cursor: default` on desktop.
 
 ### Prefill from Blend Code
-If a `?blend=` param is present on load, the lab reads the sessionStorage entry and reconstructs the blend:
+If a `?blend=` param is present on load, the lab fetches the recipe from the server and reconstructs the blend:
 - `presses[i] = recipe[i] / STEP`
 - Name and creator fields are populated
 - All cards re-render
 - Changing anything and submitting creates a **new** blend code — it does not overwrite the original
 
 ### Submission
-A blend code is generated and the blend is saved to sessionStorage. The user is forwarded to `customoptions.html?blend=CODE`.
+The recipe, name, and creator are posted to the server. The server saves to the database, issues a new code, and returns it. The user is forwarded to `customoptions?blend=CODE`.
 
 ---
 
@@ -83,7 +90,7 @@ All animations avoid opacity changes. Force-reflow (`void el.offsetWidth`) is us
 ### Card Gradient Flash
 On add, a full-height gradient overlay rises from the bottom of the card image and fades out as it grows simultaneously. The colour matches the pie wheel tint for that option (see table above). The gradient runs from 100% colour at the bottom to transparent at the top. Implemented as a `::after` pseudo-element on `.wb-card-image`, animated with `scaleY` + `opacity`.
 
-### Card Active State (Cask Hover)
+### Card Active State
 On any button press (`+` or `−`), the card `li` receives the class `wb-card-active`, which triggers the same CSS rules as `:hover` — the background image zooms in and the cask image rises. The class is removed 900ms after the last press (debounced). This is necessary on mobile because the browser's native hover-on-tap behaviour is disrupted by the `::after` overlay on `.wb-card-image`.
 
 ### Fill Bar
@@ -91,7 +98,7 @@ The fill bar (`.wb-sticky-lab`) has `z-index: 300` to ensure it always sits abov
 
 ---
 
-## Custom Options (`customoptions.html`)
+## Custom Options
 
 ### With a blend code (`?blend=` present)
 - Heading: random Scottish phrase (e.g. "Ya dancer!", "Belter!", "Magic!")
@@ -100,21 +107,21 @@ The fill bar (`.wb-sticky-lab`) has `z-index: 300` to ensure it always sits abov
 ### Without a blend code
 - Heading: "Bottle options"
 - Sub-heading: "There are a few different bottles we can offer, but first you need to decide what to fill it with."
-- Button: "Create something" → `create.html`
+- Button: "Create something" → Lab
 
 ---
 
-## Custom Products (`custom-product.html`)
+## Custom Products
 
 - Blend code is displayed as: `Blend code: WBXXXXXX (Change)`
-- "Change" links back to `thelab.html?blend=CODE` so the user can edit the recipe; submitting there creates a new code
-- The "Other options" / "See more" link must carry the blend code: `customoptions.html?blend=CODE`
+- "Change" links back to the Lab with `?blend=CODE` so the user can edit the recipe; submitting there creates a new code
+- The "Other options" / "See more" link must carry the blend code: `customoptions?blend=CODE`
 
 ---
 
-## Single Malts (`singlemalts.html`, `custom-malt.html`)
+## Single Malts
 
-Each single malt option has a product entry in `data/products.js` with a `href` field pointing to `custom-malt.html?handle=xxx`. This `href` field is respected by both the shop grid and the related products renderer, overriding the default `product.html?handle=` link.
+Each single malt product entry in `WB_PRODUCTS` has an `href` field pointing to `custom-malt?handle=xxx`. This overrides the default `product?handle=` link and is respected by both the shop grid and the related products renderer.
 
 All six single malts are part of the `custom` collection:
 
@@ -127,9 +134,10 @@ All six single malts are part of the `custom` collection:
 | `macallan-32` | Macallan 32 Year Old |
 | `highland-park-32` | Highland Park 32 Year Old |
 
-### `href` field
+The single malt product page reads `?handle=`, pre-selects the matching radio button, and updates the page title and heading.
 
-Any product entry in `WB_PRODUCTS` can include an `href` field to override the default `product.html?handle=xxx` link. The shop and related products renderer both check for this field. Use it for products that have their own page (e.g. single malts via `custom-malt.html`).
+### `href` field
+Any product entry in `WB_PRODUCTS` can include an `href` field to override the default `product?handle=xxx` link. Use it for products that have their own bespoke page (e.g. single malts).
 
 ---
 
@@ -145,39 +153,22 @@ All custom products except the current one. Blend code is appended to every card
 
 ---
 
-## Perfect Drams (`perfectdrams.html`)
+## Perfect Drams
 
-Each dram is a premade blend. On page load, a blend code is generated and stored in sessionStorage for each dram using:
+Each dram is a premade blend with a fixed recipe. Blend codes for perfect drams are pre-issued by the server and stored in the database — they don't need to be generated at runtime. Each card links to `customoptions?blend=CODE` using its pre-assigned code.
+
+The recipe schema follows the same format as customer blends:
 - `name`: the dram's display name (e.g. "Rich and bold")
-- `creator`: `'whiskyblender.com'` (the user can change this on the product page)
+- `creator`: `'whiskyblender.com'` (the customer can change this on the product page)
 - `recipe`: preset percentages across the 5 lab options
 
-Cards link to `customoptions.html?blend=CODE`.
-
 ---
 
-## Single Malts (`singlemalts.html` → `custom-malt.html`)
+## Vouchers and Gift Card
 
-Each product in the single malts collection links to `custom-malt.html?handle=HANDLE`.
+Both products use the shared product page template. Their data lives in `WB_PRODUCTS` under keys `voucher` and `giftcard`.
 
-| Handle | Product |
-|--------|---------|
-| `aultmore-2011` | Aultmore 2011 Barrel |
-| `teaninich-2014` | Teaninich 2014 Barrel |
-| `glenburgie-2015` | Glenburgie 2015 Hogshead |
-| `craigellachie-2013` | Craigellachie 2013 Hogshead |
-| `macallan-32` | Macallan 32 year old |
-| `highland-park-32` | Highland Park 32 year old |
-
-The `custom-malt.html` page reads `?handle=`, pre-selects the matching radio button, and updates the page title and heading.
-
----
-
-## Vouchers and Gift Card (`product.html?handle=voucher` / `product.html?handle=giftcard`)
-
-Both products use the shared `product.html` data-driven template. Their data lives in `data/products.js` under keys `voucher` and `giftcard`.
-
-### New product schema fields
+### Product schema fields
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -186,26 +177,28 @@ Both products use the shared `product.html` data-driven template. Their data liv
 | `formNote` | `string` (HTML) | Inline note shown above the quantity input |
 | `formNoteType` | `'note'` \| `'info'` | Controls icon — lightbulb for `note`, info icon for `info` |
 
-### Theme image swap behaviour
-
+### Theme image swap
 Changing the theme radio swaps the main product image. On mobile (< 768px), the page also scrolls the `.wb-product-media` element into view so the customer sees the updated image.
+
+---
+
+## Shop Filters
+
+Filters are rendered as radio buttons. Switching filter updates the product grid in-page (no page reload) using `history.pushState` to keep the URL in sync. The grid fades out, products are swapped, then it fades back in. Back/forward navigation is handled via `popstate`. Filter order: `featured` → config filters → `sale`.
 
 ---
 
 ## Loader / Error / Retry Pattern
 
-Used on pages that depend on a data load (currently `thelab.html`). Reusable for other scenarios.
+Used on pages that depend on an async data load. States:
 
-1. **Loading state**: loader spinner shown, `<main>` hidden
-2. **Failure**: error panel shown with:
-   - Friendly failure message
-   - Link to the shop
-   - Retry button with a note that retrying may not help if the issue persists
-3. **Retry**: shows the loader again briefly, then loads successfully (in the prototype, first attempt always fails, retry always succeeds)
+1. **Loading**: loader spinner shown, `<main>` hidden
+2. **Failure**: error panel shown with a friendly message, a link to the shop, and a retry button
+3. **Retry**: re-attempts the load from the beginning
 
 ---
 
 ## Global Rules
 
 - **No text selection on tap**: `user-select: none` applied to all interactive cards, buttons, labels, and list items
-- **Blend code always in URL**: never stored only in sessionStorage without a corresponding `?blend=` param in the URL — the param is what ties the session data to the page
+- **Blend code always in URL**: the `?blend=` param is what ties the recipe to the page — always pass it forward through every link in the custom flow. The URL alone is enough for a customer to retrieve their blend on any device.
