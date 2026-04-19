@@ -117,6 +117,14 @@
                                                     <li>Label an exclusive <a href="singlemalts.html">single malt</a></li>
                                                     <li>Pick one of our <a href="perfectdrams.html">perfect drams</a></li>
                                                 </ul>
+                                                <div class="wb-noblend-divider">
+                                                    <span>or</span>
+                                                </div>
+                                                <p class="wb-noblend-codelabel">Already have a blend code?</p>
+                                                <form class="wb-noblend-form" id="blend-code-entry">
+                                                    <input type="text" placeholder="e.g. WB4F2A91C3" maxlength="12" autocomplete="off" spellcheck="false" />
+                                                    <button type="submit" class="wb-button wb-primary-button">→</button>
+                                                </form>
                                             </div>
 
                                             <!-- ── Order form (shown only with blend) ── -->
@@ -214,7 +222,17 @@
                 }
 
                 // ── Blend data ──
-                var blend = code ? JSON.parse(sessionStorage.getItem('wb_' + code) || 'null') : null;
+                // Try sessionStorage first (same-session flow). If missing (e.g. pasted URL,
+                // different device), synthesise a placeholder so the page still renders —
+                // in production this would be a server fetch by blend code instead.
+                var blend = null;
+                if (code) {
+                    blend = JSON.parse(sessionStorage.getItem('wb_' + code) || 'null');
+                    if (!blend) {
+                        blend = { name: 'My blend', creator: '', recipe: [25, 25, 25, 25, 0] };
+                        sessionStorage.setItem('wb_' + code, JSON.stringify(blend));
+                    }
+                }
 
                 if (blend) {
                     // ── Blend code label ──
@@ -264,6 +282,18 @@
                     // ── No-blend prompt — show immediately ──
                     document.getElementById('product-no-blend').style.display = '';
                     document.getElementById('custom-product-main').style.display = '';
+                }
+
+                // ── Blend code entry form ──
+                var codeEntry = document.getElementById('blend-code-entry');
+                if (codeEntry) {
+                    codeEntry.addEventListener('submit', function (e) {
+                        e.preventDefault();
+                        var code = codeEntry.querySelector('input').value.trim().toUpperCase();
+                        if (code) {
+                            location.href = 'custom-product.html?handle=' + handle + '&blend=' + code;
+                        }
+                    });
                 }
 
                 // Carry blend code on "See more" link

@@ -86,9 +86,10 @@
                     </div>
                 </div>
             </section>
-            <!--<section class="wb-banded">
-                <div w3-include-html="wb-letscollab.html"></div>
-            </section>-->
+            <section class="wb-banded" id="wb-blend-section">
+                <div id="wb-blendcode-ui"></div>
+                <div id="wb-createunique" w3-include-html="wb-createunique.html"></div>
+            </section>
         </main>
         <div w3-include-html="wb-footer.html"></div>
         <script>
@@ -129,9 +130,45 @@
             })();
         </script>
 
+        <style>
+            .wb-blendcode-ui {
+                margin-top: 24px;
+            }
+.wb-blendcode-box {
+                background: #1a1a1a;
+                border: 2px solid #1a1a1a;
+                border-radius: 6px;
+                padding: 14px 24px;
+                display: block;
+                width: 100%;
+                margin: 10px 10px 0 0;
+                font-size: 18px;
+                font-weight: 700;
+                line-height: 160%;
+                text-align: center;
+            }
+            .wb-blendcode-digits {
+                color: #ffffff;
+                letter-spacing: 0.08em;
+            }
+@media screen and (min-width: 600px) {
+                .wb-blendcode-box {
+                    display: inline-flex;
+                    width: auto;
+                    padding: 16px 28px;
+                }
+            }
+            @media screen and (min-width: 768px) {
+                .wb-blendcode-box {
+                    font-size: 20px;
+                }
+            }
+        </style>
+
         <script>
             (function () {
-                var hasBlend = !!new URLSearchParams(window.location.search).get('blend');
+                var blend    = new URLSearchParams(window.location.search).get('blend') || '';
+                var hasBlend = !!blend;
                 var heading  = document.getElementById('wb-randomtext');
                 var sub      = document.getElementById('wb-options-sub');
 
@@ -153,6 +190,58 @@
                         "Liquid gold!"
                     ];
                     heading.textContent = phrases[Math.floor(Math.random() * phrases.length)];
+
+                    // Show the blend code section
+                    document.getElementById('wb-createunique').style.display = 'none';
+
+                    // Build share URL: 500ml flat bottle with this blend code
+                    var base = window.location.href.replace(/[^\/]*$/, '');
+                    var shareUrl = base + 'custom-product.html?handle=500-flat&blend=' + blend;
+
+                    // Render blend code UI
+                    var ui = document.getElementById('wb-blendcode-ui');
+
+                    var box = document.createElement('div');
+                    box.className = 'wb-blendcode-box';
+                    box.innerHTML = '<span class="wb-blendcode-digits">' + blend + '</span>';
+
+                    var actions = document.createElement('div');
+                    actions.className = 'wb-buttons';
+
+                    var copyBtn = document.createElement('button');
+                    copyBtn.className = 'wb-button wb-primary-button';
+                    copyBtn.innerHTML =
+                        '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>'
+                        + 'Copy';
+                    copyBtn.addEventListener('click', function () {
+                        navigator.clipboard.writeText(shareUrl).then(function () {
+                            copyBtn.innerHTML =
+                                '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'
+                                + 'Copied!';
+                            setTimeout(function () {
+                                copyBtn.innerHTML =
+                                    '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>'
+                                    + 'Copy';
+                            }, 2000);
+                        });
+                    });
+                    actions.appendChild(copyBtn);
+
+                    if (navigator.share) {
+                        var shareBtn = document.createElement('button');
+                        shareBtn.className = 'wb-button';
+                        shareBtn.innerHTML =
+                            '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>'
+                            + 'Share';
+                        shareBtn.addEventListener('click', function () {
+                            navigator.share({ title: 'My Whisky Blend', url: shareUrl });
+                        });
+                        actions.appendChild(shareBtn);
+                    }
+
+                    actions.insertBefore(box, actions.firstChild);
+                    ui.appendChild(actions);
+
                 } else {
                     heading.textContent = 'Bottle options';
                     sub.textContent = 'There are a few different bottles we can offer, but first you need to decide what to fill it with.';
@@ -162,6 +251,7 @@
                     btn.textContent = 'Create something';
                     btn.style.marginTop = '24px';
                     sub.parentNode.insertBefore(btn, sub.nextSibling);
+                    document.getElementById('wb-blendcode-ui').style.display = 'none';
                 }
             })();
         </script>

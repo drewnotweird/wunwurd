@@ -24,7 +24,10 @@ input.wb-button,
     padding: 14px 24px;
     font-weight: 700;
     text-decoration: none;
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
     margin: 10px 10px 0 0;
     border-radius: 6px;
     color: #169776;
@@ -503,7 +506,7 @@ input.wb-primary-button.wb-button-disabled {
     .wb-button,
     input.wb-button,
     .wb-buttons input.wb-button {
-        display: inline-block;
+        display: inline-flex;
         width: auto;
     }
 
