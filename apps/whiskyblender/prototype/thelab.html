@@ -383,6 +383,18 @@
                     });
                 }
 
+                function triggerAnim(i, adding) {
+                    var amount = cards[i].querySelector('.wb-option-amount');
+                    var btn    = cards[i].querySelector(adding ? '.wb-add-option' : '.wb-remove-option');
+                    var addCls = adding ? 'wb-anim-add' : 'wb-anim-remove';
+
+                    [amount, btn].forEach(function (el) {
+                        el.classList.remove('wb-anim-add', 'wb-anim-remove');
+                        void el.offsetWidth;
+                        el.classList.add(addCls);
+                    });
+                }
+
                 function withRepeat(el, action) {
                     var timer = null;
                     function stop() { if (timer) { clearTimeout(timer); timer = null; } }
@@ -408,6 +420,7 @@
                         total++;
                         render(i);
                         refreshAllAddButtons();
+                        triggerAnim(i, true);
                         if (total === MAX) {
                             document.querySelector('.wb-lab-inputs').scrollIntoView({ behavior: 'smooth', block: 'start' });
                         }
@@ -419,6 +432,7 @@
                         total--;
                         render(i);
                         refreshAllAddButtons();
+                        triggerAnim(i, false);
                     });
                 });
 

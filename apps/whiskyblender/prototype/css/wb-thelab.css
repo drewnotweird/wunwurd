@@ -450,6 +450,29 @@
     background: conic-gradient(from 288deg, #dcd0bc 20%, transparent 0%);
 }
 
+@keyframes wb-amount-add {
+    0%   { transform: scale(0.9); }
+    55%  { transform: scale(1.1); }
+    78%  { transform: scale(0.97); }
+    100% { transform: scale(1); }
+}
+
+@keyframes wb-amount-remove {
+    0%   { transform: scale(1); }
+    35%  { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+
+.wb-option-amount.wb-anim-add,
+.wb-add-option.wb-anim-add {
+    animation: wb-amount-add 0.4s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+.wb-option-amount.wb-anim-remove,
+.wb-remove-option.wb-anim-remove {
+    animation: wb-amount-remove 0.3s ease-out both;
+}
+
 .wb-lab-inputs {
     display: flex;
     flex-direction: column;

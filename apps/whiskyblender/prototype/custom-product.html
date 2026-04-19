@@ -245,16 +245,6 @@
                     form.querySelector('#created-by').value = blend.creator;
                     form.style.display = '';
 
-                    // ── Random celebratory heading ──
-                    var phrases = [
-                        'Ya dancer!', 'Yaldy!', 'Ya wee blender ye!', 'Gie\'s some!',
-                        'Gawjus!', 'Belter!', 'Tasty AF!', 'Magic!', 'Amazin\'!',
-                        'Well done!', 'Lookin\' guid!', 'Canny wait!',
-                        'Let\'s get dressed!', 'Liquid gold!'
-                    ];
-                    document.getElementById('product-title').textContent =
-                        phrases[Math.floor(Math.random() * phrases.length)];
-
                     // ── Loader → reveal with confetti ──
                     var loader = document.getElementById('wb-loader');
                     var main   = document.getElementById('custom-product-main');

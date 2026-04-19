@@ -80,7 +80,7 @@
             <section class="wb-first-item">
                 <div class="wb-container">
                     <div class="wb-padding">
-                        <h1 class="wb-large-heading">Choose your bottle</h1>
+                        <h1 class="wb-large-heading" id="wb-randomtext">Choose your bottle</h1>
                         <p class="wb-collection-sub">Now choose how you want to bottle your whisky...</p>
                         <ul class="wb-productsgrid wb-tightergrid" id="custom-grid"></ul>
                     </div>
@@ -126,6 +126,20 @@
                         + '</div>';
                     grid.appendChild(li);
                 });
+            })();
+        </script>
+
+        <script>
+            (function () {
+                var phrases = [
+                    'Ya dancer!', 'Yaldy!', 'Ya wee blender ye!', 'Pure dead brilliant!',
+                    'Hen, that\'s a stoater!', 'Absolute belter!', 'Magic, by the way!',
+                    'Haud the bus — that\'s brilliant!', 'Yer a talent, pal!', 'Get it right up ye (in a good way)!'
+                ];
+                var el = document.getElementById('wb-randomtext');
+                if (el) {
+                    el.textContent = phrases[Math.floor(Math.random() * phrases.length)];
+                }
             })();
         </script>
 
