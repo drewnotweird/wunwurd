@@ -276,7 +276,7 @@
             <section class="wb-banded">
                 <div class="wb-container">
                     <div class="wb-padding">
-                        <form action="customblend.html" class="wb-bottle-form">
+                        <form action="customoptions.html" class="wb-bottle-form">
                             <div class="wb-lab-inputs">
                                 <div class="wb-lab-input">
                                     <label for="fname">Name this whisky</label>
@@ -324,6 +324,118 @@
         <div w3-include-html="wb-footer.html"></div>
         <script>
             includeHTML();
+        </script>
+        <script>
+            (function () {
+                var MAX  = 20;
+                var STEP = 5;
+
+                var cards = document.querySelectorAll('.wb-option-cards li:not(.wb-notoption)');
+                var pieDivs = [
+                    document.querySelector('.wb-yellow-pie div'),
+                    document.querySelector('.wb-green-pie div'),
+                    document.querySelector('.wb-red-pie div'),
+                    document.querySelector('.wb-blue-pie div'),
+                    document.querySelector('.wb-brown-pie div'),
+                ];
+                var fillVisual = document.querySelector('.wb-lab-fillvisual');
+                var fillLabel  = document.querySelector('.wb-lab-fillmeter span');
+                var blendName  = document.getElementById('blend-name');
+                var createdBy  = document.getElementById('created-by');
+                var submitBtn  = document.querySelector('.wb-bottle-form input[type="submit"]');
+
+                var presses = [0, 0, 0, 0, 0];
+                var total   = 0;
+
+                function updateSubmit() {
+                    var filled  = total >= MAX;
+                    var hasName = blendName.value.length > 0;
+                    var hasCred = createdBy.value.length > 0;
+                    var ready   = filled && hasName && hasCred;
+
+                    if (total === 0)          submitBtn.value = 'Still empty';
+                    else if (!filled)         submitBtn.value = 'Not filled yet';
+                    else if (!hasName || !hasCred) submitBtn.value = 'Details missing';
+                    else                      submitBtn.value = 'Bottle your whisky';
+
+                    submitBtn.classList.toggle('wb-button-disabled', !ready);
+                }
+
+                function render(i) {
+                    cards[i].querySelector('.wb-option-amount').textContent = (presses[i] * STEP) + '%';
+                    pieDivs[i].className = 'wb-pie wb-pie-' + (presses[i] * STEP);
+
+                    var add    = cards[i].querySelector('.wb-add-option');
+                    var remove = cards[i].querySelector('.wb-remove-option');
+                    remove.classList.toggle('wb-disabled-option', presses[i] === 0);
+                    add.classList.toggle('wb-disabled-option', total >= MAX);
+
+                    var pct = total * STEP;
+                    fillVisual.style.width = pct + '%';
+                    fillLabel.textContent  = pct + '% filled';
+
+                    updateSubmit();
+                }
+
+                function refreshAllAddButtons() {
+                    cards.forEach(function (card) {
+                        card.querySelector('.wb-add-option').classList.toggle('wb-disabled-option', total >= MAX);
+                    });
+                }
+
+                function withRepeat(el, action) {
+                    var timer = null;
+                    function stop() { if (timer) { clearTimeout(timer); timer = null; } }
+                    function repeat() { action(); timer = setTimeout(repeat, 120); }
+                    function start() { action(); timer = setTimeout(repeat, 400); }
+                    el.addEventListener('mousedown', start);
+                    el.addEventListener('touchstart', function (e) { e.preventDefault(); start(); }, { passive: false });
+                    el.addEventListener('mouseup', stop);
+                    el.addEventListener('mouseleave', stop);
+                    el.addEventListener('touchend', stop);
+                    el.addEventListener('touchcancel', stop);
+                }
+
+                cards.forEach(function (card, i) {
+                    var addBtn    = card.querySelector('.wb-add-option');
+                    var removeBtn = card.querySelector('.wb-remove-option');
+
+                    addBtn.removeAttribute('onclick');
+
+                    withRepeat(addBtn, function () {
+                        if (total >= MAX) return;
+                        presses[i]++;
+                        total++;
+                        render(i);
+                        refreshAllAddButtons();
+                        if (total === MAX) {
+                            document.querySelector('.wb-lab-inputs').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    });
+
+                    withRepeat(removeBtn, function () {
+                        if (presses[i] === 0) return;
+                        presses[i]--;
+                        total--;
+                        render(i);
+                        refreshAllAddButtons();
+                    });
+                });
+
+                blendName.addEventListener('input', updateSubmit);
+                createdBy.addEventListener('input', updateSubmit);
+
+                document.querySelector('form.wb-bottle-form').addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    var code = 'WB' + (Math.floor(Math.random() * 900000) + 100000);
+                    sessionStorage.setItem('wb_' + code, JSON.stringify({
+                        name:    blendName.value,
+                        creator: createdBy.value,
+                        recipe:  presses.map(function (p) { return p * STEP; }),
+                    }));
+                    window.location.href = 'customoptions.html?blend=' + code;
+                });
+            })();
         </script>
     </body>
 </html>

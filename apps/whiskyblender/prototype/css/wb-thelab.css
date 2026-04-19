@@ -74,6 +74,8 @@
     justify-content: center;
     border-radius: 50%;
     position: absolute;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .wb-option-control {
@@ -397,8 +399,8 @@
 }
 
 .wb-pie-95 {
-    top: 2.5%;
-    left: 2.5%;
+    top: .25%;
+    left: .25%;
     width: 99.5%;
 }
 

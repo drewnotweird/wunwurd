@@ -93,6 +93,11 @@ input.wb-primary-button:hover,
     transition: all 0.4s;
 }
 
+.wb-cards a {
+    text-decoration: none;
+    color: inherit;
+}
+
 .wb-main-cards.wb-cards li {
     background-color: #ffffff;
 }

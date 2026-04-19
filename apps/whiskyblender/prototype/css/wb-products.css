@@ -48,12 +48,14 @@
 }
 
 .wb-productitem {
+    display: block;
     padding-bottom: 20px;
     border: 1px solid transparent;
     border-radius: 6px;
     overflow: hidden;
     transition: border 0.4s;
     cursor: pointer;
+    text-decoration: none;
 }
 
 .wb-productitem.wb-soldout {
