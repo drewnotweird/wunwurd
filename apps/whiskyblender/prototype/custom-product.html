@@ -110,10 +110,10 @@
 
                                             <!-- ── No-blend prompt (shown without blend) ── -->
                                             <div class="wb-info wb-largepanel" id="product-no-blend" style="display:none">
-                                                <h3>Begin by selecting your whisky!</h3>
+                                                <h3>What do you want in it?</h3>
                                                 <ul>
-                                                    <li>Craft your own in our <a href="thelab.html">blending lab</a></li>
-                                                    <li>Choose a <a href="singlemalts.html">single malt</a></li>
+                                                    <li>Craft your own whisky in <a href="thelab.html">the lab</a></li>
+                                                    <li>Label an exclusive <a href="singlemalts.html">single malt</a></li>
                                                     <li>Pick one of our <a href="perfectdrams.html">perfect drams</a></li>
                                                 </ul>
                                             </div>
@@ -138,11 +138,11 @@
                                                 </div>
                                             </form>
 
-                                            <div class="wb-note">
+                                            <!--<div class="wb-note">
                                                 <i class="wb-lightbulb"><img src="icons/wb-lightbulb-black.svg" alt="" /></i>
                                                 Are you a business looking for more than a few bottles?
                                                 <a href="collaborate.html#wb-getintouch">Let's collaborate</a> on something even more bespoke.
-                                            </div>
+                                            </div>-->
                                             <div class="wb-product-description">
                                                 <p>Your virtual creation is brought to life by our expert blenders, drawn from our finest casks and bottled just for you.</p>
                                                 <p>Each bottle features a high-quality personalised label, beautifully finished with copper foil details for a touch of elegance. Presented in a durable, pale blue jute gift bag, this whisky also comes with a note of your unique blend recipe and an official certificate of blending.</p>
@@ -218,7 +218,7 @@
                 if (blend) {
                     // ── Blend code label ──
                     var codeEl = document.getElementById('product-blend-code');
-                    codeEl.textContent = 'Blend code: ' + code;
+                    codeEl.innerHTML = 'Blend code: ' + code + ' <a href="thelab.html?blend=' + code + '" style="font-size:12px;">(Change)</a>';
                     codeEl.style.display = '';
 
                     // ── Recipe bars ──

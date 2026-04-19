@@ -76,7 +76,26 @@
     </head>
     <body>
         <div w3-include-html="wb-header.html"></div>
-        <main>
+
+        <div id="wb-loader" style="background-image: url(images/wb-loader.gif)">Haud the noo</div>
+
+        <div id="wb-load-error" style="display:none">
+            <div class="wb-container">
+                <div class="wb-padding" style="text-align:center; padding-top:80px; padding-bottom:80px; max-width:560px; margin:0 auto;">
+                    <h2 class="wb-medium-heading">That's no right!</h2>
+                    <p>We seem to be having a wee technical moment. It might sort itself out —  so worth a try in a bit.</p>
+                    <p style="margin-top:32px;">
+                        Wander roon <a href="shop.html">the shop</a> in the meantime.
+                    </p>
+                    <p style="margin-top:32px;">
+                        <button id="wb-retry-btn" class="wb-button">Try again</button>
+                    </p>
+                    <p style="font-size:12px; color:#999; margin-top:8px;">If it's still broken, it's still broken.</p>
+                </div>
+            </div>
+        </div>
+
+        <main style="display:none">
             <section class="wb-first-item">
                 <div class="wb-container">
                     <div class="wb-padding wb-collection-copy">
@@ -327,6 +346,44 @@
         </script>
         <script>
             (function () {
+                var loader   = document.getElementById('wb-loader');
+                var errorEl  = document.getElementById('wb-load-error');
+                var mainEl   = document.querySelector('main');
+                var retried  = false;
+
+                function fadeOut(el, cb) {
+                    el.style.transition = 'opacity 0.4s';
+                    el.style.opacity    = '0';
+                    setTimeout(function () {
+                        el.style.display    = 'none';
+                        el.style.transition = '';
+                        el.style.opacity    = '1';
+                        cb();
+                    }, 400);
+                }
+
+                function showLoader(cb) {
+                    errorEl.style.display = 'none';
+                    mainEl.style.display  = 'none';
+                    loader.style.display  = '';
+                    setTimeout(function () { fadeOut(loader, cb); }, 2000);
+                }
+
+                // First attempt — always fails in prototype
+                showLoader(function () {
+                    errorEl.style.display = '';
+                });
+
+                document.getElementById('wb-retry-btn').addEventListener('click', function () {
+                    // Retry — loads successfully in prototype
+                    showLoader(function () {
+                        mainEl.style.display = '';
+                    });
+                });
+            })();
+        </script>
+        <script>
+            (function () {
                 var MAX  = 20;
                 var STEP = 5;
 
@@ -435,6 +492,26 @@
                         triggerAnim(i, false);
                     });
                 });
+
+                // ── Prefill from existing blend code ──
+                (function () {
+                    var existingCode = new URLSearchParams(window.location.search).get('blend');
+                    if (!existingCode) return;
+                    var saved = sessionStorage.getItem('wb_' + existingCode);
+                    if (!saved) return;
+                    var blend = JSON.parse(saved);
+                    var STEP = 5;
+                    blend.recipe.forEach(function (pct, i) {
+                        if (i >= presses.length) return;
+                        presses[i] = Math.round(pct / STEP);
+                        total += presses[i];
+                    });
+                    blendName.value = blend.name    || '';
+                    createdBy.value = blend.creator || '';
+                    cards.forEach(function (_, i) { render(i); });
+                    refreshAllAddButtons();
+                    updateSubmit();
+                })();
 
                 blendName.addEventListener('input', updateSubmit);
                 createdBy.addEventListener('input', updateSubmit);

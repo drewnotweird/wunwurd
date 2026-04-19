@@ -15,6 +15,13 @@ const TOOLS = [
     href: `${BASE_URL}prototype/`,
     available: true,
   },
+  {
+    id: 'github',
+    title: 'Prototype on GitHub',
+    description: 'Source files for the prototype — HTML, CSS, data, and assets.',
+    href: 'https://github.com/drewnotweird/drewnotweird/tree/main/apps/whiskyblender/prototype',
+    available: true,
+  },
 ];
 
 export default function App() {

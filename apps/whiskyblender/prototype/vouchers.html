@@ -317,5 +317,30 @@
         <script>
             includeHTML();
         </script>
+        <script>
+            (function () {
+                var themeImages = {
+                    'cheers':    'images/vouchers/voucher-standard.jpg',
+                    'celebrate': 'images/vouchers/voucher-celebrate.jpg',
+                    'love':      'images/vouchers/voucher-love.jpg',
+                    'thanks':    'images/vouchers/voucher-thanks.jpg',
+                };
+
+                var mainImg   = document.querySelector('.wb-slider-slide > img:not(.wb-icon-zoom)');
+                var mediaEl   = document.querySelector('.wb-product-media');
+                var themeRadios = document.querySelectorAll('input[name="theme"]');
+
+                themeRadios.forEach(function (radio) {
+                    radio.addEventListener('change', function () {
+                        var src = themeImages[this.value];
+                        if (!src || !mainImg) return;
+                        mainImg.src = src;
+                        if (window.matchMedia('(max-width: 767px)').matches) {
+                            mediaEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    });
+                });
+            })();
+        </script>
     </body>
 </html>
