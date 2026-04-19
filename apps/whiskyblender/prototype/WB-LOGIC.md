@@ -152,16 +152,22 @@ The `custom-malt.html` page reads `?handle=`, pre-selects the matching radio but
 
 ---
 
-## Vouchers (`vouchers.html`)
+## Vouchers and Gift Card (`product.html?handle=voucher` / `product.html?handle=giftcard`)
 
-Changing the theme radio pre-selects a new main image. On mobile, the viewport scrolls back to the first slide (the main image) whenever the theme changes.
+Both products use the shared `product.html` data-driven template. Their data lives in `data/products.js` under keys `voucher` and `giftcard`.
 
-| Theme value | Image |
-|-------------|-------|
-| `cheers` | `voucher-standard.jpg` |
-| `celebrate` | `voucher-celebrate.jpg` |
-| `love` | `voucher-love.jpg` |
-| `thanks` | `voucher-thanks.jpg` |
+### New product schema fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `denominations` | `[{value, label, disabled?}]` | Renders a "Value" radio group (voucher only; `null` for gift card) |
+| `themes` | `[{value, label, image, disabled?}]` | Renders a "Theme" radio group; changing selection swaps the main image |
+| `formNote` | `string` (HTML) | Inline note shown above the quantity input |
+| `formNoteType` | `'note'` \| `'info'` | Controls icon — lightbulb for `note`, info icon for `info` |
+
+### Theme image swap behaviour
+
+Changing the theme radio swaps the main product image. On mobile (< 768px), the page also scrolls the `.wb-product-media` element into view so the customer sees the updated image.
 
 ---
 

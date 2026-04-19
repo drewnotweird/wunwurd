@@ -527,6 +527,75 @@ window.WB_PRODUCTS = {
     badge: 'Sale',
   },
 
+  voucher: {
+    handle: 'voucher',
+    title: 'Gift voucher',
+    price: '£33.00',
+    comparePrice: null,
+    soldOut: false,
+    images: ['images/vouchers/voucher-standard.jpg'],
+    type: 'Email voucher',
+    bottleSize: null,
+    abv: null,
+    variants: null,
+    denominations: [
+      { value: '34',  label: '£33 (custom 200ml)' },
+      { value: '62',  label: '£60 (custom 500ml)', disabled: true },
+      { value: '90',  label: '£87 (one of each)' },
+      { value: '112', label: '£108 (2x 500ml bottles)' },
+    ],
+    themes: [
+      { value: 'cheers',    label: 'Cheers',    image: 'images/vouchers/voucher-standard.jpg' },
+      { value: 'celebrate', label: 'Celebrate', image: 'images/vouchers/voucher-celebrate.jpg' },
+      { value: 'love',      label: 'Show love', image: 'images/vouchers/voucher-love.jpg', disabled: true },
+      { value: 'thanks',    label: 'Say thanks', image: 'images/vouchers/voucher-thanks.jpg' },
+    ],
+    formNote: 'Make this gift even more special by also purchasing a <a href="product.html?handle=giftcard">gift card</a> where you can handwrite the details.',
+    formNoteType: 'note',
+    collection: null,
+    description: `
+      <p>This digital gift voucher provides the redeemable value that can be used against products on our site. After purchase, the voucher is sent to you by email and includes the voucher amount, a unique redemption code, and an expiry date.</p>
+      <p>You may choose to forward the email directly to the recipient, or for a more traditional gifting experience, you can handwrite the voucher details into one of our physical <a href="product.html?handle=giftcard">gift cards</a>.</p>
+      <p>The voucher can be redeemed online against whisky purchases, including personalised bottles, making it a flexible and convenient option whether you are gifting in person or from a distance.</p>
+    `,
+    tastingNotes: null,
+    badge: null,
+  },
+
+  giftcard: {
+    handle: 'giftcard',
+    title: 'Gift card',
+    price: '£4.00',
+    comparePrice: null,
+    soldOut: false,
+    images: [
+      'images/vouchers/giftcard-standard.jpg',
+      'images/vouchers/giftcard02.jpg',
+      'images/vouchers/giftcard03.jpg',
+    ],
+    type: 'Voucher not included',
+    bottleSize: null,
+    abv: null,
+    variants: null,
+    denominations: null,
+    themes: [
+      { value: 'cheers',    label: 'Cheers',    image: 'images/vouchers/giftcard-standard.jpg' },
+      { value: 'celebrate', label: 'Celebrate', image: 'images/vouchers/giftcard-celebrate.jpg' },
+      { value: 'love',      label: 'Show love', image: 'images/vouchers/giftcard-showlove.jpg', disabled: true },
+      { value: 'thanks',    label: 'Say thanks', image: 'images/vouchers/giftcard-saythanks.jpg' },
+    ],
+    formNote: 'Does not include any credit. Make sure you also purchase a <a href="product.html?handle=voucher">gift voucher</a> to be able to handwrite this card with the necessary details.',
+    formNoteType: 'info',
+    collection: null,
+    description: `
+      <p>This is a physical, blank gift card designed for gifting whisky in a personal, thoughtful way.</p>
+      <p>The card itself <strong>does not contain any credit or redemption code</strong>. Instead, it's designed to be paired with one of our digital <a href="product.html?handle=voucher">gift vouchers</a>. Once you've purchased a voucher, we'll email you the voucher code, value, and expiry date — which you can then handwrite into this card before gifting it.</p>
+      <p>Perfect for birthdays, anniversaries, weddings, or whisky lovers who appreciate something tangible to unwrap.</p>
+    `,
+    tastingNotes: null,
+    badge: null,
+  },
+
   dramsylvania: {
     handle: 'dramsylvania',
     title: 'Dramsylvania',
