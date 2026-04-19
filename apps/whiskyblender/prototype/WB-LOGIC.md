@@ -45,7 +45,17 @@ The blend code travels through the site as a `?blend=XXXXXX` query parameter. Ev
 - `−` is disabled when `presses[i] === 0`
 
 ### On Reaching 100%
-On mobile (viewport width < 600px), the page automatically scrolls the pie wheel into the centre of the viewport.
+- **Mobile** (< 600px): scrolls the pie wheel to the centre of the viewport
+- **Desktop** (≥ 600px): scrolls to the input fields (`.wb-lab-inputs`)
+
+### Pie Wheel Tap Navigation
+On mobile (viewport width < 600px), tapping anywhere on the pie wheel scrolls to the corresponding option card. The tapped segment is determined by:
+1. Calculating the tap angle relative to the pie centre, in CSS conic-gradient convention (0° = top, clockwise)
+2. Reading the wheel's current animated rotation from its computed transform matrix
+3. Subtracting the rotation to recover the original segment angle
+4. Dividing by 72° (360° ÷ 5 options) to get the card index
+
+The pie has a `cursor: pointer` on mobile and `cursor: default` on desktop.
 
 ### Prefill from Blend Code
 If a `?blend=` param is present on load, the lab reads the sessionStorage entry and reconstructs the blend:
@@ -71,7 +81,13 @@ All animations avoid opacity changes. Force-reflow (`void el.offsetWidth`) is us
 | Card gradient flash | Grows from bottom + fades simultaneously (0.5s) — add only | — |
 
 ### Card Gradient Flash
-On add, a full-height gradient overlay rises from the bottom of the card image and fades out as it grows. The colour matches the pie wheel tint for that option (see table above). The gradient runs from 100% colour at the bottom to transparent at the top.
+On add, a full-height gradient overlay rises from the bottom of the card image and fades out as it grows simultaneously. The colour matches the pie wheel tint for that option (see table above). The gradient runs from 100% colour at the bottom to transparent at the top. Implemented as a `::after` pseudo-element on `.wb-card-image`, animated with `scaleY` + `opacity`.
+
+### Card Active State (Cask Hover)
+On any button press (`+` or `−`), the card `li` receives the class `wb-card-active`, which triggers the same CSS rules as `:hover` — the background image zooms in and the cask image rises. The class is removed 900ms after the last press (debounced). This is necessary on mobile because the browser's native hover-on-tap behaviour is disrupted by the `::after` overlay on `.wb-card-image`.
+
+### Fill Bar
+The fill bar (`.wb-sticky-lab`) has `z-index: 300` to ensure it always sits above the card gradient flash overlay. It also has `will-change: transform` to prevent compositing flicker during the scale animation.
 
 ---
 

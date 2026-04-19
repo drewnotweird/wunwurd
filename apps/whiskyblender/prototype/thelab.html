@@ -497,8 +497,12 @@
                         render(i);
                         refreshAllAddButtons();
                         triggerAnim(i, true);
-                        if (total === MAX && window.innerWidth < 600) {
-                            document.querySelector('.wb-pies').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        if (total === MAX) {
+                            if (window.innerWidth < 600) {
+                                document.querySelector('.wb-pies').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            } else {
+                                document.querySelector('.wb-lab-inputs').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }
                         }
                     });
 
