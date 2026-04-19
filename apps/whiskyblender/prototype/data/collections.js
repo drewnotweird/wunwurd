@@ -99,6 +99,20 @@ window.WB_COLLECTIONS = {
 
   // ── Product collections ───────────────────────────────────────────────────
 
+  custom: {
+    handle: 'custom',
+    title: 'Custom',
+    description: 'Personalised gifts for someone special, even if that special someone is yersel!',
+    coverImage: 'images/products/collaborations/custom.jpg',
+    products: [
+      '500-flat', '500-round', '500-round-black', '200-flat', '12-miniatures', '700-round',
+      'aultmore-2011', 'teaninich-2014', 'glenburgie-2015',
+      'craigellachie-2013', 'macallan-32', 'highland-park-32',
+    ],
+    showCollabCta: true,
+    template: 'default',
+  },
+
   collaborations: {
     handle: 'collaborations',
     title: 'Collaborations',
@@ -157,5 +171,5 @@ window.WB_COLLECTIONS = {
 // 'featured' is always prepended, 'sale' is always appended — do not list them here.
 //
 window.WB_SHOP_CONFIG = {
-  filters: ['andrewsofbothwell', 'weebits', 'collaborations'],
+  filters: ['andrewsofbothwell', 'weebits', 'custom', 'collaborations'],
 };

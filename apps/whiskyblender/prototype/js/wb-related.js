@@ -76,7 +76,7 @@ window.WBRelated = (function () {
                 if (!p) return;
                 seen[h] = true;
                 items.push({
-                    href:         'product.html?handle=' + h,
+                    href:         p.href || ('product.html?handle=' + h),
                     image:        p.images[0],
                     title:        p.title,
                     price:        p.price,

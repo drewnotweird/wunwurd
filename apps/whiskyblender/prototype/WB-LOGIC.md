@@ -112,6 +112,27 @@ The fill bar (`.wb-sticky-lab`) has `z-index: 300` to ensure it always sits abov
 
 ---
 
+## Single Malts (`singlemalts.html`, `custom-malt.html`)
+
+Each single malt option has a product entry in `data/products.js` with a `href` field pointing to `custom-malt.html?handle=xxx`. This `href` field is respected by both the shop grid and the related products renderer, overriding the default `product.html?handle=` link.
+
+All six single malts are part of the `custom` collection:
+
+| Handle | Name |
+|--------|------|
+| `aultmore-2011` | Aultmore 2011 Barrel |
+| `teaninich-2014` | Teaninich 2014 Barrel |
+| `glenburgie-2015` | Glenburgie 2015 Hogshead |
+| `craigellachie-2013` | Craigellachie 2013 Hogshead |
+| `macallan-32` | Macallan 32 Year Old |
+| `highland-park-32` | Highland Park 32 Year Old |
+
+### `href` field
+
+Any product entry in `WB_PRODUCTS` can include an `href` field to override the default `product.html?handle=xxx` link. The shop and related products renderer both check for this field. Use it for products that have their own page (e.g. single malts via `custom-malt.html`).
+
+---
+
 ## Related Products (`js/wb-related.js`)
 
 Rendered via `WBRelated.render(gridEl, config)`.

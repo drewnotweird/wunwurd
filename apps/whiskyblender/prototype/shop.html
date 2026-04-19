@@ -144,7 +144,7 @@
                         ? '<div class="wb-product-notprice"><s>' + product.comparePrice + '</s></div>'
                           + '<div class="wb-product-price">' + product.price + '</div>'
                         : '<div class="wb-product-price">' + product.price + '</div>';
-                    var href = 'product.html?handle=' + handle;
+                    var href = product.href || ('product.html?handle=' + handle);
 
                     var li = document.createElement('li');
                     li.className = 'wb-productcell';
