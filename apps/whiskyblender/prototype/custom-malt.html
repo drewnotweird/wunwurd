@@ -183,27 +183,6 @@
                                                         >Round - 200ml</label
                                                     >
                                                 </span>
-                                                <label for="whisky-options"
-                                                    >Whisky
-                                                    <a href="singlemalts.html" class="wb-labellink">Learn more</a>
-                                                </label>
-                                                <span class="wb-radio">
-                                                    <input
-                                                        type="radio"
-                                                        name="whisky-options"
-                                                        value="macallan32"
-                                                        id="macallan32"
-                                                        checked />
-                                                    <label for="macallan32">Macallan 32 year old</label>
-                                                </span>
-                                                <span class="wb-radio">
-                                                    <input
-                                                        type="radio"
-                                                        name="whisky-options"
-                                                        value="highlandpark32"
-                                                        id="highlandpark32" />
-                                                    <label for="highlandpark32">Highland Park 32 year old</label>
-                                                </span>
                                                 <label for="label-text">Label text</label>
                                                 <input
                                                     type="text"
@@ -366,6 +345,36 @@
         <div w3-include-html="wb-footer.html"></div>
         <script>
             includeHTML();
+        </script>
+        <script>
+            (function () {
+                var malts = {
+                    'aultmore-2011':     'Aultmore 2011 Barrel',
+                    'teaninich-2014':    'Teaninich 2014 Barrel',
+                    'glenburgie-2015':   'Glenburgie 2015 Hogshead',
+                    'craigellachie-2013':'Craigellachie 2013 Hogshead',
+                    'macallan-32':       'Macallan 32 year old',
+                    'highland-park-32':  'Highland Park 32 year old',
+                };
+
+                var handle = new URLSearchParams(window.location.search).get('handle');
+                if (!handle || !malts[handle]) {
+                    // No handle — select first option as default
+                    var first = document.querySelector('input[name="whisky-options"]');
+                    if (first) first.checked = true;
+                    return;
+                }
+
+                // Pre-select the matching radio
+                var radio = document.getElementById(handle);
+                if (radio) radio.checked = true;
+
+                // Update heading and page title
+                var title = malts[handle];
+                var heading = document.querySelector('.wb-producttitle');
+                if (heading) heading.textContent = title;
+                document.title = 'Whisky Blender | ' + title;
+            })();
         </script>
     </body>
 </html>

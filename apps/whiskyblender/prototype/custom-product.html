@@ -111,7 +111,7 @@
 
                                             <!-- ── No-blend prompt (shown without blend) ── -->
                                             <div class="wb-info wb-largepanel" id="product-no-blend" style="display:none">
-                                                <h3>What do you want in it?</h3>
+                                                <h3>Choose how to fill it...</h3>
                                                 <ul>
                                                     <li>Craft your own whisky in <a href="thelab.html">the lab</a></li>
                                                     <li>Label an exclusive <a href="singlemalts.html">single malt</a></li>
@@ -264,6 +264,12 @@
                     // ── No-blend prompt — show immediately ──
                     document.getElementById('product-no-blend').style.display = '';
                     document.getElementById('custom-product-main').style.display = '';
+                }
+
+                // Carry blend code on "See more" link
+                if (code) {
+                    var seeMore = document.querySelector('.wb-collection-header a[href="customoptions.html"]');
+                    if (seeMore) seeMore.href = 'customoptions.html?blend=' + code;
                 }
 
                 // Related custom products (blend code carried through if present)
