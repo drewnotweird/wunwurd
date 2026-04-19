@@ -176,5 +176,37 @@
         <script>
             includeHTML();
         </script>
+        <script>
+            (function () {
+                // Recipes use the 5 lab options in order:
+                // [Banana split, Malted bacon, Spicy beeswax, Salty butter, Charred marshmallow]
+                // Each array must sum to 100, values multiples of 5.
+                var drams = [
+                    { name: 'Rich and bold',    recipe: [0,  0,  55, 5,  40] },
+                    { name: 'Little sweetie',   recipe: [65, 0,  0,  20, 15] },
+                    { name: 'Well balanced',    recipe: [20, 20, 20, 20, 20] },
+                    { name: 'Lovely but weird', recipe: [15, 35, 10, 30, 10] },
+                    { name: 'Quietly powerful', recipe: [0,  10, 35, 15, 40] },
+                    { name: 'Wild at heart',    recipe: [25, 30, 5,  35, 5 ] },
+                ];
+
+                var cards = document.querySelectorAll('.wb-cards li');
+
+                drams.forEach(function (dram, i) {
+                    var code = 'WB' + (Math.floor(Math.random() * 900000) + 100000);
+                    sessionStorage.setItem('wb_' + code, JSON.stringify({
+                        name:    dram.name,
+                        creator: 'whiskyblender.com',
+                        recipe:  dram.recipe,
+                    }));
+                    var href = 'customoptions.html?blend=' + code;
+                    var card = cards[i];
+                    if (!card) return;
+                    card.setAttribute('onclick', 'location.href=\'' + href + '\'');
+                    var link = card.querySelector('a');
+                    if (link) link.href = href;
+                });
+            })();
+        </script>
     </body>
 </html>
