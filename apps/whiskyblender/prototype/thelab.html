@@ -441,6 +441,8 @@
                     });
                 }
 
+                var cardColors = ['#f4e495', '#9bd5c5', '#f3d3d3', '#c9e1f0', '#dcd0bc'];
+
                 function triggerAnim(i, adding) {
                     var amount  = cards[i].querySelector('.wb-option-amount');
                     var btn     = cards[i].querySelector(adding ? '.wb-add-option' : '.wb-remove-option');
@@ -452,6 +454,14 @@
                         void el.offsetWidth;
                         el.classList.add(addCls);
                     });
+
+                    if (adding) {
+                        var card = cards[i];
+                        card.style.setProperty('--flash-color', cardColors[i]);
+                        card.classList.remove('wb-anim-border');
+                        void card.offsetWidth;
+                        card.classList.add('wb-anim-border');
+                    }
                 }
 
                 function withRepeat(el, action) {
@@ -480,8 +490,8 @@
                         render(i);
                         refreshAllAddButtons();
                         triggerAnim(i, true);
-                        if (total === MAX) {
-                            document.querySelector('.wb-lab-inputs').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        if (total === MAX && window.innerWidth < 600) {
+                            document.querySelector('.wb-pies').scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }
                     });
 

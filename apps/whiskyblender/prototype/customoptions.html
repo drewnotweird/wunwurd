@@ -81,7 +81,7 @@
                 <div class="wb-container">
                     <div class="wb-padding">
                         <h1 class="wb-large-heading" id="wb-randomtext">Choose your bottle</h1>
-                        <p class="wb-collection-sub">Now choose how you want to bottle your whisky...</p>
+                        <p class="wb-collection-sub" id="wb-options-sub">Now choose how you want to bottle your whisky...</p>
                         <ul class="wb-productsgrid wb-tightergrid" id="custom-grid"></ul>
                     </div>
                 </div>
@@ -131,25 +131,37 @@
 
         <script>
             (function () {
-                var phrases = [
-                    "Ya dancer!",
-                    "Yaldy!",
-                    "Ya wee blender ye!",
-                    "Gie's some!",
-                    "Gawjus!",
-                    "Belter!",
-                    "Tasty AF!",
-                    "Magic!",
-                    "Amazin'!",
-                    "Well done!",
-                    "Lookin' guid!",
-                    "Canny wait!",
-                    "Let's get dressed!",
-                    "Liquid gold!"
-                ];
-                var el = document.getElementById('wb-randomtext');
-                if (el) {
-                    el.textContent = phrases[Math.floor(Math.random() * phrases.length)];
+                var hasBlend = !!new URLSearchParams(window.location.search).get('blend');
+                var heading  = document.getElementById('wb-randomtext');
+                var sub      = document.getElementById('wb-options-sub');
+
+                if (hasBlend) {
+                    var phrases = [
+                        "Ya dancer!",
+                        "Yaldy!",
+                        "Ya wee blender ye!",
+                        "Gie's some!",
+                        "Gawjus!",
+                        "Belter!",
+                        "Tasty AF!",
+                        "Magic!",
+                        "Amazin'!",
+                        "Well done!",
+                        "Lookin' guid!",
+                        "Canny wait!",
+                        "Let's get dressed!",
+                        "Liquid gold!"
+                    ];
+                    heading.textContent = phrases[Math.floor(Math.random() * phrases.length)];
+                } else {
+                    heading.textContent = 'Bottle options';
+                    sub.textContent = 'There are a few different bottles we can offer, but first you need to decide what to fill it with.';
+                    var btn = document.createElement('a');
+                    btn.href = 'create.html';
+                    btn.className = 'wb-button wb-primary-button';
+                    btn.textContent = 'Create something';
+                    btn.style.marginTop = '24px';
+                    sub.parentNode.insertBefore(btn, sub.nextSibling);
                 }
             })();
         </script>
