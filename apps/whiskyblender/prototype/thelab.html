@@ -462,6 +462,13 @@
                         void card.offsetWidth;
                         card.classList.add('wb-anim-border');
                     }
+
+                    var card = cards[i];
+                    card.classList.add('wb-card-active');
+                    clearTimeout(card._activeTimer);
+                    card._activeTimer = setTimeout(function () {
+                        card.classList.remove('wb-card-active');
+                    }, 900);
                 }
 
                 function withRepeat(el, action) {
@@ -524,6 +531,38 @@
                     refreshAllAddButtons();
                     updateSubmit();
                 })();
+
+                document.querySelector('.wb-pies').addEventListener('click', function (e) {
+                    if (window.innerWidth >= 600) return;
+
+                    var piesEl   = this;
+                    var rotateEl = piesEl.querySelector('.wb-rotate');
+                    var rect     = piesEl.getBoundingClientRect();
+                    var cx       = rect.left + rect.width  / 2;
+                    var cy       = rect.top  + rect.height / 2;
+                    var dx       = e.clientX - cx;
+                    var dy       = e.clientY - cy;
+
+                    // angle in conic-gradient convention: 0 = top, clockwise
+                    var clickAngle = ((Math.atan2(dy, dx) * 180 / Math.PI) + 90 + 360) % 360;
+
+                    // current rotation of the spinning wheel
+                    var matrix   = getComputedStyle(rotateEl).transform;
+                    var rotation = 0;
+                    if (matrix && matrix !== 'none') {
+                        var m = matrix.match(/matrix\(([^)]+)\)/);
+                        if (m) {
+                            var parts = m[1].split(',');
+                            rotation = Math.atan2(parseFloat(parts[1]), parseFloat(parts[0])) * 180 / Math.PI;
+                        }
+                    }
+
+                    // map to segment index (each segment spans 72°)
+                    var adjusted = ((clickAngle - rotation) % 360 + 360) % 360;
+                    var index    = Math.min(Math.floor(adjusted / 72), cards.length - 1);
+
+                    cards[index].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                });
 
                 blendName.addEventListener('input', updateSubmit);
                 createdBy.addEventListener('input', updateSubmit);

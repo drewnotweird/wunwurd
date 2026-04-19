@@ -56,12 +56,14 @@
     /* filter: url(#glass-distortion); */
 }
 
-.wb-option-cards li:hover .wb-card-image {
+.wb-option-cards li:hover .wb-card-image,
+.wb-option-cards li.wb-card-active .wb-card-image {
     background-size: 140%;
     background-position: center;
 }
 
-.wb-option-cards li:hover .wb-card-image .wb-cask {
+.wb-option-cards li:hover .wb-card-image .wb-cask,
+.wb-option-cards li.wb-card-active .wb-card-image .wb-cask {
     background-position: 50% -80%;
     background-color: transparent;
     backdrop-filter: blur(0);
@@ -201,6 +203,13 @@
     position: relative;
     background-image: radial-gradient(#ffffff, #fafafa);
     border-radius: 50%;
+    cursor: pointer;
+}
+
+@media screen and (min-width: 600px) {
+    .wb-pies {
+        cursor: default;
+    }
 }
 
 .wb-pie-grid {
@@ -221,7 +230,8 @@
     border-radius: 40px;
     padding: 10px;
     margin-top: -60px;
-    z-index: 100;
+    z-index: 300;
+    will-change: transform;
 }
 
 .wb-lab-fillmeter {

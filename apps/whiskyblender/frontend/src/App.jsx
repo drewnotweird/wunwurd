@@ -38,7 +38,7 @@ export default function App() {
         <div className="hero__inner">
           <p className="hero__eyebrow">Drewnotweird</p>
           <img src={`${BASE_URL}wb-logo.svg`} alt="Whisky Blender" className="hero__logo" />
-          <p className="hero__desc">Drew's toolkit for crafting</p>
+          <p className="hero__desc">Internal toolkit for crafting</p>
         </div>
       </header>
 
