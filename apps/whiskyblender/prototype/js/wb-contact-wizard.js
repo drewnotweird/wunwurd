@@ -211,7 +211,7 @@
             var filenameEl = el('wbcwUploadFilename');
             if (!filenameEl) return;
             var file = e.target.files[0];
-            filenameEl.textContent = file ? file.name : 'No file chosen';
+            filenameEl.textContent = file ? file.name : 'Optional';
             filenameEl.classList.toggle('wbcw-has-file', !!file);
         }
     });

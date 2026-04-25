@@ -309,12 +309,12 @@
 .wbcw-field-group.wbcw-message-field textarea {
     font-family: "Kalam", cursive;
     font-size: 22px;
-    line-height: 34px;
+    line-height: 32px;
     color: #3b5ea1;
     min-height: 180px;
     border: none;
     border-radius: 0;
-    padding: 8px 0;
+    padding: 28px 0 8px;
     background-color: transparent;
     box-shadow: none;
     resize: none;
