@@ -44,7 +44,7 @@ export default function WordPage() {
             className="w-full bg-transparent text-white font-bold leading-none uppercase outline-none border-none text-center placeholder-gray-700"
             style={{ fontSize: 'clamp(2.5rem, 12vw, 6rem)' }}
             placeholder={searchMode === 'movies' ? 'Name a movie' : 'Adjective'}
-            autoFocus
+            autoFocus={!word}
           />
         </div>
       </div>

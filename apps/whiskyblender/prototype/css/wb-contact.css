@@ -275,7 +275,7 @@
     border: 1px solid #cccccc;
     border-radius: 6px;
     width: 100%;
-    padding: 14px 16px;
+    padding: 20px 16px 14px;
     background-color: #ffffff;
     resize: vertical;
     color: #000000;
@@ -329,6 +329,41 @@
 .wbcw-field-group.wbcw-message-field textarea::placeholder {
     color: #3b5ea1;
     opacity: 0.5;
+}
+
+/* ── File upload (optional, shown in step 5) ───────────────────────────────── */
+
+.wbcw-upload {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding: 14px 16px;
+    border: 1px dashed #cccccc;
+    border-radius: 6px;
+    background-color: #fafafa;
+    transition: border-color 0.2s;
+}
+
+.wbcw-upload:has(input:focus) {
+    border-color: #169776;
+}
+
+.wbcw-upload-btn {
+    flex-shrink: 0;
+    font-size: 13px;
+    padding: 8px 16px;
+}
+
+.wbcw-upload-filename {
+    font-size: 13px;
+    color: #888888;
+    word-break: break-all;
+}
+
+.wbcw-upload-filename.wbcw-has-file {
+    color: #333333;
+    font-weight: 600;
 }
 
 /* ── Summary (shown in final collab step) ──────────────────────────────────── */

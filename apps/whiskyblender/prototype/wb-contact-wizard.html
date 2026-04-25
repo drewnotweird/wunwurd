@@ -231,6 +231,15 @@ SHOPIFY INTEGRATION NOTES
                 placeholder="Timelines, website, questions..."
                 rows="5"></textarea>
         </div>
+        <div class="wbcw-field-group" style="margin-top: 4px;">
+            <label>Got an image? (optional)</label>
+            <div class="wbcw-upload">
+                <input type="file" id="wbcwUpload" accept="image/*" style="display:none" />
+                <button type="button" class="wb-button wbcw-upload-btn"
+                    onclick="document.getElementById('wbcwUpload').click()">&#128206; Choose file</button>
+                <span class="wbcw-upload-filename" id="wbcwUploadFilename">No file chosen</span>
+            </div>
+        </div>
         <div class="wbcw-nav">
             <button type="button" class="wb-button" onclick="wbcwBack()">&#8592; Back</button>
             <button type="button" class="wb-button wb-primary-button" onclick="wbcwSubmit()">Send to us</button>

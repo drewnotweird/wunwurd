@@ -151,6 +151,8 @@
         if (answers.whisky)     lines.push('Whisky: '   + answers.whisky);
         if (answers.label)      lines.push('Label: '    + answers.label);
         if (answers.additional) { lines.push(''); lines.push('Additional info: ' + answers.additional); }
+        var uploadEl = el('wbcwUpload');
+        if (uploadEl && uploadEl.files[0]) { lines.push(''); lines.push('Image attached: ' + uploadEl.files[0].name); }
         return lines.join('\n');
     }
 
@@ -200,6 +202,17 @@
             document.querySelectorAll('.wbcw-paths .wbcw-choice').forEach(function (btn) {
                 btn.disabled = !valid;
             });
+        }
+    });
+
+    /* File upload — update displayed filename */
+    document.addEventListener('change', function (e) {
+        if (e.target && e.target.id === 'wbcwUpload') {
+            var filenameEl = el('wbcwUploadFilename');
+            if (!filenameEl) return;
+            var file = e.target.files[0];
+            filenameEl.textContent = file ? file.name : 'No file chosen';
+            filenameEl.classList.toggle('wbcw-has-file', !!file);
         }
     });
 })();

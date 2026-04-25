@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 export default function About() {
   return (
-    <div className="min-h-[80vh] max-w-2xl mx-auto px-6 py-16">
+    <div className="min-h-[80vh] max-w-2xl mx-auto px-6 py-16 text-center">
 
       <h1 className="text-5xl font-black uppercase text-[#FF1493] mb-12 leading-none">
         Single-word reviews
@@ -21,7 +21,7 @@ export default function About() {
           What if, alongside all those numbers, you also got a word?
         </p>
 
-        <div className="border-l-4 border-[#FF1493] pl-6 py-2">
+        <div className="border-t-4 border-b-4 border-[#FF1493] py-4">
           <p className="text-[#FF1493] font-bold uppercase text-2xl leading-snug">
             One word per film. A small piece of context.
           </p>
@@ -69,7 +69,7 @@ export default function About() {
         </p>
       </div>
 
-      <div className="mt-8 flex flex-col sm:flex-row gap-4">
+      <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
         <Link
           to="/"
           className="inline-block bg-[#FF1493] text-black font-bold text-lg uppercase px-8 py-4 hover:bg-white transition-colors text-center"

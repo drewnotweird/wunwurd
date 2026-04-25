@@ -261,22 +261,24 @@ export default function MovieDetail() {
             {movie.cast?.length > 0 && (
               <div>
                 <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-3">Cast</p>
-                <div className="flex justify-center gap-3 overflow-x-auto -mx-4 px-4 pb-2" style={{ scrollbarWidth: 'none' }}>
-                  {movie.cast.map((person, i) => (
-                    <div key={i} className="flex-shrink-0 w-[72px] text-center">
-                      {person.profilePath
-                        ? <img
-                            src={`https://image.tmdb.org/t/p/w185${person.profilePath}`}
-                            alt={person.name}
-                            className="w-[72px] h-[108px] object-cover object-top bg-gray-900"
-                          />
-                        : <div className="w-[72px] h-[108px] bg-gray-900 flex items-center justify-center">
-                            <span className="text-gray-600 font-bold text-2xl uppercase">{person.name[0]}</span>
-                          </div>
-                      }
-                      <p className="text-white font-bold uppercase text-xs mt-1.5 leading-tight" style={{ wordBreak: 'break-word' }}>{person.name}</p>
-                    </div>
-                  ))}
+                <div className="overflow-x-auto -mx-4 pb-2" style={{ scrollbarWidth: 'none' }}>
+                  <div className="flex gap-3 px-4">
+                    {movie.cast.map((person, i) => (
+                      <div key={i} className="flex-shrink-0 w-[72px] text-center">
+                        {person.profilePath
+                          ? <img
+                              src={`https://image.tmdb.org/t/p/w185${person.profilePath}`}
+                              alt={person.name}
+                              className="w-[72px] h-[108px] object-cover object-top bg-gray-900"
+                            />
+                          : <div className="w-[72px] h-[108px] bg-gray-900 flex items-center justify-center">
+                              <span className="text-gray-600 font-bold text-2xl uppercase">{person.name[0]}</span>
+                            </div>
+                        }
+                        <p className="text-white font-bold uppercase text-xs mt-1.5 leading-tight" style={{ wordBreak: 'break-word' }}>{person.name}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}

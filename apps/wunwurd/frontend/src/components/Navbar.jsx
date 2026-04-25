@@ -69,7 +69,7 @@ function InfoIcon({ size }) {
   )
 }
 
-const SCROLL_THRESHOLD = 140
+const SCROLL_THRESHOLD = 320
 
 export default function Navbar() {
   const { user, logout } = useAuth()
@@ -167,6 +167,12 @@ export default function Navbar() {
   const spacerGrow = progress * 3
   const iconGap = progress * 12
 
+  // Tooltip appears above icon when expanded, below when minimised
+  const tooltipAbove = progress < 0.5
+  const tooltipStyle = tooltipAbove
+    ? { bottom: '100%', marginBottom: '4px', fontSize: '13px' }
+    : { top: '100%', marginTop: '4px', fontSize: '10px' }
+
   return (
     <>
       <nav className="sticky top-0 z-50 bg-[#FF1493]" style={{ height: `${navHeight}px`, borderBottom: `${Math.round(progress * 8)}px solid black`, transition: 'height 0.35s ease, border-bottom-width 0.35s ease' }}>
@@ -180,16 +186,18 @@ export default function Navbar() {
             aria-label="Search"
           >
             <SearchIcon size={iconSize} />
-            <span className="absolute top-full left-1/2 -translate-x-1/2 mt-1 hidden md:block text-[10px] font-bold uppercase tracking-wide text-[#FF1493] bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap">SEARCH</span>
+            <span className="absolute left-1/2 -translate-x-1/2 hidden md:block font-bold uppercase tracking-wide text-[#FF1493] bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap" style={tooltipStyle}>SEARCH</span>
           </button>
           <button
             className="group relative flex items-center justify-center h-full"
-            style={{ flexGrow: iconGrow, flexShrink: 1, flexBasis: 'auto', minWidth: `${iconSize + 8}px`, opacity: randomLoading ? 0.4 : 1, transition: 'opacity 0.2s ease' }}
+            style={{ flexGrow: iconGrow, flexShrink: 1, flexBasis: 'auto', minWidth: `${iconSize + 8}px` }}
             onClick={handleRandom}
             aria-label="Random movie"
           >
-            <RandomIcon size={iconSize} />
-            <span className="absolute top-full left-1/2 -translate-x-1/2 mt-1 hidden md:block text-[10px] font-bold uppercase tracking-wide text-[#FF1493] bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap">RANDOM</span>
+            {randomLoading
+              ? <div style={{ width: iconSize, height: iconSize, border: '2.5px solid black', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite', flexShrink: 0 }} />
+              : <RandomIcon size={iconSize} />}
+            <span className="absolute left-1/2 -translate-x-1/2 hidden md:block font-bold uppercase tracking-wide text-[#FF1493] bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap" style={tooltipStyle}>RANDOM</span>
           </button>
 
           {/* Spacer — expands when minimised to push right icons to the right */}
@@ -202,7 +210,7 @@ export default function Navbar() {
             aria-label="About"
           >
             <InfoIcon size={iconSize} />
-            <span className="absolute top-full left-1/2 -translate-x-1/2 mt-1 hidden md:block text-[10px] font-bold uppercase tracking-wide text-[#FF1493] bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap">ABOUT</span>
+            <span className="absolute left-1/2 -translate-x-1/2 hidden md:block font-bold uppercase tracking-wide text-[#FF1493] bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap" style={tooltipStyle}>ABOUT</span>
           </button>
           <button
             className="group relative flex items-center justify-center h-full"
@@ -211,7 +219,7 @@ export default function Navbar() {
             aria-label={user ? 'Profile' : 'Log in'}
           >
             {user ? <ProfileIcon size={iconSize} /> : <LoginIcon size={iconSize} />}
-            <span className="absolute top-full left-1/2 -translate-x-1/2 mt-1 hidden md:block text-[10px] font-bold uppercase tracking-wide text-[#FF1493] bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap">{user ? 'ACCOUNT' : 'LOGIN'}</span>
+            <span className="absolute left-1/2 -translate-x-1/2 hidden md:block font-bold uppercase tracking-wide text-[#FF1493] bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap" style={tooltipStyle}>{user ? 'ACCOUNT' : 'LOGIN'}</span>
           </button>
         </div>
 

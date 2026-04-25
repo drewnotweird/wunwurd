@@ -12,6 +12,10 @@ body {
   margin: 0;
 }
 
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 /* Hide scrollbar on mobile search */
 ::-webkit-scrollbar {
   width: 4px;
