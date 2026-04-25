@@ -9,7 +9,6 @@
     height: 3px;
     background-color: #dddddd;
     border-radius: 3px;
-    margin-bottom: 36px;
     overflow: hidden;
 }
 
@@ -42,6 +41,18 @@
     }
 }
 
+/* Tracker — static, always in place, label + bar update via JS */
+.wbcw-tracker {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.wbcw-tracker .wbcw-progress {
+    flex: 1;
+}
+
 /* Step eyebrow label */
 .wbcw-label {
     font-size: 11px;
@@ -49,8 +60,7 @@
     text-transform: uppercase;
     letter-spacing: 2px;
     color: #999999;
-    display: block;
-    margin-bottom: 8px;
+    white-space: nowrap;
 }
 
 /* Step heading — uses trimPosterCompressed from wb-fonts.css */
@@ -81,10 +91,9 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 2px;
-    color: #555555;
     display: block;
     margin-top: 20px;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
 }
 
 .wbcw-field:first-child label {
@@ -130,11 +139,10 @@
 /* ── Path / choice cards — styled to match .wb-create-options ─────────────��─ */
 
 .wbcw-question {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 2px;
-    color: #888888;
     display: block;
     margin-bottom: 14px;
     margin-top: 8px;
@@ -160,6 +168,21 @@
     color: #666666;
     transition: all 0.4s;
     width: 100%;
+}
+
+.wbcw-choice:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.wbcw-choice:disabled:hover {
+    background-color: #ffffff;
+    border-color: #cccccc;
+    color: #666666;
+}
+
+.wbcw-choice:disabled:hover .wbcw-choice-icon {
+    transform: rotate(-20deg);
 }
 
 .wbcw-choice:hover {
@@ -283,7 +306,7 @@
     margin-bottom: 4px;
 }
 
-.wbcw-message-field textarea {
+.wbcw-field-group.wbcw-message-field textarea {
     font-family: "Kalam", cursive;
     font-size: 22px;
     line-height: 34px;
@@ -294,15 +317,16 @@
     padding: 8px 0;
     background-color: transparent;
     box-shadow: none;
+    resize: none;
 }
 
-.wbcw-message-field textarea:focus {
+.wbcw-field-group.wbcw-message-field textarea:focus {
     outline: rgba(59, 94, 161, 0.2) dotted 2px;
     outline-offset: 6px;
     border-color: transparent;
 }
 
-.wbcw-message-field textarea::placeholder {
+.wbcw-field-group.wbcw-message-field textarea::placeholder {
     color: #3b5ea1;
     opacity: 0.5;
 }

@@ -34,4 +34,5 @@ export const JOKES = [
   { id: 32, emoji: '🐻', setup: "What do you call bears with no ears?", punchline: "B." },
   { id: 33, emoji: '⚾', setup: "I couldn't figure out why the baseball kept getting bigger.", punchline: "Then, it hit me." },
   { id: 34, emoji: '🕷️', setup: "What do you call a spider with 20 eyes?", punchline: "A spiiiiiiiiiiiiiiiiiiiider." },
+  { id: 35, emoji: '🔔', setup: "Why do cows wear bells?", punchline: "Because their horns don't work." },
 ]

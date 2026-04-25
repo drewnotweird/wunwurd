@@ -15,41 +15,44 @@ SHOPIFY INTEGRATION NOTES
 ════════════════════════════════════════════════════════════════
 -->
 <div class="wbcw" id="wbContactWizard">
-    <div class="wbcw-progress">
-        <div class="wbcw-progress-fill" id="wbcwProgress"></div>
+    <div class="wbcw-tracker">
+        <span class="wbcw-label" id="wbcwStepLabel" style="display:none"></span>
+        <div class="wbcw-progress">
+            <div class="wbcw-progress-fill" id="wbcwProgress"></div>
+        </div>
     </div>
 
     <!-- ── Step 1: contact details + path choice ─────────────────────────── -->
     <div class="wbcw-step wbcw-active" data-step="contact">
         <div class="wbcw-fields">
             <div class="wbcw-field">
-                <label for="wbcwName">Your name</label>
-                <input type="text" id="wbcwName" autocomplete="name" placeholder="Your name" />
+                <label for="wbcwName">Name</label>
+                <input type="text" id="wbcwName" autocomplete="name" placeholder="What do we call you?" />
             </div>
             <div class="wbcw-field">
-                <label for="wbcwEmail">Email <span style="color:#da5252">*</span></label>
+                <label for="wbcwEmail">Email (required)</label>
                 <input type="email" id="wbcwEmail" autocomplete="email" placeholder="legend@domain.com" />
                 <span class="wbcw-error-msg" id="wbcwEmailError">We'll need your email to reply</span>
             </div>
             <div class="wbcw-field">
-                <label for="wbcwPhone">Phone (optional)</label>
+                <label for="wbcwPhone">Phone</label>
                 <input type="tel" id="wbcwPhone" autocomplete="tel" placeholder="+44 ..." />
             </div>
         </div>
-        <span class="wbcw-question">What are you looking to do?</span>
+        <span class="wbcw-question">Contact options</span>
         <div class="wbcw-choices wbcw-paths">
-            <button type="button" class="wbcw-choice" onclick="wbcwChoosePath('message')">
+            <button type="button" class="wbcw-choice" disabled onclick="wbcwChoosePath('message')">
                 <span class="wbcw-choice-icon">✉️</span>
                 <span class="wbcw-choice-body">
                     <span class="wbcw-choice-title">Write us a message</span>
-                    <span class="wbcw-choice-sub">Just want to say hello or ask something? We'd love to hear from you.</span>
+                    <span class="wbcw-choice-sub">Just want to say hello or ask something?</span>
                 </span>
             </button>
-            <button type="button" class="wbcw-choice" onclick="wbcwChoosePath('collab')">
+            <button type="button" class="wbcw-choice" disabled onclick="wbcwChoosePath('collab')">
                 <span class="wbcw-choice-icon">🥃</span>
                 <span class="wbcw-choice-body">
                     <span class="wbcw-choice-title">Collaborate on a whisky</span>
-                    <span class="wbcw-choice-sub">Looking to create your own branded Scotch? Tell us all about it.</span>
+                    <span class="wbcw-choice-sub">Looking to work with us on your own whisky?</span>
                 </span>
             </button>
         </div>
@@ -69,8 +72,7 @@ SHOPIFY INTEGRATION NOTES
 
     <!-- ── Step: about ───────────────────────────────────────────────────── -->
     <div class="wbcw-step" data-step="about">
-        <span class="wbcw-label">About you &mdash; 1 of 4</span>
-        <h3 class="wbcw-heading">Tell us about yourself</h3>
+        <h3 class="wbcw-heading">Tell us about you</h3>
         <div class="wbcw-choices">
             <button type="button" class="wbcw-choice" onclick="wbcwAnswer('about', 'An individual', 'quantity', this)">
                 <span class="wbcw-choice-icon">👤</span>
@@ -87,7 +89,7 @@ SHOPIFY INTEGRATION NOTES
                 </span>
             </button>
             <button type="button" class="wbcw-choice" onclick="wbcwAnswer('about', 'A bar or restaurant', 'quantity', this)">
-                <span class="wbcw-choice-icon">🍺</span>
+                <span class="wbcw-choice-icon">🪑</span>
                 <span class="wbcw-choice-body">
                     <span class="wbcw-choice-title">A bar or restaurant</span>
                     <span class="wbcw-choice-sub">A house pour or signature serve that's all yours</span>
@@ -108,27 +110,26 @@ SHOPIFY INTEGRATION NOTES
 
     <!-- ── Step: quantity ────────────────────────────────────────────────── -->
     <div class="wbcw-step" data-step="quantity">
-        <span class="wbcw-label">The order &mdash; 2 of 4</span>
-        <h3 class="wbcw-heading">How many bottles are you thinking?</h3>
+        <h3 class="wbcw-heading">How many bottles?</h3>
         <div class="wbcw-choices">
             <button type="button" class="wbcw-choice" onclick="wbcwAnswer('quantity', '1–5 bottles', 'whisky', this)">
-                <span class="wbcw-choice-icon">🍾</span>
+                <span class="wbcw-choice-icon">🤏</span>
                 <span class="wbcw-choice-body">
                     <span class="wbcw-choice-title">1–5 bottles</span>
                     <span class="wbcw-choice-sub">A personal run or a handful of gifts</span>
                 </span>
             </button>
-            <button type="button" class="wbcw-choice" onclick="wbcwAnswer('quantity', 'A case or two (6–24 bottles)', 'whisky', this)">
+            <button type="button" class="wbcw-choice" onclick="wbcwAnswer('quantity', 'A case or so (6–24 bottles)', 'whisky', this)">
                 <span class="wbcw-choice-icon">📦</span>
                 <span class="wbcw-choice-body">
-                    <span class="wbcw-choice-title">A case or two</span>
-                    <span class="wbcw-choice-sub">6–24 bottles</span>
+                    <span class="wbcw-choice-title">A wee case or so</span>
+                    <span class="wbcw-choice-sub">Around 6–24 bottles</span>
                 </span>
             </button>
-            <button type="button" class="wbcw-choice" onclick="wbcwAnswer('quantity', '20–100 bottles', 'whisky', this)">
-                <span class="wbcw-choice-icon">🏷️</span>
+            <button type="button" class="wbcw-choice" onclick="wbcwAnswer('quantity', '25–100 bottles', 'whisky', this)">
+                <span class="wbcw-choice-icon">🏢</span>
                 <span class="wbcw-choice-body">
-                    <span class="wbcw-choice-title">20–100 bottles</span>
+                    <span class="wbcw-choice-title">25–100 bottles</span>
                     <span class="wbcw-choice-sub">A proper branded run</span>
                 </span>
             </button>
@@ -147,7 +148,6 @@ SHOPIFY INTEGRATION NOTES
 
     <!-- ── Step: whisky ──────────────────────────────────────────────────── -->
     <div class="wbcw-step" data-step="whisky">
-        <span class="wbcw-label">The Scotch &mdash; 3 of 4</span>
         <h3 class="wbcw-heading">What kind of Scotch?</h3>
         <div class="wbcw-choices">
             <button type="button" class="wbcw-choice" onclick="wbcwAnswer('whisky', 'Single malt', 'label', this)">
@@ -158,7 +158,7 @@ SHOPIFY INTEGRATION NOTES
                 </span>
             </button>
             <button type="button" class="wbcw-choice" onclick="wbcwAnswer('whisky', 'Single cask', 'label', this)">
-                <span class="wbcw-choice-icon">🪣</span>
+                <span class="wbcw-choice-icon">💎</span>
                 <span class="wbcw-choice-body">
                     <span class="wbcw-choice-title">Single cask</span>
                     <span class="wbcw-choice-sub">Truly unique — one barrel, one release</span>
@@ -186,14 +186,13 @@ SHOPIFY INTEGRATION NOTES
 
     <!-- ── Step: label ───────────────────────────────────────────────────── -->
     <div class="wbcw-step" data-step="label">
-        <span class="wbcw-label">The label &mdash; 4 of 4</span>
         <h3 class="wbcw-heading">What about the label?</h3>
         <div class="wbcw-choices">
             <button type="button" class="wbcw-choice" onclick="wbcwAnswer('label', 'Overprint our label', 'additional', this)">
                 <span class="wbcw-choice-icon">🖨️</span>
                 <span class="wbcw-choice-body">
                     <span class="wbcw-choice-title">Overprint our label</span>
-                    <span class="wbcw-choice-sub">Your name and message on our design</span>
+                    <span class="wbcw-choice-sub">Canvas texture and copper foiling completed with your design</span>
                 </span>
             </button>
             <button type="button" class="wbcw-choice" onclick="wbcwAnswer('label', 'Fully bespoke label', 'additional', this)">
@@ -207,7 +206,7 @@ SHOPIFY INTEGRATION NOTES
                 <span class="wbcw-choice-icon">📬</span>
                 <span class="wbcw-choice-body">
                     <span class="wbcw-choice-title">Send us your own labels</span>
-                    <span class="wbcw-choice-sub">You handle the design, we handle the rest</span>
+                    <span class="wbcw-choice-sub">You handle the design, we advise on production</span>
                 </span>
             </button>
             <button type="button" class="wbcw-choice" onclick="wbcwAnswer('label', 'Explore options with us', 'additional', this)">
@@ -225,16 +224,13 @@ SHOPIFY INTEGRATION NOTES
 
     <!-- ── Step: additional ──────────────────────────────────────────────── -->
     <div class="wbcw-step" data-step="additional">
-        <span class="wbcw-label">Almost there</span>
-        <h3 class="wbcw-heading">Anything else we should know?</h3>
-        <div class="wbcw-field-group">
-            <label for="wbcwAdditional">Any other details, ideas, or questions (optional)</label>
+        <h3 class="wbcw-heading">Anything else?</h3>
+        <div class="wbcw-field-group wbcw-message-field">
             <textarea
                 id="wbcwAdditional"
-                placeholder="Tell us anything else that might help — timelines, inspirations, questions..."
+                placeholder="Timelines, website, questions..."
                 rows="5"></textarea>
         </div>
-        <div class="wbcw-summary" id="wbcwSummary"></div>
         <div class="wbcw-nav">
             <button type="button" class="wb-button" onclick="wbcwBack()">&#8592; Back</button>
             <button type="button" class="wb-button wb-primary-button" onclick="wbcwSubmit()">Send to us</button>

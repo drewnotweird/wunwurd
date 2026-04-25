@@ -7,12 +7,30 @@
 
     var PROGRESS = {
         contact:    0,
-        message:   75,
+        message:   100,
         about:     20,
-        quantity:  38,
-        whisky:    56,
-        label:     74,
-        additional: 90
+        quantity:  40,
+        whisky:    60,
+        label:     80,
+        additional: 100
+    };
+
+    var PROGRESS = {
+        contact:     0,
+        message:   100,
+        about:      20,
+        quantity:   40,
+        whisky:     60,
+        label:      80,
+        additional: 100
+    };
+
+    var LABELS = {
+        about:      '1 of 5',
+        quantity:   '2 of 5',
+        whisky:     '3 of 5',
+        label:      '4 of 5',
+        additional: '5 of 5'
     };
 
     var stepHistory = ['contact'];
@@ -36,7 +54,14 @@
         var prog = el('wbcwProgress');
         if (prog) prog.style.width = (PROGRESS[name] || 0) + '%';
 
-        /* scroll wizard top into view if it's above the viewport */
+        var labelEl = el('wbcwStepLabel');
+        if (labelEl) {
+            var txt = LABELS[name] || '';
+            labelEl.textContent = txt;
+            labelEl.style.display = txt ? '' : 'none';
+        }
+
+        /* Scroll wizard top into view if it's above the viewport */
         var rect = wizard.getBoundingClientRect();
         if (rect.top < 0) {
             window.scrollTo({ top: window.scrollY + rect.top - 20, behavior: 'smooth' });
@@ -157,23 +182,24 @@
         ──────────────────────────────────────────────────────────────────── */
 
         /* Prototype: show success state */
-        var prog = document.querySelector('.wbcw-progress');
-        if (prog) prog.style.opacity = '0';
         document.querySelectorAll('.wbcw-step').forEach(function (s) {
             s.classList.remove('wbcw-active');
         });
-        var progressFill = el('wbcwProgress');
-        if (progressFill) progressFill.style.width = '100%';
         var successEl = el('wbcwSuccess');
         if (successEl) successEl.classList.add('wbcw-active');
     };
 
-    /* Email error clearing — event delegation so it works after async include */
+    /* Email input — clear errors and gate path buttons on valid email */
     document.addEventListener('input', function (e) {
         if (e.target && e.target.id === 'wbcwEmail') {
             e.target.classList.remove('wbcw-field-error');
             var errEl = el('wbcwEmailError');
             if (errEl) errEl.classList.remove('wbcw-visible');
+
+            var valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.target.value.trim());
+            document.querySelectorAll('.wbcw-paths .wbcw-choice').forEach(function (btn) {
+                btn.disabled = !valid;
+            });
         }
     });
 })();
