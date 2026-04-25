@@ -161,119 +161,131 @@ export default function Navbar() {
 
   const showDropdown = searchOpen && (loading || results.length > 0 || (query.trim() && !loading))
 
+  // At progress=0 (top of home): icons spread equally, no gap, spacer gone
+  // At progress=1 (scrolled/non-home): icons at natural size, spacer fills centre, gap=12px
+  const iconGrow = 1 - progress
+  const spacerGrow = progress * 3
+  const iconGap = progress * 12
+
   return (
     <>
       <nav className="sticky top-0 z-50 bg-[#FF1493]" style={{ height: `${navHeight}px`, borderBottom: `${Math.round(progress * 8)}px solid black`, transition: 'height 0.35s ease, border-bottom-width 0.35s ease' }}>
-        <div className="flex items-center h-full px-4 gap-3">
 
-          {/* Left — search + random */}
+        {/* Icon row — buttons grow to fill equally when expanded, shrink to sides when minimised */}
+        <div className="flex items-center h-full px-4" style={{ gap: `${iconGap}px` }}>
           <button
-            className="flex items-center justify-center flex-shrink-0"
-            style={{ width: `${iconSize + 8}px`, height: `${iconSize + 8}px` }}
+            className="group relative flex items-center justify-center h-full"
+            style={{ flexGrow: iconGrow, flexShrink: 1, flexBasis: 'auto', minWidth: `${iconSize + 8}px` }}
             onClick={() => navigate('/search-words')}
             aria-label="Search"
           >
             <SearchIcon size={iconSize} />
+            <span className="absolute top-full left-1/2 -translate-x-1/2 mt-1 hidden md:block text-[10px] font-bold uppercase tracking-wide text-[#FF1493] bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap">SEARCH</span>
           </button>
           <button
-            className="flex items-center justify-center flex-shrink-0"
-            style={{ width: `${iconSize + 8}px`, height: `${iconSize + 8}px`, opacity: randomLoading ? 0.4 : 1, transition: 'opacity 0.2s ease' }}
+            className="group relative flex items-center justify-center h-full"
+            style={{ flexGrow: iconGrow, flexShrink: 1, flexBasis: 'auto', minWidth: `${iconSize + 8}px`, opacity: randomLoading ? 0.4 : 1, transition: 'opacity 0.2s ease' }}
             onClick={handleRandom}
             aria-label="Random movie"
           >
             <RandomIcon size={iconSize} />
+            <span className="absolute top-full left-1/2 -translate-x-1/2 mt-1 hidden md:block text-[10px] font-bold uppercase tracking-wide text-[#FF1493] bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap">RANDOM</span>
           </button>
 
-          {/* Centre — logo (hidden at top of home, fades in on scroll) */}
-          <div className="flex-1 flex justify-center" ref={searchContainerRef}>
-            {searchOpen ? (
-              <div className="relative w-full">
-                <input
-                  ref={inputRef}
-                  value={query}
-                  onChange={e => setQuery(e.target.value)}
-                  placeholder="SEARCH MOVIES..."
-                  autoComplete="off"
-                  autoCorrect="off"
-                  spellCheck={false}
-                  className="w-full bg-transparent border-b-2 border-black text-black font-bold uppercase text-xl px-1 py-1 outline-none placeholder-black/40"
-                />
-                {showDropdown && (
-                  <div className="absolute top-full left-0 right-0 bg-black border-2 border-t-0 border-[#FF1493] z-50 max-h-[75vh] overflow-y-auto">
-                    {loading && (
-                      <div className="divide-y divide-gray-900">
-                        {Array.from({ length: 4 }).map((_, i) => (
-                          <div key={i} className="flex items-center gap-4 px-4 py-3 animate-pulse">
-                            <div className="w-14 h-20 bg-gray-900 flex-shrink-0" />
-                            <div className="flex-1 space-y-3">
-                              <div className="h-5 bg-gray-900 w-3/4" />
-                              <div className="h-4 bg-gray-900 w-1/4" />
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    {!loading && results.length > 0 && (
-                      <div className="divide-y divide-gray-900">
-                        {results.map(movie => {
-                          const poster = movie.poster_path ? `https://image.tmdb.org/t/p/w185${movie.poster_path}` : null
-                          const year = movie.release_date?.slice(0, 4)
-                          return (
-                            <button key={movie.id} onMouseDown={() => handleResultClick(movie)}
-                              className="w-full flex items-center gap-4 px-4 py-3 hover:bg-gray-900 transition-colors text-left">
-                              {poster
-                                ? <img src={poster} alt={movie.title} className="w-14 h-20 object-cover flex-shrink-0" />
-                                : <div className="w-14 h-20 bg-gray-800 flex-shrink-0" />}
-                              <div className="flex-1 min-w-0">
-                                <p className="text-white font-bold text-xl uppercase leading-none truncate">{movie.title}</p>
-                                {year && <p className="text-[#FF1493] text-base font-bold mt-1">{year}</p>}
-                              </div>
-                            </button>
-                          )
-                        })}
-                      </div>
-                    )}
-                    {!loading && results.length === 0 && query.trim() && (
-                      <p className="text-gray-400 text-base uppercase text-center py-8 px-4">
-                        NO RESULTS FOR "{query.trim().toUpperCase()}"
-                      </p>
-                    )}
-                  </div>
-                )}
-              </div>
-            ) : (
-              <Link
-                to="/"
-                style={{
-                  opacity: logoOpacity,
-                  transform: `scale(${logoScale})`,
-                  transition: 'opacity 0.35s ease, transform 0.35s ease',
-                  pointerEvents: logoOpacity < 0.2 ? 'none' : 'auto',
-                }}
-                className="text-black font-bold text-2xl uppercase leading-none"
-              >
-                WUNWURD
-              </Link>
-            )}
-          </div>
+          {/* Spacer — expands when minimised to push right icons to the right */}
+          <div style={{ flexGrow: spacerGrow, flexShrink: 1, flexBasis: 0, minWidth: 0 }} />
 
-          {/* Right — about + profile/login */}
           <button
-            className="flex items-center justify-center flex-shrink-0"
-            style={{ width: `${iconSize + 8}px`, height: `${iconSize + 8}px` }}
+            className="group relative flex items-center justify-center h-full"
+            style={{ flexGrow: iconGrow, flexShrink: 1, flexBasis: 'auto', minWidth: `${iconSize + 8}px` }}
             onClick={() => navigate('/about')}
             aria-label="About"
           >
             <InfoIcon size={iconSize} />
+            <span className="absolute top-full left-1/2 -translate-x-1/2 mt-1 hidden md:block text-[10px] font-bold uppercase tracking-wide text-[#FF1493] bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap">ABOUT</span>
           </button>
           <button
-            className="flex items-center justify-center flex-shrink-0"
-            style={{ width: `${iconSize + 8}px`, height: `${iconSize + 8}px` }}
+            className="group relative flex items-center justify-center h-full"
+            style={{ flexGrow: iconGrow, flexShrink: 1, flexBasis: 'auto', minWidth: `${iconSize + 8}px` }}
             onClick={handleProfileClick}
             aria-label={user ? 'Profile' : 'Log in'}
           >
             {user ? <ProfileIcon size={iconSize} /> : <LoginIcon size={iconSize} />}
+            <span className="absolute top-full left-1/2 -translate-x-1/2 mt-1 hidden md:block text-[10px] font-bold uppercase tracking-wide text-[#FF1493] bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap">{user ? 'ACCOUNT' : 'LOGIN'}</span>
           </button>
+        </div>
+
+        {/* Logo — absolutely centred, fades in as nav minimises */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none" ref={searchContainerRef}>
+          {searchOpen ? (
+            <div className="relative w-full px-4 pointer-events-auto">
+              <input
+                ref={inputRef}
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                placeholder="SEARCH MOVIES..."
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck={false}
+                className="w-full bg-transparent border-b-2 border-black text-black font-bold uppercase text-xl px-1 py-1 outline-none placeholder-black/40"
+              />
+              {showDropdown && (
+                <div className="absolute top-full left-0 right-0 bg-black border-2 border-t-0 border-[#FF1493] z-50 max-h-[75vh] overflow-y-auto">
+                  {loading && (
+                    <div className="divide-y divide-gray-900">
+                      {Array.from({ length: 4 }).map((_, i) => (
+                        <div key={i} className="flex items-center gap-4 px-4 py-3 animate-pulse">
+                          <div className="w-14 h-20 bg-gray-900 flex-shrink-0" />
+                          <div className="flex-1 space-y-3">
+                            <div className="h-5 bg-gray-900 w-3/4" />
+                            <div className="h-4 bg-gray-900 w-1/4" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {!loading && results.length > 0 && (
+                    <div className="divide-y divide-gray-900">
+                      {results.map(movie => {
+                        const poster = movie.poster_path ? `https://image.tmdb.org/t/p/w185${movie.poster_path}` : null
+                        const year = movie.release_date?.slice(0, 4)
+                        return (
+                          <button key={movie.id} onMouseDown={() => handleResultClick(movie)}
+                            className="w-full flex items-center gap-4 px-4 py-3 hover:bg-gray-900 transition-colors text-left">
+                            {poster
+                              ? <img src={poster} alt={movie.title} className="w-14 h-20 object-cover flex-shrink-0" />
+                              : <div className="w-14 h-20 bg-gray-800 flex-shrink-0" />}
+                            <div className="flex-1 min-w-0">
+                              <p className="text-white font-bold text-xl uppercase leading-none truncate">{movie.title}</p>
+                              {year && <p className="text-[#FF1493] text-base font-bold mt-1">{year}</p>}
+                            </div>
+                          </button>
+                        )
+                      })}
+                    </div>
+                  )}
+                  {!loading && results.length === 0 && query.trim() && (
+                    <p className="text-gray-400 text-base uppercase text-center py-8 px-4">
+                      NO RESULTS FOR "{query.trim().toUpperCase()}"
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+          ) : (
+            <Link
+              to="/"
+              style={{
+                opacity: logoOpacity,
+                transform: `scale(${logoScale})`,
+                transition: 'opacity 0.35s ease, transform 0.35s ease',
+                pointerEvents: logoOpacity < 0.2 ? 'none' : 'auto',
+              }}
+              className="text-black font-bold text-2xl uppercase leading-none"
+            >
+              WUNWURD
+            </Link>
+          )}
         </div>
       </nav>
 

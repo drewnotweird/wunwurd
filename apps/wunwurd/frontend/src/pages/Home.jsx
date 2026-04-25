@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
 import MovieCard from '../components/MovieCard'
 import SkeletonCard from '../components/SkeletonCard'
+import Navbar from '../components/Navbar'
 import { apiFetch } from '../api'
 
 const SCROLL_THRESHOLD = 140
@@ -122,7 +123,7 @@ export default function Home() {
   return (
     <div>
       {/* Hero */}
-      <div className="bg-[#FF1493] px-6 pb-10 text-center">
+      <div className="bg-[#FF1493] px-6 pt-10 pb-14 text-center">
         <div
           style={{
             opacity: bannerOpacity,
@@ -142,6 +143,8 @@ export default function Home() {
           </p>
         </div>
       </div>
+
+      <Navbar />
 
       {/* Waking up indicator */}
       {waking && (

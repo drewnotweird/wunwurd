@@ -1,5 +1,5 @@
 import React from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
@@ -10,23 +10,30 @@ import Profile from './pages/Profile'
 import WordPage from './pages/WordPage'
 import About from './pages/About'
 
+function AppContent() {
+  const { pathname } = useLocation()
+  return (
+    <div className="min-h-screen bg-black text-white">
+      {pathname !== '/' && <Navbar />}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/search" element={<Search />} />
+        <Route path="/movie/:tmdbId" element={<MovieDetail />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Login />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/word/:word" element={<WordPage />} />
+        <Route path="/search-words" element={<WordPage />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
+    </div>
+  )
+}
+
 export default function App() {
   return (
     <AuthProvider>
-      <div className="min-h-screen bg-black text-white">
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/search" element={<Search />} />
-          <Route path="/movie/:tmdbId" element={<MovieDetail />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Login />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/word/:word" element={<WordPage />} />
-          <Route path="/search-words" element={<WordPage />} />
-          <Route path="/about" element={<About />} />
-        </Routes>
-      </div>
+      <AppContent />
     </AuthProvider>
   )
 }
