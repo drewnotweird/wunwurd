@@ -46,7 +46,22 @@ export default function About() {
 
       </div>
 
-      <div className="mt-16 flex flex-col sm:flex-row gap-4">
+      <div className="mt-16 pt-8 border-t border-gray-800 text-gray-500 text-sm">
+        <p>
+          Film data provided by{' '}
+          <a
+            href="https://www.themoviedb.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-400 hover:text-white underline transition-colors"
+          >
+            The Movie Database (TMDB)
+          </a>
+          . This product uses the TMDB API but is not endorsed or certified by TMDB.
+        </p>
+      </div>
+
+      <div className="mt-8 flex flex-col sm:flex-row gap-4">
         <Link
           to="/"
           className="inline-block bg-[#FF1493] text-black font-bold text-lg uppercase px-8 py-4 hover:bg-white transition-colors text-center"
