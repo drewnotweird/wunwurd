@@ -7,6 +7,7 @@ const authRoutes = require('./routes/auth');
 const moviesRoutes = require('./routes/movies');
 const profileRoutes = require('./routes/profile');
 const wordsRoutes = require('./routes/words');
+const statsRoutes = require('./routes/stats');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -51,6 +52,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/movies', moviesRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/words', wordsRoutes);
+app.use('/api/stats', statsRoutes);
 
 app.listen(PORT, () => {
   console.log(`WUNWURD backend running on http://localhost:${PORT}`);

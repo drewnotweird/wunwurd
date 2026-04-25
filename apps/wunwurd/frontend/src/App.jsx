@@ -9,6 +9,7 @@ import Login from './pages/Login'
 import Profile from './pages/Profile'
 import WordPage from './pages/WordPage'
 import About from './pages/About'
+import Lab from './pages/Lab'
 
 function AppContent() {
   const { pathname } = useLocation()
@@ -25,6 +26,7 @@ function AppContent() {
         <Route path="/word/:word" element={<WordPage />} />
         <Route path="/search-words" element={<WordPage />} />
         <Route path="/about" element={<About />} />
+        <Route path="/lab" element={<Lab />} />
       </Routes>
     </div>
   )

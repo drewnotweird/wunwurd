@@ -35,9 +35,9 @@ export default function About() {
 
         <p className="text-white">
           You can also search by word to discover films that others have described the same way —
-          find everything people have called <span className="text-[#FF1493] font-bold">devastating</span>,
-          or <span className="text-[#FF1493] font-bold">unsettling</span>,
-          or <span className="text-[#FF1493] font-bold">joyful</span>.
+          find everything people have called <Link to="/word/devastating" className="text-[#FF1493] font-bold hover:text-white transition-colors">devastating</Link>,
+          or <Link to="/word/unsettling" className="text-[#FF1493] font-bold hover:text-white transition-colors">unsettling</Link>,
+          or <Link to="/word/joyful" className="text-[#FF1493] font-bold hover:text-white transition-colors">joyful</Link>.
         </p>
 
         <p className="text-gray-400">

@@ -261,8 +261,8 @@ export default function MovieDetail() {
             {movie.cast?.length > 0 && (
               <div>
                 <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-3">Cast</p>
-                <div className="overflow-x-auto -mx-4 pb-2" style={{ scrollbarWidth: 'none' }}>
-                  <div className="flex gap-3 px-4">
+                <div className="overflow-x-auto -mx-4 pb-2 text-center" style={{ scrollbarWidth: 'none' }}>
+                  <div className="inline-flex gap-3 px-4">
                     {movie.cast.map((person, i) => (
                       <div key={i} className="flex-shrink-0 w-[72px] text-center">
                         {person.profilePath
