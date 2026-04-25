@@ -57,7 +57,15 @@ export default function About() {
           >
             The Movie Database (TMDB)
           </a>
-          . This product uses the TMDB API but is not endorsed or certified by TMDB.
+          . This product uses the TMDB API but is not endorsed or certified by TMDB. It is merely a wee idea dreamt up and put together by {' '}
+          <a
+            href="https://www.drewnotweird.co.uk"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-400 hover:text-white underline transition-colors"
+          >
+            Andrew Nicolson
+          </a>.
         </p>
       </div>
 
