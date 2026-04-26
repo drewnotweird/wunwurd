@@ -39,10 +39,11 @@ function encodeFormData(formData) {
 function decodeFormData(template, searchParams) {
   const formData = {};
   template.fields.forEach(f => {
-    if (f.type === 'select') formData[f.key] = f.default ?? f.options[0].value;
+    if (f.type === 'select' || f.type === 'color-swatch' || f.type === 'preset-image')
+      formData[f.key] = f.default ?? f.options[0].value;
     else if (f.type === 'checkbox') formData[f.key] = false;
     else if (f.type === 'strength') formData[f.key] = f.default ?? '';
-    else formData[f.key] = '';
+    else formData[f.key] = f.default ?? '';
   });
   searchParams.forEach((value, param) => {
     const key = PARAM_TO_FIELD[param] || param;
@@ -306,6 +307,9 @@ function SingleMaltOutput({ baseLabel, formData, onBack }) {
   const bgColor = formData.bgColor || '#ffffff';
   const artwork = formData.artwork || SINGLEMALT_ARTWORKS[0].value;
 
+  const blendNameRef = useRef(null);
+  useAutoFontSize(blendNameRef, formData.blendName);
+
   return (
     <OutputWrapper onBack={onBack}>
       <LabelPage dims={dims} cropsFile={dims.cropsFile} pageBackground={`url(${baseUrl}sample50cl-bars.png)`}>
@@ -321,11 +325,39 @@ function SingleMaltOutput({ baseLabel, formData, onBack }) {
           zIndex: 1,
           pointerEvents: 'none',
         }} />
-        <div style={{ position: 'absolute', top: 180, left: 140, zIndex: 2, textTransform: 'uppercase', color: '#ffffff', letterSpacing: '8px', fontSize: '8px', fontWeight: 700, textShadow: '1px 1px #000000' }}>
+        {/* Whisky name */}
+        <div style={{
+          fontFamily: '"trimPosterCompressed", sans-serif',
+          fontWeight: 400,
+          position: 'absolute',
+          top: dims.outerTop, left: dims.outerLeft,
+          width: dims.outerW, height: dims.outerH,
+          textTransform: 'uppercase',
+          display: 'grid', placeContent: 'center', justifyContent: 'start',
+          scale: String(dims.scale),
+          color: '#ffffff', textShadow: '1px 1px #000000',
+          overflow: 'hidden', zIndex: 3,
+        }}>
+          <div ref={blendNameRef}>{insertSpaceForLongWords(formData.blendName)}</div>
+        </div>
+
+        {/* Distilled at label */}
+        <div style={{ position: 'absolute', top: 184, left: 142, zIndex: 2, textTransform: 'uppercase', color: '#ffffff', letterSpacing: '8px', fontSize: '8px', fontWeight: 700, textShadow: '1px 1px #000000' }}>
           Distilled at
         </div>
-        <div style={{ position: 'absolute', zIndex: 2 }}>
-          {formData.distillery}
+
+        {/* Distillery name */}
+        <div style={{
+          fontFamily: '"Raleway", sans-serif',
+          position: 'absolute',
+          top: dims.sideTop, left: dims.sideLeft,
+          width: dims.sideW, height: dims.sideH,
+          scale: String(dims.scale),
+          overflow: 'hidden', zIndex: 2,
+        }}>
+          <div style={{ fontSize: 7, lineHeight: '10px', fontWeight: 700, color: '#ffffff', textShadow: '1px 1px #000000' }}>
+            {formData.distillery}
+          </div>
         </div>
         <SideInfoPanels
           fgColor={fgColor} bgColor={bgColor}
@@ -425,6 +457,7 @@ function SingleImageOutput({ baseLabel, formData, onBack }) {
   const fgColor = formData.fgColor || '#111111';
   const bgColor = formData.bgColor || '#ffffff';
   const isTaller = baseLabel.id === '500ml-single-malt';
+  const isRoundel = baseLabel.id === '500ml-single-malt-roundel';
 
   return (
     <OutputWrapper onBack={onBack}>
@@ -434,23 +467,47 @@ function SingleImageOutput({ baseLabel, formData, onBack }) {
         pageBackground={`url(${baseUrl}${isTaller ? 'sample50cl-tallerbars.png' : 'sample50cl-bars.png'})`}
       >
         {formData.image && (
-          <div style={{
-            position: 'absolute',
-            top: -33,
-            left: formData.singleCask ? 90 : 40,
-            width: formData.singleCask ? 471 : 521,
-            height: 269,
-            backgroundImage: `url(${formData.image})`,
-            backgroundPosition: 'center center',
-            backgroundSize: 'cover',
-            zIndex: 1,
-          }} />
+          isRoundel ? (
+            <div style={{
+              position: 'absolute',
+              top: 4, left: -9, width: 570, height: 232,
+              backgroundImage: `url(${formData.image})`,
+              backgroundPosition: 'center center',
+              backgroundSize: 'cover',
+              zIndex: 1,
+            }} />
+          ) : (
+            <div style={{
+              position: 'absolute',
+              top: -33,
+              left: formData.singleCask ? 90 : 40,
+              width: formData.singleCask ? 471 : 521,
+              height: 269,
+              backgroundImage: `url(${formData.image})`,
+              backgroundPosition: 'center center',
+              backgroundSize: 'cover',
+              zIndex: 1,
+            }} />
+          )
         )}
-        <SideInfoPanels
-          fgColor={fgColor} bgColor={bgColor}
-          strength={formData.strength} singleCask={formData.singleCask}
-          baseUrl={baseUrl}
-        />
+        {isRoundel ? (
+          <SideInfoPanels
+            fgColor={fgColor} bgColor={bgColor}
+            strength={formData.strength} singleCask={formData.singleCask}
+            baseUrl={baseUrl}
+            panelTop={4} panelLength={232}
+            panelPadding="10px 16px 17px"
+            tallFontSize={14}
+            domainFontSize={9}
+            svgWidth={202} svgHeight={34}
+          />
+        ) : (
+          <SideInfoPanels
+            fgColor={fgColor} bgColor={bgColor}
+            strength={formData.strength} singleCask={formData.singleCask}
+            baseUrl={baseUrl}
+          />
+        )}
       </LabelPage>
     </OutputWrapper>
   );
@@ -728,7 +785,7 @@ function StepThreeOrOutput() {
   const { baseId, templateId } = useParams();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [showOutput, setShowOutput] = useState(false);
+  const [showOutput, setShowOutput] = useState(() => searchParams.toString() !== '');
   const [imageUrl, setImageUrl] = useState(null);
   const lastDataRef = useRef(null);
 
@@ -736,9 +793,8 @@ function StepThreeOrOutput() {
   const template = ALL_TEMPLATES[templateId];
   if (!base || !template) return <Navigate to="/" replace />;
 
-  // URL params encode text fields; image lives in state only (blob URL not serialisable)
   const hasUrlData = searchParams.toString() !== '';
-  const isOutput = showOutput || hasUrlData;
+  const isOutput = showOutput;
 
   const decodedData = useMemo(
     () => hasUrlData ? decodeFormData(template, searchParams) : null,
@@ -758,14 +814,12 @@ function StepThreeOrOutput() {
     const encoded = encodeFormData(data);
     if (Object.keys(encoded).length > 0) {
       setSearchParams(encoded);
-    } else {
-      // Image-only template — no URL params, use state flag to show output
-      setShowOutput(true);
     }
+    setShowOutput(true);
   };
 
   const handleEdit = () => {
-    setSearchParams({});
+    // Keep search params so form can re-populate from URL on edit
     setShowOutput(false);
   };
 
@@ -777,9 +831,10 @@ function StepThreeOrOutput() {
     );
   }
 
+  // Prefer in-memory ref (has image); fall back to URL-decoded data
   const formInitial = lastDataRef.current
     ? { ...lastDataRef.current, image: imageUrl }
-    : null;
+    : decodedData;
 
   return (
     <StepThree
