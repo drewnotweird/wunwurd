@@ -197,6 +197,7 @@ export default function Home() {
         <p className="text-gray-600 text-xs uppercase tracking-wide mt-3">
           Buttons disabled until ready
         </p>
+
       </div>
 
       {/* Grid */}
