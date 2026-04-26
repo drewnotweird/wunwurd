@@ -137,6 +137,26 @@ button {
   font-style: italic;
 }
 
+/* ─── Base label columns ───────────────────────────────────────────────────── */
+
+.base-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.base-column__heading {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(200, 160, 74, 0.2);
+}
+
 /* ─── Base label cards ─────────────────────────────────────────────────────── */
 
 .base-grid {

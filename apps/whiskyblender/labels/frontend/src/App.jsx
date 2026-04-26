@@ -310,15 +310,16 @@ function SingleMaltOutput({ baseLabel, formData, onBack }) {
   const blendNameRef = useRef(null);
   useAutoFontSize(blendNameRef, formData.blendName);
 
+  const s = dims.roundelH / 232;
+  const distilledTop = Math.round(184 * s);
+  const distilledLeft = Math.round(142 * s);
+
   return (
     <OutputWrapper onBack={onBack}>
-      <LabelPage dims={dims} cropsFile={dims.cropsFile} pageBackground={`url(${baseUrl}sample50cl-bars.png)`}>
+      <LabelPage dims={dims} cropsFile={dims.cropsFile} pageBackground={`url(${baseUrl}${dims.barsFile})`}>
         <div style={{
           position: 'absolute',
-          top: 4,
-          left: -9,
-          width: 570,
-          height: 232,
+          top: dims.roundelTop, left: dims.roundelLeft, width: dims.roundelW, height: dims.roundelH,
           backgroundImage: `url(${baseUrl}images/${artwork})`,
           backgroundPosition: 'center center',
           backgroundSize: 'cover',
@@ -342,7 +343,7 @@ function SingleMaltOutput({ baseLabel, formData, onBack }) {
         </div>
 
         {/* Distilled at label */}
-        <div style={{ position: 'absolute', top: 184, left: 142, zIndex: 2, textTransform: 'uppercase', color: '#ffffff', letterSpacing: '8px', fontSize: '8px', fontWeight: 700, textShadow: '1px 1px #000000' }}>
+        <div style={{ position: 'absolute', top: distilledTop, left: distilledLeft, zIndex: 2, textTransform: 'uppercase', color: '#ffffff', letterSpacing: '8px', fontSize: '8px', fontWeight: 700, textShadow: '1px 1px #000000' }}>
           Distilled at
         </div>
 
@@ -363,12 +364,112 @@ function SingleMaltOutput({ baseLabel, formData, onBack }) {
           fgColor={fgColor} bgColor={bgColor}
           strength={formData.strength} singleCask={formData.singleCask}
           baseUrl={baseUrl}
-          panelTop={4} panelLength={232}
-          panelPadding="10px 16px 17px"
-          tallFontSize={14}
-          domainFontSize={9}
-          svgWidth={202} svgHeight={34}
+          {...roundelPanelProps(dims)}
         />
+      </LabelPage>
+    </OutputWrapper>
+  );
+}
+
+// Compute SideInfoPanels props for a roundel label, scaling from the 500ml reference
+function roundelPanelProps(dims) {
+  const s = dims.roundelH / 232;
+  return {
+    panelTop: dims.roundelTop,
+    panelLength: dims.roundelH,
+    panelPadding: `${Math.round(10 * s)}px ${Math.round(16 * s)}px ${Math.round(17 * s)}px`,
+    tallFontSize: Math.round(14 * s),
+    domainFontSize: Math.round(9 * s),
+    svgWidth: Math.round(202 * s),
+    svgHeight: Math.round(34 * s),
+  };
+}
+
+// ─── Blended malt label (no side panels) ─────────────────────────────────────
+
+function BlendedMaltOutput({ baseLabel, formData, onBack }) {
+  const dims = LABEL_DIMS[baseLabel.size];
+  const baseUrl = import.meta.env.BASE_URL;
+  const fgColor = formData.fgColor || '#111111';
+  const artwork = formData.artwork || SINGLEMALT_ARTWORKS[0].value;
+
+  const blendNameRef = useRef(null);
+  useAutoFontSize(blendNameRef, formData.blendName);
+
+  const s = dims.roundelH / 232;
+  const createdByTop = Math.round(184 * s);
+  const createdByLeft = Math.round(142 * s);
+
+  const shadowColor = COLOR_PALETTE.find(c => c.value === fgColor)?.luminance === 'light' ? '#000000' : '#ffffff';
+
+  return (
+    <OutputWrapper onBack={onBack}>
+      <LabelPage dims={dims} cropsFile={dims.cropsFile} pageBackground={`url(${baseUrl}${dims.barsFile})`}>
+        <div style={{
+          position: 'absolute',
+          top: dims.roundelTop, left: dims.roundelLeft, width: dims.roundelW, height: dims.roundelH,
+          backgroundImage: `url(${baseUrl}images/${artwork})`,
+          backgroundPosition: 'center center',
+          backgroundSize: 'cover',
+          zIndex: 1,
+          pointerEvents: 'none',
+        }} />
+        {/* Whisky name */}
+        <div style={{
+          fontFamily: '"trimPosterCompressed", sans-serif',
+          fontWeight: 400,
+          position: 'absolute',
+          top: dims.outerTop, left: dims.outerLeft,
+          width: dims.outerW, height: dims.outerH,
+          textTransform: 'uppercase',
+          display: 'grid', placeContent: 'center', justifyContent: 'start',
+          scale: String(dims.scale),
+          color: fgColor, textShadow: `1px 1px ${shadowColor}`,
+          overflow: 'hidden', zIndex: 3,
+        }}>
+          <div ref={blendNameRef}>{insertSpaceForLongWords(formData.blendName)}</div>
+        </div>
+        {/* Created by label */}
+        <div style={{ position: 'absolute', top: createdByTop, left: createdByLeft, zIndex: 2, textTransform: 'uppercase', color: fgColor, letterSpacing: '8px', fontSize: '8px', fontWeight: 700, textShadow: `1px 1px ${shadowColor}` }}>
+          Created by
+        </div>
+        {/* Blender name */}
+        <div style={{
+          fontFamily: '"Raleway", sans-serif',
+          position: 'absolute',
+          top: dims.sideTop, left: dims.sideLeft,
+          width: dims.sideW, height: dims.sideH,
+          scale: String(dims.scale),
+          overflow: 'hidden', zIndex: 2,
+        }}>
+          <div style={{ fontSize: 7, lineHeight: '10px', fontWeight: 700, color: fgColor, textShadow: `1px 1px ${shadowColor}` }}>
+            {formData.createdBy}
+          </div>
+        </div>
+      </LabelPage>
+    </OutputWrapper>
+  );
+}
+
+// ─── Blended malt single image (no panels, no text) ──────────────────────────
+
+function BlendedSingleImageOutput({ baseLabel, formData, onBack }) {
+  const dims = LABEL_DIMS[baseLabel.size];
+  const baseUrl = import.meta.env.BASE_URL;
+
+  return (
+    <OutputWrapper onBack={onBack}>
+      <LabelPage dims={dims} cropsFile={dims.cropsFile} pageBackground={`url(${baseUrl}${dims.barsFile})`}>
+        {formData.image && (
+          <div style={{
+            position: 'absolute',
+            top: dims.roundelTop, left: dims.roundelLeft, width: dims.roundelW, height: dims.roundelH,
+            backgroundImage: `url(${formData.image})`,
+            backgroundPosition: 'center center',
+            backgroundSize: 'cover',
+            zIndex: 1,
+          }} />
+        )}
       </LabelPage>
     </OutputWrapper>
   );
@@ -456,21 +557,28 @@ function SingleImageOutput({ baseLabel, formData, onBack }) {
   const baseUrl = import.meta.env.BASE_URL;
   const fgColor = formData.fgColor || '#111111';
   const bgColor = formData.bgColor || '#ffffff';
-  const isTaller = baseLabel.id === '500ml-single-malt';
-  const isRoundel = baseLabel.id === '500ml-single-malt-roundel';
+  const isTaller = !!baseLabel.tallerBars;
+  const isRoundel = !!baseLabel.isRoundel;
+
+  // Scale blank image area proportionally from 500ml reference values
+  const hr = dims.labelH / 303;
+  const blankTop = Math.round(-33 * hr);
+  const blankLeft = formData.singleCask ? Math.round(90 * hr) : Math.round(40 * hr);
+  const blankW = formData.singleCask ? Math.round(471 * hr) : Math.round(521 * hr);
+  const blankH = Math.round(269 * hr);
 
   return (
     <OutputWrapper onBack={onBack}>
       <LabelPage
         dims={dims}
         cropsFile={isTaller ? 'crops50-taller.png' : dims.cropsFile}
-        pageBackground={`url(${baseUrl}${isTaller ? 'sample50cl-tallerbars.png' : 'sample50cl-bars.png'})`}
+        pageBackground={`url(${baseUrl}${isTaller ? 'sample50cl-tallerbars.png' : dims.barsFile})`}
       >
         {formData.image && (
           isRoundel ? (
             <div style={{
               position: 'absolute',
-              top: 4, left: -9, width: 570, height: 232,
+              top: dims.roundelTop, left: dims.roundelLeft, width: dims.roundelW, height: dims.roundelH,
               backgroundImage: `url(${formData.image})`,
               backgroundPosition: 'center center',
               backgroundSize: 'cover',
@@ -479,10 +587,7 @@ function SingleImageOutput({ baseLabel, formData, onBack }) {
           ) : (
             <div style={{
               position: 'absolute',
-              top: -33,
-              left: formData.singleCask ? 90 : 40,
-              width: formData.singleCask ? 471 : 521,
-              height: 269,
+              top: blankTop, left: blankLeft, width: blankW, height: blankH,
               backgroundImage: `url(${formData.image})`,
               backgroundPosition: 'center center',
               backgroundSize: 'cover',
@@ -495,11 +600,7 @@ function SingleImageOutput({ baseLabel, formData, onBack }) {
             fgColor={fgColor} bgColor={bgColor}
             strength={formData.strength} singleCask={formData.singleCask}
             baseUrl={baseUrl}
-            panelTop={4} panelLength={232}
-            panelPadding="10px 16px 17px"
-            tallFontSize={14}
-            domainFontSize={9}
-            svgWidth={202} svgHeight={34}
+            {...roundelPanelProps(dims)}
           />
         ) : (
           <SideInfoPanels
@@ -548,6 +649,14 @@ function LabelOutput({ baseLabel, template, formData, onBack }) {
     return <SingleMaltOutput baseLabel={baseLabel} formData={formData} onBack={onBack} />;
   }
 
+  if (template.id === 'website-options-blended') {
+    return <BlendedMaltOutput baseLabel={baseLabel} formData={formData} onBack={onBack} />;
+  }
+
+  if (template.id === 'single-image-blended') {
+    return <BlendedSingleImageOutput baseLabel={baseLabel} formData={formData} onBack={onBack} />;
+  }
+
   if (template.id === 'single-image') {
     return <SingleImageOutput baseLabel={baseLabel} formData={formData} onBack={onBack} />;
   }
@@ -576,6 +685,12 @@ function AppShell({ children }) {
 
 // ─── Step 1: Choose base label ────────────────────────────────────────────────
 
+const BASE_COLUMNS = [
+  { heading: '500ml', filter: b => b.size === '500ml' },
+  { heading: '200ml', filter: b => b.size === '200ml' },
+  { heading: 'Other', filter: b => b.size !== '500ml' && b.size !== '200ml' },
+];
+
 function StepOne() {
   const navigate = useNavigate();
   return (
@@ -586,12 +701,18 @@ function StepOne() {
           <h1 className="step-title">Choose label</h1>
           <p className="step-desc">Select the base label format for your bottle.</p>
         </div>
-        <div className="base-grid">
-          {BASE_LABELS.map(base => (
-            <button key={base.id} className="base-card" onClick={() => navigate(`/${base.id}/`)}>
-              <span className="base-card__size">{base.size}</span>
-              <span className="base-card__name">{base.name}</span>
-            </button>
+        <div className="base-columns">
+          {BASE_COLUMNS.map(col => (
+            <div key={col.heading} className="base-column">
+              <div className="base-column__heading">{col.heading}</div>
+              <div className="base-grid">
+                {BASE_LABELS.filter(col.filter).map(base => (
+                  <button key={base.id} className="base-card" onClick={() => navigate(`/${base.id}/`)}>
+                    <span className="base-card__name">{col.heading === 'Other' ? base.name : base.name.replace(/^\d+ml\s+/i, '')}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       </div>

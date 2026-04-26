@@ -4,6 +4,7 @@ export const BASE_LABELS = [
     name: '500ml single malt blank',
     size: '500ml',
     extraTemplates: ['tampa-whisky-club'],
+    tallerBars: true,
   },
   {
     id: '500ml-single-malt-roundel',
@@ -11,20 +12,44 @@ export const BASE_LABELS = [
     size: '500ml',
     extraTemplates: [],
     websiteTemplate: 'website-options-singlemalt',
+    isRoundel: true,
   },
   {
     id: '500ml-blended-malt',
     name: '500ml blended malt blank',
     size: '500ml',
     extraTemplates: [],
-    websiteTemplate: 'website-options',
+    singleImageTemplate: 'single-image-blended',
   },
   {
     id: '500ml-custom-roundel',
     name: '500ml custom blended malt with roundel',
     size: '500ml',
     extraTemplates: [],
-    websiteTemplate: 'website-options',
+    websiteTemplate: 'website-options-blended',
+    singleImageTemplate: null,
+    isRoundel: true,
+  },
+  {
+    id: '200ml-single-malt',
+    name: '200ml single malt blank',
+    size: '200ml',
+    extraTemplates: [],
+  },
+  {
+    id: '200ml-single-malt-roundel',
+    name: '200ml single malt with roundel',
+    size: '200ml',
+    extraTemplates: [],
+    websiteTemplate: 'website-options-singlemalt',
+    isRoundel: true,
+  },
+  {
+    id: '200ml-blended-malt',
+    name: '200ml blended malt blank',
+    size: '200ml',
+    extraTemplates: [],
+    singleImageTemplate: 'single-image-blended',
   },
   {
     id: '200ml-custom-roundel',
@@ -127,6 +152,23 @@ export const ALL_TEMPLATES = {
     ],
   },
 
+  'website-options-blended': {
+    id: 'website-options-blended',
+    name: 'Website options',
+    sample: {
+      artwork: 'singlemalt500ml-option_4.jpg',
+      blendName: 'The Weekend Blend',
+      createdBy: 'A. Nicolson',
+      fgColor: '#1c3320',
+    },
+    fields: [
+      { key: 'artwork',    label: 'Label artwork',      type: 'preset-image',  options: SINGLEMALT_ARTWORKS, default: 'singlemalt500ml-option_1.jpg' },
+      { key: 'blendName',  label: 'Whisky name',        type: 'text',          placeholder: 'Name of the whisky' },
+      { key: 'createdBy',  label: 'Created by',         type: 'text',          placeholder: 'Blender name' },
+      { key: 'fgColor',    label: 'Text colour',        type: 'color-swatch',  options: COLOR_PALETTE, default: '#111111' },
+    ],
+  },
+
   'website-options': {
     id: 'website-options',
     name: 'Website options',
@@ -156,15 +198,25 @@ export const ALL_TEMPLATES = {
       { key: 'bgColor',    label: 'Background colour',  type: 'color-swatch', options: COLOR_PALETTE, default: '#ffffff' },
     ],
   },
+
+  'single-image-blended': {
+    id: 'single-image-blended',
+    name: 'Single image',
+    sample: null,
+    fields: [
+      { key: 'image', label: 'Background image', type: 'file', accept: 'image/*' },
+    ],
+  },
 };
 
 export function getTemplatesForBase(baseId) {
   const base = BASE_LABELS.find(b => b.id === baseId);
   if (!base) return [];
+  const singleImgId = 'singleImageTemplate' in base ? base.singleImageTemplate : 'single-image';
   const ids = [
     ...(base.extraTemplates || []),
     ...(base.websiteTemplate ? [base.websiteTemplate] : []),
-    'single-image',
+    ...(singleImgId ? [singleImgId] : []),
   ];
   return ids.map(id => ALL_TEMPLATES[id]);
 }
@@ -177,6 +229,7 @@ export const LABEL_DIMS = {
     pagePaddingTop: 128,
     cropsH: 560,
     cropsFile: 'crops50.png',
+    barsFile: 'sample50cl-bars.png',
     labelW: 552,
     labelH: 303,
     scale: 2.2,
@@ -185,6 +238,8 @@ export const LABEL_DIMS = {
     sideTop: 204, sideLeft: 210, sideW: 116, sideH: 12,
     refRight: -30, refTop: 45, refFontSize: 8,
     imgTop: -8, imgLeft: 112, imgW: 448, imgH: 244,
+    // Roundel image area
+    roundelTop: 4, roundelLeft: -9, roundelW: 570, roundelH: 232,
   },
   '200ml': {
     pageW: 562,
@@ -192,6 +247,7 @@ export const LABEL_DIMS = {
     pagePaddingTop: 73,
     cropsH: 398,
     cropsFile: 'crops20.png',
+    barsFile: 'sample20cl-bars.png',
     labelW: 427,
     labelH: 252,
     scale: 1.6,
@@ -199,5 +255,7 @@ export const LABEL_DIMS = {
     sideTop: 158, sideLeft: 153, sideW: 116, sideH: 12,
     refRight: -36, refTop: 45, refFontSize: 6,
     imgTop: -7, imgLeft: 93, imgW: 342, imgH: 188,
+    // Roundel image area (proportional to 500ml)
+    roundelTop: 4, roundelLeft: -9, roundelW: 445, roundelH: 193,
   },
 };
