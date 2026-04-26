@@ -6,16 +6,12 @@ const AuthContext = createContext(null)
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [serverReady, setServerReady] = useState(true)
 
   useEffect(() => {
-    if (!localStorage.getItem('token')) {
-      setLoading(false)
-      return
-    }
     apiFetch('/api/auth/me')
       .then((r) => (r.ok ? r.json() : null))
       .then((u) => {
-        if (!u) localStorage.removeItem('token')
         setUser(u)
         setLoading(false)
       })
@@ -30,7 +26,6 @@ export function AuthProvider({ children }) {
     })
     const data = await r.json()
     if (!r.ok) throw new Error(data.error)
-    localStorage.setItem('token', data.token)
     setUser(data)
     return data
   }
@@ -43,18 +38,17 @@ export function AuthProvider({ children }) {
     })
     const data = await r.json()
     if (!r.ok) throw new Error(data.error)
-    localStorage.setItem('token', data.token)
     setUser(data)
     return data
   }
 
   async function logout() {
-    localStorage.removeItem('token')
+    await apiFetch('/api/auth/logout', { method: 'POST' }).catch(() => {})
     setUser(null)
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, serverReady, setServerReady }}>
       {children}
     </AuthContext.Provider>
   )

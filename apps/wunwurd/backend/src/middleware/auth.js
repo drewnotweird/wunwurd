@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 function getToken(req) {
   const auth = req.headers['authorization'];
   if (auth && auth.startsWith('Bearer ')) return auth.slice(7);
-  return req.cookies?.token; // fallback for any old cookie sessions
+  return req.cookies?.token;
 }
 
 function authRequired(req, res, next) {

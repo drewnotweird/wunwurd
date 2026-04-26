@@ -75,3 +75,47 @@ When setting up any new app, always do all of the following before considering i
 ## Conventions
 - DOM-managed animation (no React state in render loops) — use refs + `requestAnimationFrame`
 - Avoid `setInterval` for things that need dynamic rates; use recursive `setTimeout` instead
+
+## Working efficiently
+
+### Bash — just run it
+Project settings broadly permit Bash. Don't hesitate on `ls`, `find`, `grep`, `curl`, `npm run build`, `git` commands. Build pattern: `cd "apps/<name>/frontend" && npm run build 2>&1`. Start a dev server in background, then poll: `npm run dev &>/tmp/dev.log & sleep 3 && curl -s -o /dev/null -w "%{http_code}" http://localhost:5173/`.
+
+### Read strategy — batch and grep first
+- Always read multiple related files in parallel in a single tool call (e.g. route + middleware + context all at once)
+- `grep -rn 'symbol' apps/<name>/frontend/src` before opening files to find exact locations
+- Don't re-read a file in the same session unless it was edited
+
+### Edit strategy — plan then execute in one pass
+- Read all files you need first, then make all edits, then build once to verify
+- Use Edit (not Write) for existing files — only diffs are shown in review
+- Don't rebuild between individual edits; batch all changes then verify once
+
+### Dev server ports
+| App | Frontend port | Backend port |
+|-----|--------------|--------------|
+| whiskyblender/frontend | 5173 | — |
+| whiskyblender/labels | 5174 | — |
+| wunwurd | 5173 | 3001 (local) / Railway (prod) |
+| everything else | 5173 | — |
+
+### Instant diagnosis (no exploration needed)
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| Blank page, no console errors | Missing `BrowserRouter` basename | Add `basename={import.meta.env.BASE_URL}` |
+| `ERR_MODULE_NOT_FOUND` for vite | Broken symlink | `rm node_modules/.bin/vite && ln -s ../vite/bin/vite.js node_modules/.bin/vite` |
+| CORS error from frontend | Origin not in allowlist | Check `allowedOrigins` in `backend/src/index.js` |
+| Cookie not sent cross-origin | Missing credentials flag | `credentials: 'include'` in fetch; `sameSite: 'none', secure: true` in cookie opts |
+| Routes don't match after deploy | Wrong base path | `VITE_BASE_PATH` env var in workflow + `base: process.env.VITE_BASE_PATH \|\| '/'` in vite.config.js |
+
+### Wunwurd key files
+- `backend/src/index.js` — CORS, rate limiting, route mounting
+- `backend/src/middleware/auth.js` — JWT verify (cookie-based, httpOnly)
+- `backend/src/routes/auth.js` — login/register/logout/me, `isProd` cookie opts
+- `frontend/src/api.js` — `apiFetch` wrapper (always `credentials: 'include'`, no localStorage)
+- `frontend/src/context/AuthContext.jsx` — auth state, calls `/api/auth/me` on mount
+
+### Response style Andrew prefers
+- Terse — no trailing summaries, no narration of steps already visible in diffs
+- Make obvious decisions autonomously; only check in on genuinely ambiguous choices
+- One short sentence of context per update while working is enough

@@ -8,10 +8,11 @@ const { notify } = require('../services/notify');
 const router = express.Router();
 const prisma = new PrismaClient();
 
+const isProd = process.env.NODE_ENV === 'production';
 const COOKIE_OPTS = {
   httpOnly: true,
-  sameSite: 'none',
-  secure: true,
+  sameSite: isProd ? 'none' : 'lax',
+  secure: isProd,
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
 };
 
@@ -33,7 +34,7 @@ router.post('/register', async (req, res) => {
       { expiresIn: '7d' }
     );
     res.cookie('token', token, COOKIE_OPTS);
-    res.json({ id: user.id, username: user.username, email: user.email, token });
+    res.json({ id: user.id, username: user.username, email: user.email });
     notify('New Wunwurd registration', `${username} (${email}) just registered.`);
   } catch (e) {
     if (e.code === 'P2002')
@@ -61,11 +62,11 @@ router.post('/login', async (req, res) => {
     { expiresIn: '7d' }
   );
   res.cookie('token', token, COOKIE_OPTS);
-  res.json({ id: user.id, username: user.username, email: user.email, token });
+  res.json({ id: user.id, username: user.username, email: user.email });
 });
 
 router.post('/logout', (req, res) => {
-  res.clearCookie('token');
+  res.clearCookie('token', { httpOnly: true, sameSite: isProd ? 'none' : 'lax', secure: isProd });
   res.json({ ok: true });
 });
 

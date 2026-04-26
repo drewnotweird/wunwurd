@@ -9,7 +9,7 @@ const NOT_BOT = { email: { not: { endsWith: '@wunwurd.app' } } };
 
 function checkKey(req, res, next) {
   const key = req.query.key || req.headers['x-stats-key'];
-  if (key !== 'verisimilitude') {
+  if (!process.env.STATS_KEY || key !== process.env.STATS_KEY) {
     return res.status(403).json({ error: 'Forbidden' });
   }
   next();

@@ -1,6 +1,7 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 const { execSync } = require('child_process');
 
 const authRoutes = require('./routes/auth');
@@ -42,13 +43,21 @@ app.get('/health', async (req, res) => {
   try {
     const prisma = new PrismaClient();
     await prisma.$queryRaw`SELECT 1`;
-    res.json({ db: 'ok', allowedOrigins });
+    res.json({ db: 'ok' });
   } catch (e) {
     res.json({ db: 'error', message: e.message });
   }
 });
 
-app.use('/api/auth', authRoutes);
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  message: { error: 'Too many attempts, please try again later' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/movies', moviesRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/words', wordsRoutes);

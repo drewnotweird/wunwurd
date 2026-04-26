@@ -72,7 +72,7 @@ function InfoIcon({ size }) {
 const SCROLL_THRESHOLD = 320
 
 export default function Navbar() {
-  const { user, logout } = useAuth()
+  const { user, logout, serverReady } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const isHome = location.pathname === '/'
@@ -180,18 +180,20 @@ export default function Navbar() {
         {/* Icon row — buttons grow to fill equally when expanded, shrink to sides when minimised */}
         <div className="flex items-center h-full px-4" style={{ gap: `${iconGap}px` }}>
           <button
-            className="group relative flex items-center justify-center h-full"
-            style={{ flexGrow: iconGrow, flexShrink: 1, flexBasis: 'auto', minWidth: `${iconSize + 8}px` }}
+            className="group relative flex items-center justify-center h-full transition-opacity duration-300"
+            style={{ flexGrow: iconGrow, flexShrink: 1, flexBasis: 'auto', minWidth: `${iconSize + 8}px`, opacity: serverReady ? 1 : 0.35 }}
             onClick={() => navigate('/search-words')}
+            disabled={!serverReady}
             aria-label="Search"
           >
             <SearchIcon size={iconSize} />
             <span className="absolute left-1/2 -translate-x-1/2 hidden md:block font-bold uppercase tracking-wide text-[#FF1493] bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap" style={tooltipStyle}>SEARCH</span>
           </button>
           <button
-            className="group relative flex items-center justify-center h-full"
-            style={{ flexGrow: iconGrow, flexShrink: 1, flexBasis: 'auto', minWidth: `${iconSize + 8}px` }}
+            className="group relative flex items-center justify-center h-full transition-opacity duration-300"
+            style={{ flexGrow: iconGrow, flexShrink: 1, flexBasis: 'auto', minWidth: `${iconSize + 8}px`, opacity: serverReady ? 1 : 0.35 }}
             onClick={handleRandom}
+            disabled={!serverReady}
             aria-label="Random movie"
           >
             {randomLoading
@@ -204,18 +206,20 @@ export default function Navbar() {
           <div style={{ flexGrow: spacerGrow, flexShrink: 1, flexBasis: 0, minWidth: 0 }} />
 
           <button
-            className="group relative flex items-center justify-center h-full"
-            style={{ flexGrow: iconGrow, flexShrink: 1, flexBasis: 'auto', minWidth: `${iconSize + 8}px` }}
+            className="group relative flex items-center justify-center h-full transition-opacity duration-300"
+            style={{ flexGrow: iconGrow, flexShrink: 1, flexBasis: 'auto', minWidth: `${iconSize + 8}px`, opacity: serverReady ? 1 : 0.35 }}
             onClick={() => navigate('/about')}
+            disabled={!serverReady}
             aria-label="About"
           >
             <InfoIcon size={iconSize} />
             <span className="absolute left-1/2 -translate-x-1/2 hidden md:block font-bold uppercase tracking-wide text-[#FF1493] bg-black px-2 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap" style={tooltipStyle}>ABOUT</span>
           </button>
           <button
-            className="group relative flex items-center justify-center h-full"
-            style={{ flexGrow: iconGrow, flexShrink: 1, flexBasis: 'auto', minWidth: `${iconSize + 8}px` }}
+            className="group relative flex items-center justify-center h-full transition-opacity duration-300"
+            style={{ flexGrow: iconGrow, flexShrink: 1, flexBasis: 'auto', minWidth: `${iconSize + 8}px`, opacity: serverReady ? 1 : 0.35 }}
             onClick={handleProfileClick}
+            disabled={!serverReady}
             aria-label={user ? 'Profile' : 'Log in'}
           >
             {user ? <ProfileIcon size={iconSize} /> : <LoginIcon size={iconSize} />}
