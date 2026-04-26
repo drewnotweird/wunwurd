@@ -17,6 +17,9 @@ const FIELD_TO_PARAM = {
   customerName: 'customer-name',
   description:  'description',
   keyImage:     'key-image',
+  strength:     'strength',
+  fgColor:      'fg-color',
+  bgColor:      'bg-color',
   // 'image' (file blob) is intentionally excluded
 };
 const PARAM_TO_FIELD = Object.fromEntries(Object.entries(FIELD_TO_PARAM).map(([k, v]) => [v, k]));
@@ -36,8 +39,9 @@ function encodeFormData(formData) {
 function decodeFormData(template, searchParams) {
   const formData = {};
   template.fields.forEach(f => {
-    if (f.type === 'select') formData[f.key] = f.options[0].value;
+    if (f.type === 'select') formData[f.key] = f.default ?? f.options[0].value;
     else if (f.type === 'checkbox') formData[f.key] = false;
+    else if (f.type === 'strength') formData[f.key] = f.default ?? '';
     else formData[f.key] = '';
   });
   searchParams.forEach((value, param) => {
@@ -170,7 +174,7 @@ function TampaOutput({ formData, onBack }) {
 
   return (
     <OutputWrapper onBack={onBack}>
-      <LabelPage dims={dims} cropsFile="crops50-tampa.png" pageBackground={`url(${baseUrl}sample50cl.png)`}>
+      <LabelPage dims={dims} cropsFile="crops50-taller.png" pageBackground={`url(${baseUrl}sample50cl-tampa.png)`}>
         {/* Background key image (ship / casks) — full-width, bleeds above label top */}
         <div style={{
           position: 'absolute',
@@ -313,7 +317,7 @@ function SingleMaltOutput({ baseLabel, formData, onBack }) {
 
   return (
     <OutputWrapper onBack={onBack}>
-      <LabelPage dims={dims} cropsFile="crops50-tampa.png" pageBackground={`url(${baseUrl}images/${bgFile})`}>
+      <LabelPage dims={dims} cropsFile="crops50-taller.png" pageBackground={`url(${baseUrl}images/${bgFile})`}>
         {/* Single cask overlay on the page (covers full content + padding area) */}
         {formData.singleCask && (
           <div style={{
@@ -400,21 +404,67 @@ function SingleMaltOutput({ baseLabel, formData, onBack }) {
 
 function SingleImageOutput({ baseLabel, formData, onBack }) {
   const dims = LABEL_DIMS[baseLabel.size];
+  const baseUrl = import.meta.env.BASE_URL;
+  const fgColor = formData.fgColor || 'black';
+  const bgColor = formData.bgColor || 'white';
+
+  // Panel: rotated 90deg clockwise, anchored at left:46, top:-32
+  // Top edge (y=0) faces right after rotation — zigzag clip applied there
+  const zigzagClip = (() => {
+    const w = 268, h = 56, step = 8, depth = 5;
+    const count = Math.ceil(w / step);
+    const pts = Array.from({ length: count + 1 }, (_, i) => {
+      const x = Math.min(i * step, w);
+      return `${x}px ${i % 2 === 0 ? 0 : depth}px`;
+    });
+    return `polygon(${[...pts, `${w}px ${h}px`, `0px ${h}px`].join(', ')})`;
+  })();
+
+  const panelStyle = {
+    position: 'absolute',
+    top: -32,
+    left: 46,
+    width: 268,
+    height: 56,
+    transform: 'rotate(90deg)',
+    transformOrigin: 'left top',
+    clipPath: zigzagClip,
+    backgroundColor: bgColor,
+    color: fgColor,
+    textShadow: 'none',
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr 1fr',
+    alignItems: 'center',
+    padding: '10px 14px 17px 14px',
+    zIndex: 2,
+  };
+
+  const tallFont = { fontFamily: '"Antonio", sans-serif', fontWeight: 300, fontSize: 13, textTransform: 'uppercase', letterSpacing: -0.5 };
 
   return (
     <OutputWrapper onBack={onBack}>
-      <LabelPage dims={dims}>
+      <LabelPage dims={dims} cropsFile="crops50-taller.png" pageBackground={`url(${baseUrl}sample50cl-bars.png)`}>
+        {/* User image */}
         {formData.image && (
           <div style={{
             position: 'absolute',
-            top: dims.imgTop, left: dims.imgLeft,
-            width: dims.imgW, height: dims.imgH,
+            top: -33,
+            left: formData.singleCask ? 46 : 40,
+            width: formData.singleCask ? 515 : 521,
+            height: 269,
             backgroundImage: `url(${formData.image})`,
             backgroundPosition: 'center center',
             backgroundSize: 'cover',
             zIndex: 1,
           }} />
         )}
+
+        {/* Side info panel */}
+        <div style={panelStyle}>
+          <span style={tallFont}>{formData.strength || '46'}% abv.</span>
+          <span style={{ fontSize: 7, textAlign: 'center', letterSpacing: 0.8, fontFamily: '"Raleway", sans-serif' }}>whiskyblender.com</span>
+          <span style={{ ...tallFont, textAlign: 'right' }}>500ml</span>
+        </div>
       </LabelPage>
     </OutputWrapper>
   );
@@ -541,15 +591,23 @@ function StepThree({ baseLabel, template, initialValues, onGenerate, onBack }) {
   const [values, setValues] = useState(() => {
     const defaults = {};
     template.fields.forEach(f => {
-      if (f.type === 'select') defaults[f.key] = f.options[0].value;
+      if (f.type === 'select') defaults[f.key] = f.default ?? f.options[0].value;
       else if (f.type === 'checkbox') defaults[f.key] = false;
+      else if (f.type === 'strength') defaults[f.key] = f.default ?? '';
       else defaults[f.key] = '';
     });
     return initialValues ? { ...defaults, ...initialValues } : defaults;
   });
   const [imageUrl, setImageUrl] = useState(initialValues?.image || null);
 
-  const handleChange = (key, value) => setValues(prev => ({ ...prev, [key]: value }));
+  const handleChange = (key, value) => {
+    setValues(prev => {
+      const next = { ...prev, [key]: value };
+      if (key === 'fgColor' && next.bgColor === value) next.bgColor = value === 'black' ? 'white' : 'black';
+      if (key === 'bgColor' && next.fgColor === value) next.fgColor = value === 'black' ? 'white' : 'black';
+      return next;
+    });
+  };
 
   const handleFile = (key, file) => {
     if (!file) return;
@@ -605,6 +663,13 @@ function StepThree({ baseLabel, template, initialValues, onGenerate, onBack }) {
                       <img src={imageUrl} alt="Preview" className="file-preview__img" />
                     </div>
                   )}
+                </div>
+              ) : field.type === 'strength' ? (
+                <div className="strength-input">
+                  <input id={field.key} type="number" className="form-input form-input--strength"
+                    value={values[field.key]} min="0" max="99.9" step="0.1"
+                    onChange={e => handleChange(field.key, e.target.value)} />
+                  <span className="strength-unit">% abv.</span>
                 </div>
               ) : (
                 <input id={field.key} type="text" className="form-input"

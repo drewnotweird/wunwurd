@@ -71,6 +71,11 @@ const SINGLEMALT_STYLE_OPTIONS = [
   { value: 'option_6', label: 'Style 6' },
 ];
 
+const COLOR_OPTIONS = [
+  { value: 'black', label: 'Black' },
+  { value: 'white', label: 'White' },
+];
+
 export const ALL_TEMPLATES = {
   'tampa-whisky-club': {
     id: 'tampa-whisky-club',
@@ -134,7 +139,11 @@ export const ALL_TEMPLATES = {
     name: 'Single image',
     sample: null,
     fields: [
-      { key: 'image', label: 'Background image', type: 'file', accept: 'image/*' },
+      { key: 'image',      label: 'Background image',  type: 'file',     accept: 'image/*' },
+      { key: 'strength',   label: 'Strength',           type: 'strength', default: '46' },
+      { key: 'singleCask', label: 'Single cask',        type: 'checkbox' },
+      { key: 'fgColor',    label: 'Foreground colour',  type: 'select',   options: COLOR_OPTIONS, default: 'black' },
+      { key: 'bgColor',    label: 'Background colour',  type: 'select',   options: COLOR_OPTIONS, default: 'white' },
     ],
   },
 };
