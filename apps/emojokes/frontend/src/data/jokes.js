@@ -35,4 +35,8 @@ export const JOKES = [
   { id: 33, emoji: '⚾', setup: "I couldn't figure out why the baseball kept getting bigger.", punchline: "Then, it hit me." },
   { id: 34, emoji: '🕷️', setup: "What do you call a spider with 20 eyes?", punchline: "A spiiiiiiiiiiiiiiiiiiiider." },
   { id: 35, emoji: '🔔', setup: "Why do cows wear bells?", punchline: "Because their horns don't work." },
+  { id: 36, emoji: '👩🏻‍🍳', setup: "Why did the baker have smelly hands?", punchline: "Because they kneaded a jobby." },
+  { id: 37, emoji: '🫏', setup: "What do you call a donkey with 3 legs?", punchline: "A wonky." },
+  { id: 38, emoji: '🐝', setup: "What kind of bees can produce milk?", punchline: "Boobies!" },
+  { id: 39, emoji: '🏌️', setup: "Why did the golfer wear 2 pairs of pants", punchline: "In case they got a hole in one!" },
 ]
