@@ -411,7 +411,7 @@ function SingleImageOutput({ baseLabel, formData, onBack }) {
   // Panel: rotated 90deg clockwise, anchored at left:46, top:-32
   // Top edge (y=0) faces right after rotation — zigzag clip applied there
   const zigzagClip = (() => {
-    const w = 268, h = 56, step = 8, depth = 5;
+    const w = 269, h = 56, step = 8, depth = 5;
     const count = Math.ceil(w / step);
     const pts = Array.from({ length: count + 1 }, (_, i) => {
       const x = Math.min(i * step, w);
@@ -422,9 +422,9 @@ function SingleImageOutput({ baseLabel, formData, onBack }) {
 
   const panelStyle = {
     position: 'absolute',
-    top: -32,
-    left: 46,
-    width: 268,
+    top: -33,
+    left: 47,
+    width: 269,
     height: 56,
     transform: 'rotate(90deg)',
     transformOrigin: 'left top',
