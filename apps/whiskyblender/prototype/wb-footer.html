@@ -65,13 +65,10 @@
         </div>
         <div class="wb-footercolumn wb-copyright">
             <p>
-                &copy;
-                <script>
-                    document.write(new Date().getFullYear());
-                </script>
-                Whisky Blender is a trademark product of Andrews of Bothwell Ltd. All rights reserved. Company No.
+                &copy; <span class="wb-year"></span> Whisky Blender is a trademark product of Andrews of Bothwell Ltd. All rights reserved. Company No.
                 SC407498. VAT Reg. 151 8243 24
             </p>
+            <script>document.querySelector('.wb-year').textContent = new Date().getFullYear();</script>
         </div>
     </div>
 </footer>
