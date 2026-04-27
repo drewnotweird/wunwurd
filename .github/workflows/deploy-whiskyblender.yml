@@ -43,7 +43,7 @@ jobs:
           VITE_BASE_PATH: /whiskyblender/labels/
         run: npm run build
 
-      - name: Deploy all to drewnotweird.co.uk and whiskyblender.com via FTP
+      - name: Deploy all to drewnotweird.co.uk and drewnotweird.com via FTP
         env:
           FTP_HOST_COUK: ${{ secrets.FTP_HOST_COUK }}
           FTP_USER_COUK: ${{ secrets.FTP_USER_COUK }}
@@ -61,8 +61,8 @@ jobs:
           upload_images = os.environ.get('UPLOAD_IMAGES', 'false').lower() == 'true'
 
           def make_ftp(host, user, password):
-              ftp = ftplib.FTP()
-              ftp.connect(host, 21, timeout=60)
+              ftp = ftplib.FTP(timeout=30)
+              ftp.connect(host, 21)
               ftp.login(user, password)
               ftp.set_pasv(True)
               return ftp
@@ -117,7 +117,7 @@ jobs:
 
           for label, host_key, user_key, pass_key in [
               ('drewnotweird.co.uk', 'FTP_HOST_COUK', 'FTP_USER_COUK', 'FTP_PASS_COUK'),
-              ('whiskyblender.com',  'FTP_HOST_COM',  'FTP_USER_COM',  'FTP_PASS_COM'),
+              ('drewnotweird.com',   'FTP_HOST_COM',  'FTP_USER_COM',  'FTP_PASS_COM'),
           ]:
               host     = os.environ[host_key]
               user     = os.environ[user_key]
