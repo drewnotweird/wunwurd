@@ -43,11 +43,14 @@ jobs:
           VITE_BASE_PATH: /whiskyblender/labels/
         run: npm run build
 
-      - name: Deploy all to drewnotweird.co.uk via FTP
+      - name: Deploy all to drewnotweird.co.uk and whiskyblender.com via FTP
         env:
           FTP_HOST_COUK: ${{ secrets.FTP_HOST_COUK }}
           FTP_USER_COUK: ${{ secrets.FTP_USER_COUK }}
           FTP_PASS_COUK: ${{ secrets.FTP_PASS_COUK }}
+          FTP_HOST_COM: ${{ secrets.FTP_HOST_COM }}
+          FTP_USER_COM: ${{ secrets.FTP_USER_COM }}
+          FTP_PASS_COM: ${{ secrets.FTP_PASS_COM }}
           UPLOAD_IMAGES: ${{ github.event.inputs.upload_images || 'false' }}
         run: |
           python3 - <<'EOF'
@@ -112,23 +115,27 @@ jobs:
               ftp.quit()
               print(f"Done. Uploaded {count[0]} files.")
 
-          host = os.environ['FTP_HOST_COUK']
-          user = os.environ['FTP_USER_COUK']
-          password = os.environ['FTP_PASS_COUK']
+          for label, host_key, user_key, pass_key in [
+              ('drewnotweird.co.uk', 'FTP_HOST_COUK', 'FTP_USER_COUK', 'FTP_PASS_COUK'),
+              ('whiskyblender.com',  'FTP_HOST_COM',  'FTP_USER_COM',  'FTP_PASS_COM'),
+          ]:
+              host     = os.environ[host_key]
+              user     = os.environ[user_key]
+              password = os.environ[pass_key]
 
-          print("=== Deploying launchpad ===")
-          ftp_upload(host, user, password,
-              'apps/whiskyblender/frontend/dist',
-              'htdocs/whiskyblender')
+              print(f"\n=== Deploying launchpad to {label} ===")
+              ftp_upload(host, user, password,
+                  'apps/whiskyblender/frontend/dist',
+                  'htdocs/whiskyblender')
 
-          print("=== Deploying labels ===")
-          ftp_upload(host, user, password,
-              'apps/whiskyblender/labels/frontend/dist',
-              'htdocs/whiskyblender/labels')
+              print(f"=== Deploying labels to {label} ===")
+              ftp_upload(host, user, password,
+                  'apps/whiskyblender/labels/frontend/dist',
+                  'htdocs/whiskyblender/labels')
 
-          print("=== Deploying prototype ===")
-          ftp_upload(host, user, password,
-              'apps/whiskyblender/prototype',
-              'htdocs/whiskyblender/prototype',
-              skip_images=not upload_images)
+              print(f"=== Deploying prototype to {label} ===")
+              ftp_upload(host, user, password,
+                  'apps/whiskyblender/prototype',
+                  'htdocs/whiskyblender/prototype',
+                  skip_images=not upload_images)
           EOF
