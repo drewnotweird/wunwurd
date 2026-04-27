@@ -39,7 +39,7 @@ export default function Home() {
   const [loadingMore, setLoadingMore] = useState(false)
   const [hasMore, setHasMore] = useState(true)
   const [scrollY, setScrollY] = useState(0)
-  const [bannerPhase, setBannerPhase] = useState('idle') // 'idle' | 'counting' | 'done' | 'closing'
+  const [bannerPhase, setBannerPhase] = useState('idle') // 'idle' | 'counting' | 'done'
   const [countdown, setCountdown] = useState(COLD_START_SECONDS)
   const countdownRef = useRef(null)
   const wasCountingRef = useRef(false)
@@ -118,12 +118,7 @@ export default function Home() {
           if (wasCountingRef.current) {
             wasCountingRef.current = false
             setBannerPhase('done')
-            setTimeout(() => {
-              if (!cancelled) {
-                setBannerPhase('closing')
-                setTimeout(() => { if (!cancelled) setBannerPhase('idle') }, 650)
-              }
-            }, 1500)
+            setTimeout(() => { if (!cancelled) setBannerPhase('idle') }, 1500)
           } else {
             setBannerPhase('idle')
           }
@@ -197,7 +192,7 @@ export default function Home() {
           transition: 'max-height 0.6s ease-in-out, padding 0.6s ease-in-out, border-bottom-width 0.6s ease-in-out',
         }}
       >
-        {bannerPhase === 'done' || bannerPhase === 'closing' ? (
+        {bannerPhase !== 'counting' ? (
           <p className="text-[#FF1493] font-black uppercase leading-none"
             style={{ fontSize: 'clamp(5rem, 22vw, 10rem)' }}>
             YAS!
